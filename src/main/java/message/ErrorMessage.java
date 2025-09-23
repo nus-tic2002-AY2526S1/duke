@@ -13,7 +13,6 @@ public record ErrorMessage(String message) implements Message {
             Sorry, I'm mee-xed up by '%s'. I can help with:
             todo, deadline, event, list, (un)mark, delete, filter, sort.
             Type 'help' for details.
-            
             """;
     public static final String MISSING_DESCRIPTION = """
             Your description is emptier than a hawker stall at 3am leh!
@@ -24,19 +23,11 @@ public record ErrorMessage(String message) implements Message {
             Type 'list' to see your tasks, then use the number.
             """;
     public static final String INVALID_NUMBER_FORMAT = """
-            Eh friend, '%s' is not a number lah. Task numbers are whole numbers like 1, 2, 3.
+            Eh friend, '%s' is not a number lah. Numbers are whole numbers like 1, 2, 3.
             """;
-    public static final String DEADLINE_FORMAT = """
+    public static final String TASK_FORMAT = """
             Your command is messier than mee goreng!
-            Deadline needs a description and '/by' date.
-            Try: deadline submit report /by 1/11/2025
-            Or : deadline submit report /by 1/11/2025 2359
-            """;
-    public static final String EVENT_FORMAT = """
-            Your command is messier than mee goreng!
-            Event needs a description, '/from' start and '/to' end.
-            Try: event meeting /from 1/11/2025 /to 1/11/2025
-            Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+            %s
             """;
     public static final String FILTER_FORMAT = """
             %s Pick at least 1 from these 3 criteria:
@@ -46,12 +37,6 @@ public record ErrorMessage(String message) implements Message {
             Try: filter task:deadline
             Or : filter task:deadline & done:false
             Or : filter task:deadline & done:false & date:2024-01-15
-            """;
-
-    public static final String SORT_FORMAT = """
-            Your command is more confusing than exiting VivoCity carpark!
-            Try: sort /by date
-            Or : sort /by status
             """;
 
     // Task existence and state errors

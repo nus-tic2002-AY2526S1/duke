@@ -9,8 +9,8 @@ import java.util.List;
  * Provides standardized string representation for display purpose.
  */
 public abstract class Task {
-
     private final String description;
+    private final Recurrence recurrence;
     private boolean isDone;
 
     /**
@@ -19,8 +19,9 @@ public abstract class Task {
      *
      * @param description The task description (should not be null or empty)
      */
-    public Task (String description) {
+    public Task(String description, Recurrence recurrence) {
         this.description = description;
+        this.recurrence = recurrence != null ? recurrence : Recurrence.none();  // defaults to not recurring
         this.isDone = false;    // tasks are incomplete by default
     }
 
@@ -48,6 +49,10 @@ public abstract class Task {
         return description;
     }
 
+    public Recurrence getRecurrence() {
+        return recurrence;
+    }
+
     /**
      * Returns whether this task has been completed.
      *
@@ -63,13 +68,30 @@ public abstract class Task {
      */
     public void markAsDone() {
         isDone = true;
-   }
+    }
 
     /**
      * Reverts a completed task back to incomplete state.
      */
     public void markAsUndone() {
         isDone = false;
+    }
+
+    /**
+     * Formats the recurrence information for display in string representations.
+     * If the task has no recurrence, returns an empty string.
+     * Otherwise, returns the recurrence pattern in a human-readable format.
+     *
+     * @return empty string if no recurrence, otherwise a formatted string
+     *         in the format: " (recurs {type} × {frequency})"
+     *         where type is repeat frequency (e.g. "daily", "weekly").
+     */
+    protected String formatRecurrence() {
+        return recurrence.isNone()
+                ? ""
+                : String.format(" (recurs %s × %d)",
+                recurrence.type().name().toLowerCase(),
+                recurrence.frequency());
     }
 
     /**

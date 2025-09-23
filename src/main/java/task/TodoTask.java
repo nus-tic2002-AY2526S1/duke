@@ -8,8 +8,8 @@ import java.util.List;
  * Simple task without date/time constraints.
  */
 public class TodoTask extends Task {
-    public TodoTask(String description) {
-       super(description);
+    public TodoTask(String description, Recurrence recurrence) {
+       super(description, recurrence);
     }
 
     @Override
@@ -27,8 +27,14 @@ public class TodoTask extends Task {
         return "";
     }
 
+    /**
+     * Creates a copy of this todo task with no recurrence.
+     *
+     * @return a new {@link TodoTask} instance with the same description,
+     *         but with recurrence set to {@link Recurrence#none()}
+     */
     @Override
     public Task copy() {
-        return new TodoTask(this.getDescription());
+        return new TodoTask(this.getDescription(), Recurrence.none());
     }
 }

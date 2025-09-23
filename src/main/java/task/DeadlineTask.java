@@ -13,8 +13,12 @@ public class DeadlineTask extends Task {
     private final LocalDateTime deadline;
     private final boolean hasTime;
 
-    public DeadlineTask(String description, ParsedDateTime pdt) {
-        super(description);
+    public DeadlineTask(
+            String description,
+            ParsedDateTime pdt,
+            Recurrence recurrence
+    ) {
+        super(description, recurrence);
         this.deadline = pdt.dateTime();
         this.hasTime = pdt.hasTime();
     }
@@ -29,6 +33,11 @@ public class DeadlineTask extends Task {
         return Collections.singletonList(deadline);
     }
 
+    /**
+     * Generates JSON field representation of the deadline.
+     * The deadline is formatted as either a full datetime string (if time is specified)
+     * or as a date-only string (if no time is specified).
+     */
     @Override
     public String toJsonFields() {
         String deadlineStr = hasTime
@@ -37,19 +46,27 @@ public class DeadlineTask extends Task {
         return String.format(",\n  \"deadline\":\"%s\"", deadlineStr);
     }
 
+    /**
+     * Creates a copy of this deadline task with no recurrence.
+     *
+     * @return a new {@link DeadlineTask} instance with the same description and deadline,
+     *         but with recurrence set to {@link Recurrence#none()}
+     */
     @Override
     public Task copy() {
         ParsedDateTime pdt = new ParsedDateTime(this.deadline, this.hasTime);
-        return new DeadlineTask(this.getDescription(), pdt);
+        return new DeadlineTask(this.getDescription(), pdt, Recurrence.none());
     }
 
     /**
-     * Extends base format with deadline information in the format "(by: deadline)".
+     * Extends base format with deadline information in the format "(by: deadline)"
+     * and includes recurrence information if applicable.
      */
     @Override
     public String toString() {
         String deadlineString = ParsedDateTime.format(deadline, hasTime);
-        return super.toString() +
-                String.format(" (by: %s)", deadlineString);
+        return super.toString()
+                + String.format(" (by: %s)", deadlineString)
+                + formatRecurrence();
     }
 }

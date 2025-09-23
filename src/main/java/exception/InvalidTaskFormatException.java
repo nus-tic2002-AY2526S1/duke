@@ -17,16 +17,38 @@ public class InvalidTaskFormatException extends MeeBotException {
      * Each type represents a distinct category of parsing failure.
      */
     public enum ErrorType {
-        MISSING_DESCRIPTION("Missing description after command keyword."),
-        DEADLINE("Deadline format is invalid."),
-        EVENT("Event format is invalid."),
-        SORT("Sort format is invalid.");
+        MISSING_DESCRIPTION("Give mee something to work with after the command."),
+
+        DEADLINE("""
+                Deadline needs a description and '/by' date.
+                Try: deadline submit report /by 1/11/2025
+                Or : deadline submit report /by 1/11/2025 2359
+                """),
+
+        EVENT("""            
+                Event needs a description, '/from' start and '/to' end.
+                Try: event meeting /from 1/11/2025 /to 1/11/2025
+                Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+                """),
+
+        SORT("""
+                Try: sort /by date
+                Or : sort /by status
+                """),
+
+        RECURRENCE("""
+                Try: /repeat <daily|weekly|monthly|yearly> <number of times>
+                """);
 
         private final String context;
 
-        ErrorType(String context) { this.context = context; }
+        ErrorType(String context) {
+            this.context = context;
+        }
 
-        public String getContext() { return context; }
+        public String getContext() {
+            return context;
+        }
 
         /**
          * Factory method to create an InvalidTaskFormatException of this error type.
@@ -55,11 +77,9 @@ public class InvalidTaskFormatException extends MeeBotException {
      */
     @Override
     public ErrorMessage toErrorMessage() {
-        return switch (type) {
-            case MISSING_DESCRIPTION -> new ErrorMessage(ErrorMessage.MISSING_DESCRIPTION);
-            case DEADLINE -> new ErrorMessage(ErrorMessage.DEADLINE_FORMAT);
-            case EVENT -> new ErrorMessage(ErrorMessage.EVENT_FORMAT);
-            case SORT -> new ErrorMessage(ErrorMessage.SORT_FORMAT);
-        };
+        return new ErrorMessage(String.format(
+                ErrorMessage.TASK_FORMAT,
+                type.getContext()
+        ));
     }
 }

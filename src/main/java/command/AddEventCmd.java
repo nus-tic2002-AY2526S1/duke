@@ -7,9 +7,11 @@ import message.ErrorMessage;
 import message.Message;
 import message.TaskAddedMessage;
 import task.EventTask;
+import task.Recurrence;
 import task.Task;
 import util.DateTimeParser;
 import util.ParsedDateTime;
+import util.RecurrenceParser;
 import util.TokenizerUtil;
 
 import java.util.regex.Pattern;
@@ -44,11 +46,14 @@ public class AddEventCmd extends BaseTaskCommand {
             String[] tokens = TokenizerUtil.tokenize(
                     args, EVENT_PATTERN, 3, ErrorType.EVENT
             );
-
+            Recurrence recurrence = RecurrenceParser.parse(
+                    tokens[tokens.length - 1], ErrorType.RECURRENCE
+            );
             ParsedDateTime start = DateTimeParser.parse(tokens[1]);
             ParsedDateTime end = DateTimeParser.parse(tokens[2]);
+
+            Task event = new EventTask(tokens[0], start, end, recurrence);
             boolean wasSorted = taskManager.isSorted();
-            Task event = new EventTask(tokens[0], start, end);
             taskManager.addTask(event);
             return new TaskAddedMessage(event, taskManager, wasSorted);
         } catch (MeeBotException e) {

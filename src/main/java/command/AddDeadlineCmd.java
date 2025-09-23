@@ -7,9 +7,11 @@ import message.ErrorMessage;
 import message.Message;
 import message.TaskAddedMessage;
 import task.DeadlineTask;
+import task.Recurrence;
 import task.Task;
 import util.DateTimeParser;
 import util.ParsedDateTime;
+import util.RecurrenceParser;
 import util.TokenizerUtil;
 
 import java.util.regex.Pattern;
@@ -45,9 +47,12 @@ public class AddDeadlineCmd extends BaseTaskCommand {
             String[] tokens = TokenizerUtil.tokenize(
                     args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE
             );
-
+            Recurrence recurrence = RecurrenceParser.parse(
+                    tokens[tokens.length - 1], ErrorType.RECURRENCE
+            );
             ParsedDateTime parsed = DateTimeParser.parse(tokens[1]);
-            Task deadline = new DeadlineTask(tokens[0], parsed);
+
+            Task deadline = new DeadlineTask(tokens[0], parsed, recurrence);
             boolean wasSorted = taskManager.isSorted();
             taskManager.addTask(deadline);
             return new TaskAddedMessage(deadline, taskManager, wasSorted);

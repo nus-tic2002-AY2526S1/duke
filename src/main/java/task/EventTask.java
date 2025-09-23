@@ -14,15 +14,21 @@ public class EventTask extends Task {
     private final LocalDateTime start, end;
     private final boolean hasTime;
 
-    public EventTask(String description, ParsedDateTime start, ParsedDateTime end) {
-        super(description);
-        if (end.dateTime().isBefore(start.dateTime())) {
-            throw new InvalidDateTimeException(
-                    InvalidDateTimeException.ErrorType.END_BEFORE_START, "");
-        }
+    public EventTask(
+            String description,
+            ParsedDateTime start,
+            ParsedDateTime end,
+            Recurrence recurrence
+    ) {
+        super(description, recurrence);
         this.start = start.dateTime();
         this.end = end.dateTime();
         this.hasTime = start.hasTime() && end.hasTime();
+        if (this.end.isBefore(this.start)) {
+            throw new InvalidDateTimeException(
+                    InvalidDateTimeException.ErrorType.END_BEFORE_START, "");
+        }
+
     }
 
     @Override
@@ -35,6 +41,11 @@ public class EventTask extends Task {
         return Arrays.asList(start, end);
     }
 
+    /**
+     * Generates JSON field representation of the event start and end.
+     * The deadline is formatted as either a full datetime string (if time is specified)
+     * or as a date-only string (if no time is specified).
+     */
     @Override
     public String toJsonFields() {
         String startStr = hasTime
@@ -48,21 +59,29 @@ public class EventTask extends Task {
         return String.format(",\n  \"start\":\"%s\",\n  \"end\":\"%s\"", startStr, endStr);
     }
 
+    /**
+     * Creates a copy of this event task with no recurrence.
+     *
+     * @return a new {@link EventTask} instance with the same description and date-times,
+     *         but with recurrence set to {@link Recurrence#none()}
+     */
     @Override
     public Task copy() {
         ParsedDateTime start = new ParsedDateTime(this.start, this.hasTime);
         ParsedDateTime end = new ParsedDateTime(this.end, this.hasTime);
-        return new EventTask(this.getDescription(), start, end);
+        return new EventTask(this.getDescription(), start, end, null);
     }
 
     /**
-     * Extends base format with event information in the format "(from: eventStart to: eventEnd)".
+     * Extends base format with event information in the format "(from: eventStart to: eventEnd)"
+     * and includes recurrence information if applicable.
      */
     @Override
     public String toString() {
         String eventStart = ParsedDateTime.format(start, hasTime);
         String eventEnd = ParsedDateTime.format(end, hasTime);
-        return super.toString() +
-                String.format(" (from: %s to: %s)", eventStart, eventEnd);
+        return super.toString()
+                + String.format(" (from: %s to: %s)", eventStart, eventEnd)
+                + formatRecurrence();
     }
 }
