@@ -4,6 +4,9 @@ import exception.FileContentException;
 import exception.FileContentException.ErrorType;
 import exception.MeeBotException;
 import parser.DateTimeParser;
+import parser.json.JsonTokenizer;
+import parser.json.SimpleJsonObject;
+import parser.json.SimpleJsonParser;
 import task.*;
 import task.Recurrence.RecurrenceType;
 
@@ -20,16 +23,14 @@ import java.util.List;
  * </p>
  * <p>The deserialization process is resilient to individual task failures - if some
  * tasks cannot be parsed, the method will continue processing remaining tasks
- * and report the number of failed tasks.
+ * and report the number of failed tasks.</p>
  *
  * @see TaskSerializer
  * @see SimpleJsonObject
- * @see TokenizerUtil
  */
 public class TaskDeserializer {
 
     private TaskDeserializer() {
-        throw new AssertionError("Utility class should not be instantiated");
     }
 
     /**
@@ -43,7 +44,8 @@ public class TaskDeserializer {
      * @return a list of successfully deserialized Task objects
      */
     public static List<Task> reconstructTask(String jsonArray) {
-        List<SimpleJsonObject> objects = TokenizerUtil.tokenize(jsonArray);
+        SimpleJsonParser parser = new SimpleJsonParser(new JsonTokenizer(jsonArray));
+        List<SimpleJsonObject> objects = parser.parseJson();
         List<Task> tasks = new ArrayList<>();
         int failedTasks = 0;
 
@@ -65,27 +67,39 @@ public class TaskDeserializer {
      */
     static Task deserialize(SimpleJsonObject obj) throws MeeBotException {
         String type = requireNonEmpty(obj, "type").toLowerCase();
+        String desc = requireNonEmpty(obj, "description");
 
+        // --- recurrence block check ---
+        Object recurObj = obj.get("recurrence");
+        if (!(recurObj instanceof SimpleJsonObject)) {
+            throw new FileContentException(ErrorType.INVALID_INPUT);
+        }
+        SimpleJsonObject recurJson = (SimpleJsonObject) obj.get("recurrence");
+        String recurType = requireNonEmpty(recurJson, "type").toUpperCase();
+        int freq = Integer.parseInt(requireNonEmpty(recurJson, "count"));
+        Recurrence recurrence = new Recurrence(RecurrenceType.valueOf(recurType), freq);
+
+        // --- construct appropriate task based on task type ---
         Task task = switch (type) {
-            case "todo" -> new TodoTask(
-                    requireNonEmpty(obj, "description")
-            );
+            case "todo" -> new TodoTask(desc, recurrence);
             case "deadline" -> new DeadlineTask(
-                    requireNonEmpty(obj, "description"),
-                    DateTimeParser.parse(requireNonEmpty(obj, "deadline"))
+                    desc,
+                    DateTimeParser.parse(requireNonEmpty(obj, "deadline")),
+                    recurrence
             );
             case "event" -> new EventTask(
-                    requireNonEmpty(obj, "description"),
+                    desc,
                     DateTimeParser.parse(requireNonEmpty(obj, "start")),
-                    DateTimeParser.parse(requireNonEmpty(obj, "end"))
+                    DateTimeParser.parse(requireNonEmpty(obj, "end")),
+                    recurrence
             );
-            default -> throw new FileContentException(FileContentException.ErrorType.INVALID_INPUT);
+            default -> throw new FileContentException(ErrorType.INVALID_INPUT);
         };
 
+        // --- update task completion status ---
         if (Boolean.parseBoolean(requireNonEmpty(obj, "done"))) {
             task.markAsDone();
         }
-
         return task;
     }
 
@@ -94,7 +108,7 @@ public class TaskDeserializer {
      * before creating Task objects.
      */
     private static String requireNonEmpty(SimpleJsonObject obj, String key) {
-        String value = obj.get(key);
+        String value = obj.get(key).toString();
         if (value == null || value.isBlank()) {
             throw new FileContentException(FileContentException.ErrorType.INVALID_INPUT);
         }

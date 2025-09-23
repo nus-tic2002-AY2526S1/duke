@@ -1,5 +1,6 @@
 package storage;
 
+import task.Recurrence;
 import task.Task;
 
 import java.util.List;
@@ -38,19 +39,25 @@ public class TaskSerializer {
      * Converts a single task into a JSON string representation.
      */
     public static String taskToJson(Task t) {
-        // Common fields
-        String json = """
+        Recurrence r = t.getRecurrence();
+
+        return """
                 {
-                  "type":"%s",
-                  "done":%s,
-                  "description":"%s"
+                  "type": "%s",
+                  "done": %s,
+                  "description": "%s"%s,
+                  "recurrence": {
+                    "type": "%s",
+                    "count": %d
+                  }
+                }
                 """.formatted(
                 t.getTaskType().getKeyword(),
                 t.isDone(),
-                t.getDescription().replace("\"", "\\\"")   //"description": "Read \"Java\" book"
-        ).stripTrailing();
-
-        // Append specific date-time
-        return json + t.toJsonFields() + "\n}";
+                t.getDescription().replace("\"", "\\\""),   //"description": "Read \"Java\" book"
+                t.toJsonFields(),
+                r.type(),
+                r.frequency()
+        );
     }
 }
