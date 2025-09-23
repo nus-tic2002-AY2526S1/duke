@@ -1,6 +1,6 @@
 package task;
 
-import util.ParsedDateTime;
+import parser.ParsedDateTime;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -34,6 +34,18 @@ public class DeadlineTask extends Task {
     }
 
     /**
+     * Creates a copy of this deadline task with no recurrence.
+     *
+     * @return a new {@link DeadlineTask} instance with the same description and deadline,
+     *         but with recurrence set to {@link Recurrence#none()}
+     */
+    @Override
+    public Task copy() {
+        ParsedDateTime pdt = new ParsedDateTime(this.deadline, this.hasTime);
+        return new DeadlineTask(this.getDescription(), pdt, Recurrence.none());
+    }
+
+    /**
      * Generates JSON field representation of the deadline.
      * The deadline is formatted as either a full datetime string (if time is specified)
      * or as a date-only string (if no time is specified).
@@ -44,18 +56,6 @@ public class DeadlineTask extends Task {
                 ? deadline.toString()
                 : deadline.toLocalDate().toString();
         return String.format(",\n  \"deadline\":\"%s\"", deadlineStr);
-    }
-
-    /**
-     * Creates a copy of this deadline task with no recurrence.
-     *
-     * @return a new {@link DeadlineTask} instance with the same description and deadline,
-     *         but with recurrence set to {@link Recurrence#none()}
-     */
-    @Override
-    public Task copy() {
-        ParsedDateTime pdt = new ParsedDateTime(this.deadline, this.hasTime);
-        return new DeadlineTask(this.getDescription(), pdt, Recurrence.none());
     }
 
     /**

@@ -6,7 +6,7 @@ import manager.TaskManager;
 import message.ErrorMessage;
 import message.ListTaskMessage;
 import message.Message;
-import util.TokenizerUtil;
+import parser.TokenizerUtil;
 
 import java.util.regex.Pattern;
 

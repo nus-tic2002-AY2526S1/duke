@@ -6,7 +6,7 @@ import message.ErrorMessage;
 import message.Message;
 import message.TaskDeletedMessage;
 import task.Task;
-import util.TaskIndexParser;
+import parser.TaskIndexParser;
 
 /**
  * Command to remove a task from the task list by its index number.

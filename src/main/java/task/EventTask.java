@@ -1,7 +1,7 @@
 package task;
 
 import exception.InvalidDateTimeException;
-import util.ParsedDateTime;
+import parser.ParsedDateTime;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -42,6 +42,19 @@ public class EventTask extends Task {
     }
 
     /**
+     * Creates a copy of this event task with no recurrence.
+     *
+     * @return a new {@link EventTask} instance with the same description and date-times,
+     *         but with recurrence set to {@link Recurrence#none()}
+     */
+    @Override
+    public Task copy() {
+        ParsedDateTime start = new ParsedDateTime(this.start, this.hasTime);
+        ParsedDateTime end = new ParsedDateTime(this.end, this.hasTime);
+        return new EventTask(this.getDescription(), start, end, null);
+    }
+
+    /**
      * Generates JSON field representation of the event start and end.
      * The deadline is formatted as either a full datetime string (if time is specified)
      * or as a date-only string (if no time is specified).
@@ -57,19 +70,6 @@ public class EventTask extends Task {
                 : end.toLocalDate().toString();
 
         return String.format(",\n  \"start\":\"%s\",\n  \"end\":\"%s\"", startStr, endStr);
-    }
-
-    /**
-     * Creates a copy of this event task with no recurrence.
-     *
-     * @return a new {@link EventTask} instance with the same description and date-times,
-     *         but with recurrence set to {@link Recurrence#none()}
-     */
-    @Override
-    public Task copy() {
-        ParsedDateTime start = new ParsedDateTime(this.start, this.hasTime);
-        ParsedDateTime end = new ParsedDateTime(this.end, this.hasTime);
-        return new EventTask(this.getDescription(), start, end, null);
     }
 
     /**

@@ -9,8 +9,8 @@ import message.TaskAddedMessage;
 import task.Recurrence;
 import task.Task;
 import task.TodoTask;
-import util.RecurrenceParser;
-import util.TokenizerUtil;
+import parser.RecurrenceParser;
+import parser.TokenizerUtil;
 
 import java.util.regex.Pattern;
 

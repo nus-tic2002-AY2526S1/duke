@@ -1,4 +1,4 @@
-package util;
+package parser;
 
 import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;

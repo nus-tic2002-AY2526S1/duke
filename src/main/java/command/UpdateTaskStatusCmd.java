@@ -7,7 +7,7 @@ import message.Message;
 import message.TaskMarkedMessage;
 import message.TaskUnmarkedMessage;
 import task.Task;
-import util.TaskIndexParser;
+import parser.TaskIndexParser;
 
 /**
  * Command to update the completion status of a task by its index.

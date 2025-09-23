@@ -1,4 +1,4 @@
-package util;
+package parser;
 
 import exception.InvalidDateTimeException;
 import exception.InvalidDateTimeException.ErrorType;
@@ -12,6 +12,8 @@ import java.time.format.DateTimeParseException;
  * Utility class for parsing various date and time String inputs into LocalDateTime objects.
  */
 public final class DateTimeParser {
+    private DateTimeParser() {}
+
     /**
      * Enum representing supported date/time input patterns.
      * Reference on how to nest enum in another class:
@@ -47,9 +49,6 @@ public final class DateTimeParser {
         }
     }
 
-    private DateTimeParser() {
-        throw new AssertionError("Utility class should not be instantiated");
-    }
 
     /**
      * Parses a date/time string into a LocalDateTime object using known patterns

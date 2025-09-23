@@ -9,10 +9,10 @@ import message.TaskAddedMessage;
 import task.EventTask;
 import task.Recurrence;
 import task.Task;
-import util.DateTimeParser;
-import util.ParsedDateTime;
-import util.RecurrenceParser;
-import util.TokenizerUtil;
+import parser.DateTimeParser;
+import parser.ParsedDateTime;
+import parser.RecurrenceParser;
+import parser.TokenizerUtil;
 
 import java.util.regex.Pattern;
 

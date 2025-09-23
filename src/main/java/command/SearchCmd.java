@@ -5,7 +5,7 @@ import manager.TaskManager;
 import message.Message;
 import message.SearchResultMessage;
 import task.Task;
-import util.TokenizerUtil;
+import parser.TokenizerUtil;
 
 import java.util.List;
 import java.util.regex.Pattern;

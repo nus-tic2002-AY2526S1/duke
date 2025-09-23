@@ -1,15 +1,17 @@
-package util;
+package command;
 
-import command.*;
 import manager.TaskManager;
 import message.ErrorMessage;
+
+import java.util.Objects;
 
 /**
  * Central processor for parsing user commands into executable Command objects.
  * <p>Responsibilities:
+ * <ul>
  * <li>Parse raw user input into command name and arguments</li>
  * <li>Look up appropriate command based on command name</li>
- * <li>Handle parsing errors gracefully</li>
+ * <li>Handle parsing errors gracefully</li></ul>
  */
 public final class CommandProcessor {
     private final TaskManager taskManager;
@@ -20,7 +22,7 @@ public final class CommandProcessor {
      * @param taskManager the task manager for command execution, must not be null
      */
     public CommandProcessor(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        this.taskManager = Objects.requireNonNull(taskManager);
     }
 
     /**

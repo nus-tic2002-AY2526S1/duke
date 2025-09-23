@@ -1,4 +1,4 @@
-package util;
+package parser;
 
 import exception.InvalidDateTimeException;
 import exception.InvalidFilterException;
@@ -13,8 +13,8 @@ import java.util.function.Predicate;
 /**
  * Utility class for converting string arguments into task filter {@link Predicate}
  * objects that can be used to filter task collections.
- * <ul>
- * <p><strong>Supported Filter Types:</strong></p>
+ * <p>
+ * <strong>Supported Filter Types:</strong><ul>
  * <li><strong>task:</strong> Filters by task type keyword (case-insensitive)</li>
  * <li><strong>done:</strong> Filters by completion status (true/false)</li>
  * <li><strong>date:</strong> Filters by date (matches any task with the specified date)</li>
@@ -23,9 +23,7 @@ import java.util.function.Predicate;
  * and maintains no mutable state.</p>
  */
 public final class TaskFilterParser {
-    private TaskFilterParser() {
-        throw new AssertionError("Utility class should not be instantiated");
-    }
+    private TaskFilterParser() {}
 
     /**
      * Parses filter argument string into a combined predicate. All predicates are combined
@@ -76,7 +74,6 @@ public final class TaskFilterParser {
         if (parts.length != 2 || key.isEmpty() || value.isEmpty()) {
             throw new InvalidFilterException(InvalidFilterException.ErrorType.INVALID_FILTER_FORMAT);
         }
-
         return createPredicate(key, value);
     }
 

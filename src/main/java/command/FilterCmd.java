@@ -5,7 +5,7 @@ import manager.TaskManager;
 import message.ErrorMessage;
 import message.FilteredListMessage;
 import message.Message;
-import util.TaskFilterParser;
+import parser.TaskFilterParser;
 import task.Task;
 
 import java.util.List;
