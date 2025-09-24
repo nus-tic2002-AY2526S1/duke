@@ -1,6 +1,6 @@
 package exception;
 
-import message.ErrorMessage;
+import common.ErrorMessage;
 
 /**
  * Abstract base class for all MeeBot-specific exceptions.

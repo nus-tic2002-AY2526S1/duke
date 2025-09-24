@@ -1,6 +1,6 @@
 package exception;
 
-import message.ErrorMessage;
+import common.ErrorMessage;
 
 /**
  * Custom exception for date/time parsing failures with detailed error classification.

@@ -1,8 +1,11 @@
-package message;
+package common;
+
+import message.Message;
 
 /**
  * Immutable message record containing error information for display to users.
- * <p>This record encapsulates error messages with contextual, user-friendly text
+ * <p>
+ * This record encapsulates error messages with contextual, user-friendly text
  * that follows MeeBot's Singaporean's conversational tone and is descriptive enough
  * to help users understand what went wrong and how to correct their input.
  */
@@ -12,15 +15,7 @@ public record ErrorMessage(String message) implements Message {
     public static final String INVALID_COMMAND_KEYWORD = """
             Sorry, I'm mee-xed up by '%s'. I can help with:
             todo, deadline, event, list, (un)mark, delete, filter, sort.
-            Type 'help' for details.
-            """;
-    public static final String MISSING_DESCRIPTION = """
-            Your description is emptier than a hawker stall at 3am leh!
-            Give mee something to work with after the command.
-            """;
-    public static final String MISSING_TASK_NUMBER = """
-            You need to tell me the task number, don't make mee guess the number like buying 4D!
-            Type 'list' to see your tasks, then use the number.
+            Type the command keywords (e.g. sort) for details.
             """;
     public static final String INVALID_NUMBER_FORMAT = """
             Eh friend, '%s' is not a number lah. Numbers are whole numbers like 1, 2, 3.

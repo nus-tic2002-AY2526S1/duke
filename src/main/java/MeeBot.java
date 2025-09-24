@@ -1,12 +1,15 @@
 import command.Command;
 import manager.TaskManager;
-import message.ErrorMessage;
+import common.ErrorMessage;
 import message.Message;
 import storage.Storage;
 import ui.UserInterface;
 import command.CommandProcessor;
 
-
+/**
+ * Entry point of MeeBot application.
+ * Initializes the application and starts the interaction with the user.
+ */
 public class MeeBot {
 
     private final UserInterface ui = new UserInterface();
@@ -21,11 +24,11 @@ public class MeeBot {
         while (true) {
             String input = ui.readUserInput();
             Command cmd = processor.parseCommand(input);
-
             try {
                 Message msg = cmd.execute();
                 ui.displayMessage(msg);
                 storage.saveTasks();
+
                 if (cmd.isExit()) {
                     break;
                 }

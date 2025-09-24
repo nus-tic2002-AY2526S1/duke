@@ -1,6 +1,6 @@
 package exception;
 
-import message.ErrorMessage;
+import common.ErrorMessage;
 
 /**
  * Exception thrown when task filter operations encounter invalid input or configuration.

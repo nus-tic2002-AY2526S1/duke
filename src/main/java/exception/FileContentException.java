@@ -1,6 +1,6 @@
 package exception;
 
-import message.ErrorMessage;
+import common.ErrorMessage;
 
 /**
  * Exception thrown when file content is invalid, malformed, or cannot be processed.
