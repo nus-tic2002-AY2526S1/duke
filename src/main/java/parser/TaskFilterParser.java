@@ -28,6 +28,10 @@ public final class TaskFilterParser {
     /**
      * Parses filter argument string into a combined predicate. All predicates are combined
      * using logical AND, meaning tasks must satisfy ALL criteria to pass the filter.
+     * <p>
+     * <em>Predicate chaining technique referenced from:
+     * <a href="https://www.baeldung.com/java-predicate-chain"></a>
+     * Baeldung: Java Predicate Chain</em></p>
      *
      * @param args filter criteria string with ampersands(&) delimited filters
      *             (e.g. "task:deadline & done:true")
@@ -80,10 +84,9 @@ public final class TaskFilterParser {
     /**
      * Factory for creating appropriate predicate based on filter key and value.
      * Each predicate type has specific validation and matching logic appropriate for its data type.
-     * <p>Predicate chaining technique referenced from:
-     * <a href="https://www.baeldung.com/java-predicate-chain">...</a></p>
-     * <p><strong>Implementation Note:</strong> Date filtering ignores time components and matches
-     * on date only.
+     * <p>
+     * <strong>Implementation Note:</strong> Date filtering ignores time components and matches
+     * on date only.</p>
      *
      * @param key   filter key (task, done, date)
      * @param value filter value
@@ -110,12 +113,14 @@ public final class TaskFilterParser {
                 List<LocalDateTime> dates = task.getDates();
                 if (dates.isEmpty()) return false;
 
-                for (LocalDateTime dt : dates) {
-                    if (dt.toLocalDate().equals(filterDate)) {
-                        return true;
-                    }
+                // handle all dates in between start and end of event
+                if (dates.size() == 2) {
+                    LocalDate start = dates.get(0).toLocalDate();
+                    LocalDate end   = dates.get(1).toLocalDate();
+                    return !filterDate.isBefore(start) && !filterDate.isAfter(end);
+                } else {
+                    return dates.get(0).toLocalDate().equals(filterDate);
                 }
-                return false;
             };
 
         default:
