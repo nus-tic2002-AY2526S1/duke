@@ -1,24 +1,30 @@
 package command;
 
+import common.ErrorMessage;
 import exception.InvalidTaskFormatException.ErrorType;
 import exception.MeeBotException;
 import manager.TaskManager;
-import message.ErrorMessage;
 import message.Message;
 import message.TaskAddedMessage;
+import parser.TokenizerUtil;
 import task.Recurrence;
 import task.Task;
 import task.TodoTask;
-import parser.RecurrenceParser;
-import parser.TokenizerUtil;
 
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 /**
- * Command to add a simple todo task without any date constraints.
+ * Command to add a todo without any date constraints or recurrence.
+ *
+ * @see TaskManager#addTask(Task)
  */
 public class AddTodoCmd extends BaseTaskCommand {
 
+    /**
+     * Simple capture-all regular expression pattern since todo tasks have minimal parsing requirements.
+     * Unlike other task commands, todo tasks have no special syntax or delimiters.
+     */
     private static final Pattern TODO_PATTERN = Pattern.compile("(.+)");
 
     public AddTodoCmd(TaskManager taskManager, String args) {
@@ -26,20 +32,30 @@ public class AddTodoCmd extends BaseTaskCommand {
     }
 
     /**
-     * Creates a todo task with the provided String input.
+     * This command creates basic {@link TodoTask} instances for activities that need to be
+     * completed but have no specific timing requirements. Unlike deadline and event tasks,
+     * todo tasks cannot be configured with recurrence patterns.
      *
-     * @return a {@link TaskAddedMessage} on success, {@link ErrorMessage} if no description is provided
+     * @return {@link TaskAddedMessage} on successful task creation, or
+     *         {@link ErrorMessage} if no description provided or invalid recurrence specified
+     * @apiNote Todo tasks are designed for simple, timeless activities. Use deadline or
+     *         event commands for time-sensitive tasks.
      */
     @Override
     public Message execute() {
+        Message help = showHelpText(CommandType.TODO);
+        if (help != null) {
+            return help;
+        }
+
         try {
             String[] tokens = TokenizerUtil.tokenize(
-                    args, TODO_PATTERN, 1, ErrorType.MISSING_DESCRIPTION
-            );
-            Recurrence recurrence = RecurrenceParser.parse(
-                    tokens[tokens.length - 1], ErrorType.RECURRENCE
-            );
+                    args, TODO_PATTERN, 1, null);
+            if (!"none".equalsIgnoreCase(tokens[tokens.length - 1])) {
+                throw ErrorType.RECURRENCE.createException();
+            }
 
+            Recurrence recurrence = Recurrence.none(LocalDate.now());
             Task todo = new TodoTask(tokens[0], recurrence);
             boolean wasSorted = taskManager.isSorted();
             taskManager.addTask(todo);

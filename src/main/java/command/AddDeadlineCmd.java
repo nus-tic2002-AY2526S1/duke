@@ -1,28 +1,34 @@
 package command;
 
+import common.ErrorMessage;
 import exception.InvalidTaskFormatException.ErrorType;
 import exception.MeeBotException;
 import manager.TaskManager;
-import message.ErrorMessage;
 import message.Message;
 import message.TaskAddedMessage;
-import task.DeadlineTask;
-import task.Recurrence;
-import task.Task;
 import parser.DateTimeParser;
 import parser.ParsedDateTime;
 import parser.RecurrenceParser;
 import parser.TokenizerUtil;
+import task.DeadlineTask;
+import task.Recurrence;
+import task.Task;
 
 import java.util.regex.Pattern;
 
 
 /**
- * Command to add a new deadline task with a due date.
+ * Command to add a new deadline task with a due date and optional recurrence.
+ *
+ * @see TaskManager#addTask(Task)
  */
 public class AddDeadlineCmd extends BaseTaskCommand {
 
-    /* Lazy regex syntax generated with the help of ChatGPT */
+    /**
+     * Regular expression pattern to parse deadline command input.
+     *
+     * @apiNote Pattern generated with AI assistance for optimal matching
+     */
     private static final Pattern DEADLINE_PATTERN = Pattern.compile(
             "(.+?)\\s*/by\\s*(.+)",
             Pattern.CASE_INSENSITIVE
@@ -33,24 +39,31 @@ public class AddDeadlineCmd extends BaseTaskCommand {
     }
 
     /**
-     * Creates a deadline task from user input: "description /by dateTime".
-     * <p>Parses the input string to extract the task description and date/time,
-     * creates a new {@link DeadlineTask}, and adds it to the {@link TaskManager}.
+     * Executes the deadline task creation command.
+     * <p>
+     * Parses user input in the format {@code "description /by dateTime [recurrence]"}
+     * to extract the task description, date/time and optional recurrence pattern.
+     * Creates a new {@link DeadlineTask}, and adds it to the {@link TaskManager}.
      *
      * @return {@link TaskAddedMessage} on successful task creation, or
-     *         {@link ErrorMessage} on invalid format or date parsing
+     *         {@link ErrorMessage} on invalid command format or date parsing
+     * @implNote Captures task manager's sorted state before modification to provide
+     *         accurate context in return messages
      */
     @Override
     public Message execute() {
+        Message help = showHelpText(CommandType.DEADLINE);
+        if (help != null) {
+            return help;
+        }
         try {
-            // Split input: "finish task /by 11/11/2011" → ["finish task", "11/11/2011"]
             String[] tokens = TokenizerUtil.tokenize(
                     args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE
             );
-            Recurrence recurrence = RecurrenceParser.parse(
-                    tokens[tokens.length - 1], ErrorType.RECURRENCE
-            );
             ParsedDateTime parsed = DateTimeParser.parse(tokens[1]);
+            Recurrence recurrence = RecurrenceParser.parse(
+                    tokens[tokens.length - 1], parsed.dateTime().toLocalDate(), ErrorType.RECURRENCE
+            );
 
             Task deadline = new DeadlineTask(tokens[0], parsed, recurrence);
             boolean wasSorted = taskManager.isSorted();

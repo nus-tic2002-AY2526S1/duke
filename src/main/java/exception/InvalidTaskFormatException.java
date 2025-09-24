@@ -1,6 +1,6 @@
 package exception;
 
-import message.ErrorMessage;
+import common.ErrorMessage;
 
 /**
  * Custom exception for task format validation failures in MeeBot.
@@ -17,8 +17,6 @@ public class InvalidTaskFormatException extends MeeBotException {
      * Each type represents a distinct category of parsing failure.
      */
     public enum ErrorType {
-        MISSING_DESCRIPTION("Give mee something to work with after the command."),
-
         DEADLINE("""
                 Deadline needs a description and '/by' date.
                 Try: deadline submit report /by 1/11/2025

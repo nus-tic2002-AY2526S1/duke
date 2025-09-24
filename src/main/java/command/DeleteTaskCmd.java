@@ -1,16 +1,15 @@
 package command;
 
+import common.ErrorMessage;
 import exception.MeeBotException;
 import manager.TaskManager;
-import message.ErrorMessage;
 import message.Message;
 import message.TaskDeletedMessage;
-import task.Task;
 import parser.TaskIndexParser;
+import task.Task;
 
 /**
  * Command to remove a task from the task list by its index number.
- * <p>This command deletes the specified task regardless of its completion status.
  *
  * @see TaskManager#deleteTask(int)
  */
@@ -28,6 +27,10 @@ public class DeleteTaskCmd extends BaseTaskCommand {
      */
     @Override
     public Message execute() {
+        Message help = showHelpText(CommandType.DELETE);
+        if (help != null) {
+            return help;
+        }
         try {
             int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
             Task task = taskManager.getTask(taskNumber);

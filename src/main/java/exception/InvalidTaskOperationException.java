@@ -1,11 +1,12 @@
 package exception;
 
-import message.ErrorMessage;
+import common.ErrorMessage;
 
 /**
  * Exception thrown when task operations encounter invalid states, inputs, or conditions.
- * <p>This exception extends {@link MeeBotException} and categorizes task-related operation
- * failures into specific types by converting itself to appropriate {@link ErrorMessage} objects.</p>
+ * <p>
+ * This exception extends {@link MeeBotException} and categorizes task-related operation
+ * failures into specific types by converting itself to appropriate {@link ErrorMessage} objects.
  *
  * @see MeeBotException
  * @see ErrorMessage
@@ -19,7 +20,6 @@ public class InvalidTaskOperationException extends MeeBotException {
      */
     public enum ErrorType {
         EMPTY_LIST,
-        MISSING_TASK_NUMBER,
         INVALID_NUMBER_FORMAT,
         TASK_NOT_FOUND,
         TASK_STATE
@@ -46,7 +46,6 @@ public class InvalidTaskOperationException extends MeeBotException {
     public ErrorMessage toErrorMessage() {
         return switch (type) {
             case EMPTY_LIST -> new ErrorMessage(ErrorMessage.EMPTY_LIST);
-            case MISSING_TASK_NUMBER -> new ErrorMessage(ErrorMessage.MISSING_TASK_NUMBER);
             case INVALID_NUMBER_FORMAT -> new ErrorMessage(String.format(ErrorMessage.INVALID_NUMBER_FORMAT, inputs));
             case TASK_NOT_FOUND -> new ErrorMessage(String.format(ErrorMessage.TASK_NOT_FOUND, inputs));
             case TASK_STATE -> new ErrorMessage(String.format(ErrorMessage.TASK_STATE, inputs));

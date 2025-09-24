@@ -13,9 +13,6 @@ public class TaskIndexParser {
         if (taskManager.isEmpty()) {
             throw new InvalidTaskOperationException(ErrorType.EMPTY_LIST);
         }
-        if (args.isBlank()) {
-            throw new InvalidTaskOperationException(ErrorType.MISSING_TASK_NUMBER);
-        }
         int taskNumber;
         try {
             taskNumber = Integer.parseInt(args.trim());

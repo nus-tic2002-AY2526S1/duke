@@ -1,9 +1,9 @@
 package command;
 
+import common.ErrorMessage;
 import manager.TaskManager;
-import message.ErrorMessage;
-import message.Message;
 import message.ListTaskMessage;
+import message.Message;
 
 /**
  * Command to display all tasks in MeeBot.
@@ -20,7 +20,6 @@ public class ListCmd implements Command {
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
-
         return new ListTaskMessage(taskManager);
     }
 }

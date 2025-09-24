@@ -1,8 +1,8 @@
 package command;
 
+import common.ErrorMessage;
 import exception.MeeBotException;
 import manager.TaskManager;
-import message.ErrorMessage;
 import message.FilteredListMessage;
 import message.Message;
 import parser.TaskFilterParser;
@@ -13,13 +13,15 @@ import java.util.function.Predicate;
 
 /**
  * Command to filter tasks based on specified criteria (task type, completion status, date).
- * <p><strong>Usage Notes:</strong></p>
- * <li>At least one filter criterion must be provided</li>
- * <li>Maximum of 3 filter criteria can be applied simultaneously</li>
- * <li>Multiple criteria are combined using logical AND. Example:
- * {@code task:todo & done:true} returns only Todo task that are completed</li>
- * <li>Conflicting criteria (e.g. {@code task:todo & task:event}) will return empty results
- * since no task can satisfy contradictory conditions</li>
+ * <p>
+ * <strong>Usage Notes:</strong>
+ * <ol>
+ *     <li>At least one filter criterion must be provided</li>
+ *     <li>Maximum of 3 filter criteria can be applied simultaneously</li>
+ *     <li>Multiple criteria are combined using logical AND. Example:
+ *     {@code task:todo & done:true} returns only Todo task that are completed</li>
+ *     <li>Conflicting criteria (e.g. {@code task:todo & task:event}) will return empty results
+ *     since no task can satisfy contradictory conditions</li>
  */
 public class FilterCmd extends BaseTaskCommand {
     public FilterCmd(TaskManager taskManager, String args) {
@@ -40,14 +42,13 @@ public class FilterCmd extends BaseTaskCommand {
      */
     @Override
     public Message execute() {
+        Message help = showHelpText(CommandType.FILTER);
+        if (help != null) {
+            return help;
+        }
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
-
-        if (args == null || args.isBlank()) {
-            return new ErrorMessage(ErrorMessage.MISSING_DESCRIPTION);
-        }
-
         try {
             Predicate<Task> predicates = TaskFilterParser.chainPredicate(args);
             List<Task> filteredTasks = taskManager.filter(predicates);

@@ -33,10 +33,6 @@ public final class TokenizerUtil {
                                     int requiredToken, ErrorType errorType)
             throws InvalidTaskFormatException {
 
-        if (args == null || args.isBlank()) {
-            throw ErrorType.MISSING_DESCRIPTION.createException();
-        }
-
         String[] split = args.trim().split("/repeat", 2);
         Matcher matcher = pattern.matcher(split[0].trim());
         if (!matcher.matches()) {

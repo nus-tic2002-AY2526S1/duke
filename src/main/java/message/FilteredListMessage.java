@@ -12,7 +12,7 @@ public class FilteredListMessage implements Message {
     private final String filterCriteria;
 
     /**
-     * @param tasks filtered task list (may be empty); this list is copied defensively
+     * @param tasks          filtered task list (may be empty); this list is copied defensively
      * @param filterCriteria original filter criteria for display
      */
     public FilteredListMessage(List<Task> tasks, String filterCriteria) {
@@ -22,7 +22,8 @@ public class FilteredListMessage implements Message {
 
     /**
      * Generates formatted message showing filter criteria and numbered task results.
-     * <p>If no tasks match the criteria, returns a helpful message explaining possible
+     * <p>
+     * If no tasks match the criteria, returns a helpful message explaining possible
      * reasons. Otherwise, displays the filter criteria followed by a numbered list
      * of matching tasks.
      *

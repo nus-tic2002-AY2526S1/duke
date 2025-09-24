@@ -1,13 +1,13 @@
 package command;
 
+import common.ErrorMessage;
 import exception.MeeBotException;
 import manager.TaskManager;
-import message.ErrorMessage;
 import message.Message;
 import message.TaskMarkedMessage;
 import message.TaskUnmarkedMessage;
-import task.Task;
 import parser.TaskIndexParser;
+import task.Task;
 
 /**
  * Command to update the completion status of a task by its index.
@@ -36,6 +36,11 @@ public class UpdateTaskStatusCmd extends BaseTaskCommand {
      */
     @Override
     public Message execute() {
+        CommandType type = markDone ? CommandType.MARK : CommandType.UNMARK;
+        Message help = showHelpText(type);
+        if (help != null) {
+            return help;
+        }
         try {
             int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
             boolean wasSorted = taskManager.isSorted();
