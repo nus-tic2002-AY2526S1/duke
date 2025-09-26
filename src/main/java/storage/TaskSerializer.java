@@ -7,9 +7,7 @@ import java.util.List;
 
 public class TaskSerializer {
 
-    private TaskSerializer() {
-        throw new AssertionError("Utility class should not be instantiated");
-    }
+    private TaskSerializer() {}
 
     /**
      * Utility class to serialize Task objects into JSON string representations.
@@ -40,7 +38,6 @@ public class TaskSerializer {
      */
     public static String taskToJson(Task t) {
         Recurrence r = t.getRecurrence();
-
         return """
                 {
                   "type": "%s",
@@ -48,7 +45,9 @@ public class TaskSerializer {
                   "description": "%s"%s,
                   "recurrence": {
                     "type": "%s",
-                    "count": %d
+                    "count": %d,
+                    "anchorDate": "%s",
+                    "recurrenceEnd": "%s"
                   }
                 }
                 """.formatted(
@@ -57,7 +56,9 @@ public class TaskSerializer {
                 t.getDescription().replace("\"", "\\\""),   //"description": "Read \"Java\" book"
                 t.toJsonFields(),
                 r.type(),
-                r.frequency()
+                r.frequency(),
+                r.anchorDate(),
+                r.recurrenceEnd()
         );
     }
 }

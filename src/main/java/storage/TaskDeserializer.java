@@ -4,6 +4,7 @@ import exception.FileContentException;
 import exception.FileContentException.ErrorType;
 import exception.MeeBotException;
 import parser.DateTimeParser;
+import parser.ParsedDateTime;
 import parser.json.JsonTokenizer;
 import parser.json.SimpleJsonObject;
 import parser.json.SimpleJsonParser;
@@ -74,25 +75,26 @@ public class TaskDeserializer {
         if (!(recurObj instanceof SimpleJsonObject)) {
             throw new FileContentException(ErrorType.INVALID_INPUT);
         }
-        SimpleJsonObject recurJson = (SimpleJsonObject) obj.get("recurrence");
-        String recurType = requireNonEmpty(recurJson, "type").toUpperCase();
-        int freq = Integer.parseInt(requireNonEmpty(recurJson, "count"));
-        Recurrence recurrence = new Recurrence(RecurrenceType.valueOf(recurType), freq);
+        SimpleJsonObject recJson = (SimpleJsonObject) obj.get("recurrence");
+        String recType = requireNonEmpty(recJson, "type").toUpperCase();
+        int freq = Integer.parseInt(requireNonEmpty(recJson, "count"));
+        RecurrenceType recurType = RecurrenceType.valueOf(recType);
 
         // --- construct appropriate task based on task type ---
         Task task = switch (type) {
-            case "todo" -> new TodoTask(desc, recurrence);
-            case "deadline" -> new DeadlineTask(
-                    desc,
-                    DateTimeParser.parse(requireNonEmpty(obj, "deadline")),
-                    recurrence
-            );
-            case "event" -> new EventTask(
-                    desc,
-                    DateTimeParser.parse(requireNonEmpty(obj, "start")),
-                    DateTimeParser.parse(requireNonEmpty(obj, "end")),
-                    recurrence
-            );
+            case "todo" -> new TodoTask(desc, Recurrence.none(null));
+
+            case "deadline" -> {
+                ParsedDateTime dl = DateTimeParser.parse(requireNonEmpty(obj, "deadline"));
+                yield new DeadlineTask(desc, dl,
+                        Recurrence.of(recurType, freq, dl.dateTime().toLocalDate()));
+            }
+            case "event" -> {
+                ParsedDateTime start = DateTimeParser.parse(requireNonEmpty(obj, "start"));
+                ParsedDateTime end = DateTimeParser.parse(requireNonEmpty(obj, "end"));
+                yield new EventTask(desc, start, end,
+                        Recurrence.of(recurType, freq, end.dateTime().toLocalDate()));
+            }
             default -> throw new FileContentException(ErrorType.INVALID_INPUT);
         };
 
