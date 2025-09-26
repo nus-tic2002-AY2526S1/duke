@@ -5,9 +5,9 @@ import exception.InvalidFilterException;
 import task.Task;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -20,9 +20,10 @@ import java.util.function.Predicate;
  * <li><strong>date:</strong> Filters by date (matches any task with the specified date)</li>
  * </ul>
  * <p><strong>Thread Safety:</strong> This class is thread-safe as it contains only static methods
- * and maintains no mutable state.</p>
+ * and maintains no mutable state.
  */
 public final class TaskFilterParser {
+
     private TaskFilterParser() {}
 
     /**
@@ -41,6 +42,7 @@ public final class TaskFilterParser {
      */
     public static Predicate<Task> chainPredicate(String args)
             throws InvalidFilterException, InvalidDateTimeException {
+
         // "task:deadline & done:true & date:2024-01-15" → ["task:deadline", "done:true", "date:2024-01-15"]
         String[] tokens = args.trim().split("\\s*&\\s*");
         if (tokens.length > 3) {
@@ -86,7 +88,7 @@ public final class TaskFilterParser {
      * Each predicate type has specific validation and matching logic appropriate for its data type.
      * <p>
      * <strong>Implementation Note:</strong> Date filtering ignores time components and matches
-     * on date only.</p>
+     * on date only.
      *
      * @param key   filter key (task, done, date)
      * @param value filter value
@@ -100,31 +102,35 @@ public final class TaskFilterParser {
         switch (key) {
         case "task":
             return task -> task.getTaskType().getKeyword().equalsIgnoreCase(value);
-
         case "done":
             boolean isDone = Boolean.parseBoolean(value);
             return task -> task.isDone() == isDone;
-
         case "date":
             ParsedDateTime parsed = DateTimeParser.parse(value);
             LocalDate filterDate = parsed.dateTime().toLocalDate(); // ignore time
-
-            return task -> {
-                List<LocalDateTime> dates = task.getDates();
-                if (dates.isEmpty()) return false;
-
-                // handle all dates in between start and end of event
-                if (dates.size() == 2) {
-                    LocalDate start = dates.get(0).toLocalDate();
-                    LocalDate end   = dates.get(1).toLocalDate();
-                    return !filterDate.isBefore(start) && !filterDate.isAfter(end);
-                } else {
-                    return dates.get(0).toLocalDate().equals(filterDate);
-                }
-            };
-
+            return task -> task.occursOn(filterDate);
         default:
             throw new InvalidFilterException(InvalidFilterException.ErrorType.UNKNOWN_FILTER_KEY);
         }
+    }
+
+    /**
+     *
+     * @param args
+     * @return
+     * @throws InvalidDateTimeException
+     */
+    public static Optional<LocalDate> extractFilterDate(String args)
+            throws InvalidDateTimeException {
+
+        String[] tokens = args.trim().split("\\s*&\\s*");
+        for (String token : tokens) {
+            String[] parts = token.split(":");
+            if (parts.length == 2 && parts[0].trim().equalsIgnoreCase("date")) {
+                ParsedDateTime parsed = DateTimeParser.parse(parts[1].trim());
+                return Optional.of(parsed.dateTime().toLocalDate());
+            }
+        }
+        return Optional.empty();
     }
 }

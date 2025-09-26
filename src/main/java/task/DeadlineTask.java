@@ -2,6 +2,7 @@ package task;
 
 import parser.ParsedDateTime;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -37,12 +38,12 @@ public class DeadlineTask extends Task {
      * Creates a copy of this deadline task with no recurrence.
      *
      * @return a new {@link DeadlineTask} instance with the same description and deadline,
-     *         but with recurrence set to {@link Recurrence#none()}
+     *         but with recurrence set to {@link Recurrence#none(LocalDate)}
      */
     @Override
-    public Task copy() {
-        ParsedDateTime pdt = new ParsedDateTime(this.deadline, this.hasTime);
-        return new DeadlineTask(this.getDescription(), pdt, Recurrence.none());
+    protected Task copy(LocalDateTime start, LocalDateTime end) {
+        ParsedDateTime instancePdt = new ParsedDateTime(start, this.hasTime);
+        return new DeadlineTask(this.getDescription(), instancePdt, null);
     }
 
     /**

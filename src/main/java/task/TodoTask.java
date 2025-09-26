@@ -1,5 +1,6 @@
 package task;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public class TodoTask extends Task {
     public TodoTask(String description, Recurrence recurrence) {
-       super(description, recurrence);
+        super(description, recurrence);
     }
 
     @Override
@@ -31,10 +32,10 @@ public class TodoTask extends Task {
      * Creates a copy of this todo task with no recurrence.
      *
      * @return a new {@link TodoTask} instance with the same description,
-     *         but with recurrence set to {@link Recurrence#none()}
+     * but with recurrence set to {@link Recurrence#none(LocalDate)}
      */
     @Override
-    public Task copy() {
-        return new TodoTask(this.getDescription(), Recurrence.none());
+    protected Task copy(LocalDateTime start, LocalDateTime end) {
+        return new TodoTask(this.getDescription(), Recurrence.none(LocalDate.now()));
     }
 }

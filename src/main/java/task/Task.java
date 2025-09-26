@@ -1,12 +1,15 @@
 package task;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Base class for all task types.
- * Tasks are created incomplete and can be toggled between done/undone states.
- * Provides standardized string representation for display purpose.
+ * Base class for all task types. This abstract class provides common
+ * functionality for all task types while requiring subclasses to implement
+ * type-specific behaviour.
  */
 public abstract class Task {
     private final String description;
@@ -14,57 +17,126 @@ public abstract class Task {
     private boolean isDone;
 
     /**
-     * Creates a new task with the given description.
-     * Tasks are created in an incomplete state by default.
+     * Creates a new task with the given description and recurrence pattern.
+     * Tasks are created in an incomplete state and as a non-repeating task by default.
      *
      * @param description The task description (should not be null or empty)
+     * @param recurrence  The recurrence pattern for this task
+     * @see Recurrence
      */
     public Task(String description, Recurrence recurrence) {
         this.description = description;
-        this.recurrence = recurrence != null ? recurrence : Recurrence.none();  // defaults to not recurring
+        this.recurrence = recurrence != null ? recurrence : Recurrence.none(LocalDate.now());
         this.isDone = false;    // tasks are incomplete by default
     }
 
+    // ========================================
+    // Abstract Methods
+    // ========================================
+
     /**
-     * Gets the type of task - must be implemented by subclasses
+     * Gets the type of task.
      */
     public abstract TaskType getTaskType();
 
     /**
-     * Gets the dates for the task - must be implemented by subclasses
+     * Gets the date/time associated with the task.
+     * The returned list structure depends on the task type:
+     * <ul>
+     *     <li>Single date task: {@link DeadlineTask} with one due date/time</li>
+     *     <li>Date range task: {@link EventTask} with start and end date/time</li>
+     *
+     * @return a list of {@link LocalDateTime} objects representing task dates;
+     *         may be empty for tasks without date/time information
      */
     public abstract List<LocalDateTime> getDates();
 
     /**
-     * Returns a string representation of date - must be implemented by subclasses
+     * Returns the JSON field representation of task's date/time.
      */
     public abstract String toJsonFields();
 
     /**
-     * Create a new Task with the same fields - must be implemented by subclasses
-     */
-    public abstract Task copy();
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Recurrence getRecurrence() {
-        return recurrence;
-    }
-
-    /**
-     * Returns whether this task has been completed.
+     * Create a copy of this Task with modified date/time.
+     * <p>
+     * This method is used internally for creating task instances based on
+     * recurrence patterns. Subclasses should preserve all task properties
+     * except for the date/time information.
      *
-     * @return true if the task is completed, false otherwise
+     * @param start the new start date/time for the copied task
+     * @param end   the new end date/time for the copied task
+     * @return a new Task instance with the specified dates
      */
-    public boolean isDone() {
-        return isDone;
+    protected abstract Task copy(LocalDateTime start, LocalDateTime end);
+
+    // ========================================
+    // Public Methods
+    // ========================================
+
+    /**
+     * Attempts to materialize this task as it would occur on a specific date,
+     * taking into account its recurrence rules.
+     * <p>
+     * This method first checks whether the task is scheduled to occur on the given
+     * {@code filterDate} using {@link #occursOn(LocalDate)}. If the task does not
+     * occur on that date, an {@link Optional#empty()} is returned.
+     * <p>
+     * If the task does occur, a new instance is created by shifting the task's
+     * original start/end dates forward according to the recurrence interval.
+     * For non-recurring tasks, the returned instance is simply a copy of the original task.
+     *
+     * @param filterDate the date to check for a possible occurrence (must not be null)
+     * @return an {@code Optional<Task>} containing a new task instance that falls on
+     *         {@code filterDate}, or {@code Optional.empty()} if the task does not
+     *         occur on that date
+     */
+    public Optional<Task> createInstance(LocalDate filterDate) {
+        if (!occursOn(filterDate)) return Optional.empty();
+
+        List<LocalDateTime> dates = getDates();
+        LocalDateTime originalStart = dates.get(0);
+        LocalDateTime originalEnd = (dates.size() > 1) ? dates.get(1) : originalStart;
+        if (recurrence.isNone()) return Optional.of(copy(originalStart, originalEnd));
+
+        ChronoUnit unit = recurrence.type().getChronoUnit();
+        long timeUnitDiff = unit.between(dates.get(0).toLocalDate(), filterDate);
+        LocalDateTime instanceStart = dates.get(0).plus(timeUnitDiff, unit);
+        LocalDateTime instanceEnd = dates.size() > 1
+                ? dates.get(1).plus(timeUnitDiff, unit)
+                : instanceStart;
+
+        return Optional.of(copy(instanceStart, instanceEnd));
     }
 
     /**
-     * Marks this task as completed.
-     * Once marked as done, the task can still be unmarked if needed.
+     * Determines whether this task occurs on the given date, taking into account
+     * both its intrinsic dates and its recurrence rules.
+     * <p>
+     * Delegates to the associated {@link Recurrence#occursOn} method, which performs
+     * recurrence-aware calculations to determine whether an occurrence exists on
+     * {@code filterDate}.</p>
+     *
+     * @param filterDate the date to check for occurrence (must not be null)
+     * @return {@code true} if this task should be considered as occurring on
+     *         {@code filterDate}, {@code false} otherwise
+     */
+    public boolean occursOn(LocalDate filterDate) {
+        List<LocalDateTime> dates = getDates();
+        if (dates.isEmpty()) return false;
+
+        LocalDate originalStart = dates.get(0).toLocalDate();
+        LocalDate originalEnd = dates.size() > 1
+                ? dates.get(1).toLocalDate()
+                : originalStart;
+
+        return recurrence.occursOn(filterDate, originalStart, originalEnd);
+    }
+
+    /**
+     * Marks this task as completed. Once marked as done, the task can still
+     * be reverted to incomplete.
+     *
+     * @see #markAsUndone()
      */
     public void markAsDone() {
         isDone = true;
@@ -72,19 +144,26 @@ public abstract class Task {
 
     /**
      * Reverts a completed task back to incomplete state.
+     *
+     * @see #markAsDone()
      */
     public void markAsUndone() {
         isDone = false;
     }
 
+    // ========================================
+    // Protected Utility Methods
+    // ========================================
+
     /**
      * Formats the recurrence information for display in string representations.
-     * If the task has no recurrence, returns an empty string.
-     * Otherwise, returns the recurrence pattern in a human-readable format.
+     * <p>
+     * This utility method is intended for use by subclasses in their {@code toString()}
+     * implementations to provide consistent recurrence formatting.
      *
      * @return empty string if no recurrence, otherwise a formatted string
      *         in the format: " (recurs {type} × {frequency})"
-     *         where type is repeat frequency (e.g. "daily", "weekly").
+     *         where type is recurrence pattern (e.g. "daily", "weekly").
      */
     protected String formatRecurrence() {
         return recurrence.isNone()
@@ -105,5 +184,26 @@ public abstract class Task {
                 getTaskType().getTaskPrefix(),
                 isDone ? "X" : " ",
                 description);
+    }
+
+    // ========================================
+    // Getters (Simple accessors)
+    // ========================================
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Recurrence getRecurrence() {
+        return recurrence;
+    }
+
+    /**
+     * Returns whether this task has been completed.
+     *
+     * @return true if the task is completed, false otherwise
+     */
+    public boolean isDone() {
+        return isDone;
     }
 }

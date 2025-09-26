@@ -8,7 +8,10 @@ import message.Message;
 import parser.TaskFilterParser;
 import task.Task;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -31,9 +34,11 @@ public class FilterCmd extends BaseTaskCommand {
     /**
      * Filters task based on provided criteria and returns matching results.
      * <p>Supported filter criteria:
-     * <li>{@code task:todo|deadline|event} - filter by task type</li>
-     * <li>{@code done:true|false} - filter by completion status</li>
-     * <li>{@code date:YYYY-MM-DD} - filter by date</li>
+     * <ol>
+     *     <li>{@code task:todo|deadline|event} - filter by task type</li>
+     *     <li>{@code done:true|false} - filter by completion status</li>
+     *     <li>{@code date:YYYY-MM-DD} - filter by date</li>
+     * </ol>
      *
      * @return {@link FilteredListMessage} containing tasks matching all criteria, or
      *         {@link ErrorMessage} if validation fails or no criteria are provided
@@ -43,16 +48,28 @@ public class FilterCmd extends BaseTaskCommand {
     @Override
     public Message execute() {
         Message help = showHelpText(CommandType.FILTER);
-        if (help != null) {
-            return help;
-        }
+        if (help != null) return help;
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
         try {
             Predicate<Task> predicates = TaskFilterParser.chainPredicate(args);
-            List<Task> filteredTasks = taskManager.filter(predicates);
-            return new FilteredListMessage(filteredTasks, args);
+            List<Task> filteredList = taskManager.filter(predicates);
+
+            Optional<LocalDate> dateFilter = TaskFilterParser.extractFilterDate(args);
+            List<Task> instanceList;
+            // Try to extract a date, only materialize instances when a date filter exists
+            if (dateFilter.isPresent()) {
+                LocalDate date = dateFilter.get();
+                instanceList = new ArrayList<>(filteredList.size());
+                for (Task filteredTask : filteredList) {
+                    filteredTask.createInstance(date).ifPresent(instanceList::add);
+                }
+            } else {
+                // No date filter provided, show initial filter list as-is
+                instanceList = filteredList;
+            }
+            return new FilteredListMessage(instanceList, args);
         } catch (MeeBotException e) {
             return e.toErrorMessage();
         }
