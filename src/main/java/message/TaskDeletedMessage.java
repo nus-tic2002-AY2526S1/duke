@@ -1,17 +1,17 @@
 package message;
 
 import manager.TaskManager;
-import task.Task;
+import task.ReadOnlyTask;
 
 /**
  * Confirmation message when a task is successfully deleted.
  * Shows the description of the deleted task and current task count.
  */
 public class TaskDeletedMessage implements Message {
-    private final Task task;
+    private final ReadOnlyTask task;
     private final int taskCount;
 
-    public TaskDeletedMessage(Task task, TaskManager tm) {
+    public TaskDeletedMessage(ReadOnlyTask task, TaskManager tm) {
         this.task = task;
         this.taskCount = tm.getTotalTasks();
     }

@@ -6,10 +6,14 @@ import manager.TaskManager;
 import message.Message;
 import message.TaskDeletedMessage;
 import parser.TaskIndexParser;
-import task.Task;
+import task.ReadOnlyTask;
 
 /**
  * Command to remove a task from the task list by its index number.
+ * <p>
+ * The index number refers to the task's position in the currently displayed list,
+ * which may vary depending on the active sort order or filter. The task is identified
+ * by its position at the time this command executes, not by any permanent ID.
  *
  * @see TaskManager#deleteTask(int)
  */
@@ -28,12 +32,11 @@ public class DeleteTaskCmd extends BaseTaskCommand {
     @Override
     public Message execute() {
         Message help = showHelpText(CommandType.DELETE);
-        if (help != null) {
-            return help;
-        }
+        if (help != null) return help;
+
         try {
             int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
-            Task task = taskManager.getTask(taskNumber);
+            ReadOnlyTask task = taskManager.getTask(taskNumber);
             taskManager.deleteTask(taskNumber);
             return new TaskDeletedMessage(task, taskManager);
         } catch (MeeBotException e) {

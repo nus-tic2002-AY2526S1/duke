@@ -4,7 +4,7 @@ import common.ErrorMessage;
 import message.Message;
 import storage.Storage;
 import ui.UserInterface;
-import command.CommandProcessor;
+import parser.CommandProcessor;
 
 /**
  * Entry point of MeeBot application.
@@ -28,7 +28,6 @@ public class MeeBot {
                 Message msg = cmd.execute();
                 ui.displayMessage(msg);
                 storage.saveTasks();
-
                 if (cmd.isExit()) {
                     break;
                 }

@@ -1,15 +1,15 @@
 package message;
 
-import task.Task;
+import task.ReadOnlyTask;
 
 /**
  * Message displayed when a completed task is marked as pending (unmarked).
  */
 public class TaskUnmarkedMessage implements Message {
-    private final Task task;
+    private final ReadOnlyTask task;
     private final boolean showSortWarning;
 
-    public TaskUnmarkedMessage(Task task, boolean showSortWarning) {
+    public TaskUnmarkedMessage(ReadOnlyTask task, boolean showSortWarning) {
         this.task = task;
         this.showSortWarning = showSortWarning;
     }

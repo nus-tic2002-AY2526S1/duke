@@ -7,13 +7,17 @@ import message.Message;
 import message.TaskMarkedMessage;
 import message.TaskUnmarkedMessage;
 import parser.TaskIndexParser;
-import task.Task;
+import task.ReadOnlyTask;
 
 /**
- * Command to update the completion status of a task by its index.
+ * Command to update the completion status of a task by its index number.
+ * <p>
  * This command can either mark a task as completed or mark it as pending,
  * depending on the {@code markDone} parameter provided during construction.
- * The command validates the task index and prevents redundant status changes.
+ * <p>
+ * The index number refers to the task's position in the currently displayed list,
+ * which may vary depending on the active sort order or filter. The task is identified
+ * by its position at the time this command executes, not by any permanent ID.
  *
  * @see TaskManager#markTaskDone(int)
  * @see TaskManager#unmarkTask(int)
@@ -38,14 +42,12 @@ public class UpdateTaskStatusCmd extends BaseTaskCommand {
     public Message execute() {
         CommandType type = markDone ? CommandType.MARK : CommandType.UNMARK;
         Message help = showHelpText(type);
-        if (help != null) {
-            return help;
-        }
+        if (help != null) return help;
+
         try {
             int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
             boolean wasSorted = taskManager.isSorted();
-            Task task;
-
+            ReadOnlyTask task;
             if (markDone) {
                 taskManager.markTaskDone(taskNumber);
                 task = taskManager.getTask(taskNumber);

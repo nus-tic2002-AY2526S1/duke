@@ -1,6 +1,7 @@
 package manager;
 
 import exception.InvalidTaskOperationException;
+import task.ReadOnlyTask;
 import task.Task;
 
 import java.util.ArrayList;
@@ -77,9 +78,11 @@ public class TaskManager {
 
     /**
      * Sorts the task list in chronological order based on their first date.
-     * <p>This is a stable sort and uses natural ordering, i.e. tasks without date are placed last.
-     * Comparator implementation referenced from:
-     * <a href="https://dev.java/learn/lambdas/writing-comparators/">...</a>
+     * This is a stable sort and uses natural ordering, i.e. tasks without date are placed last.
+     * <p>
+     * <em>Comparator implementation adapted from:
+     * <a href="https://dev.java/learn/lambdas/writing-comparators/">
+     * Oracle: Writing and Combining Comparators</a></em></p>
      */
     public void sortByDate() {
         taskList.sort(Comparator.comparing(
@@ -100,18 +103,19 @@ public class TaskManager {
 
     /**
      * Filters tasks from the task list based on the provided predicate condition.
-     * <p> A new list containing only tasks that satisfy the given condition is created.
-     * The original task list remains unchanged. Tasks are evaluated in their current order,
-     * and matching tasks maintain their relative ordering in the result.
+     * <p>
+     * Creates a new list containing only {@link ReadOnlyTask} instances that satisfy
+     * the given condition. The original task list remains unchanged. Tasks are evaluated in
+     * their current order, and matching tasks maintain their relative ordering in the result.
      *
-     * @param condition a Predicate that defines the filtering criteria;
+     * @param condition a {@link Predicate} that defines the filtering criteria;
      *                  tasks for which this returns {@code true} are included
-     * @return a new list containing only tasks that match the condition, or
-     * an empty list if no tasks match
+     * @return a new list containing only {@link ReadOnlyTask} that match the condition, or
+     *         an empty list if no tasks match
      */
-    public List<Task> filter(Predicate<Task> condition) {
-        List<Task> filteredResults = new ArrayList<>();
-        for (Task task : taskList) {
+    public List<ReadOnlyTask> filter(Predicate<ReadOnlyTask> condition) {
+        List<ReadOnlyTask> filteredResults = new ArrayList<>();
+        for (ReadOnlyTask task : getReadOnlyList()) {
             if (condition.test(task)) {
                 filteredResults.add(task);
             }
@@ -119,7 +123,20 @@ public class TaskManager {
         return filteredResults;
     }
 
-    public List<Task> search(String[] terms) {
+    /**
+     * Searches for tasks whose descriptions contain any of the specified search terms.
+     * <p>
+     * Performs a case-insensitive substring search across task descriptions. A task is
+     * included in the results if its description contains at least one of the provided
+     * search terms. This method is a convenience wrapper around {@link #filter(Predicate)}
+     * that applies an OR-based matching strategy.
+     *
+     * @param terms an array of search terms to match against task descriptions.
+     *              Must not be null, but may be empty (which returns an empty list).
+     * @return a new list of {@link ReadOnlyTask} instances whose descriptions contain
+     *         at least one of the search terms, or an empty list if no matches are found
+     */
+    public List<ReadOnlyTask> search(String[] terms) {
         return filter(task -> {
             String desc = task.getDescription().toLowerCase();
             for (String term : terms) {
@@ -132,25 +149,33 @@ public class TaskManager {
     }
 
     /**
-     * Returns read-only view to prevent external modification of internal list
-     * while allowing safe iteration and access for UI components.
-     * <p>Any attempt to modify the returned list will result in an {@code UnsupportedOperationException}.
+     * Returns an unmodifiable view of all tasks as {@link ReadOnlyTask} instances.
+     * <p>
+     * Each task is exposed through the {@link ReadOnlyTask} interface, which restricts access
+     * to query methods only, preventing any state modifications. List prevents external
+     * modification while allowing safe iteration and access for UI components.
+     * <p>
+     * Any attempt to modify the returned list will result in an {@code UnsupportedOperationException}.
      *
-     * @return an unmodifiable view of the current task list
+     * @return an unmodifiable view of the current task list where each element is a
+     *         {@link ReadOnlyTask} providing read-only access to task data
      */
-    public List<Task> getReadOnlyList() {
+    public List<ReadOnlyTask> getReadOnlyList() {
         return Collections.unmodifiableList(taskList);
     }
 
     /**
-     * Retrieves a task by its position (1-based index) in the list.
-     * The method internally converts to 0-based indexing for list access.
+     * Retrieves a read-only view of a task by its position in the list. The method accepts a
+     * 1-based index (as displayed to user) and internally converts to 0-based indexing for list access.
+     * <p>
+     * Returns the task as a {@link ReadOnlyTask}, which exposes only query methods
+     * and prevents direct modification of the task's state.
      *
      * @param userIndex 1-based index of the task
      * @throws InvalidTaskOperationException if the index is out of bounds (<1 or >the list size)
      * @see #validateIndex(int)
      */
-    public Task getTask(int userIndex) throws InvalidTaskOperationException {
+    public ReadOnlyTask getTask(int userIndex) throws InvalidTaskOperationException {
         return taskList.get(toActualIndex(userIndex));
     }
 
@@ -186,6 +211,22 @@ public class TaskManager {
     }
 
     /**
+     * Validates that the given index is within the valid range of task list.
+     *
+     * @param index 0-based index of the task to validate
+     * @throws InvalidTaskOperationException if index is negative or
+     *                                       greater than or equal to the list size
+     */
+    private void validateIndex(int index) throws InvalidTaskOperationException {
+        if (index < 0 || index >= taskList.size()) {
+            throw new InvalidTaskOperationException(
+                    InvalidTaskOperationException.ErrorType.TASK_NOT_FOUND,
+                    index + 1
+            );
+        }
+    }
+
+    /**
      * Validates that a task is not already in the desired completion state to prevent
      * redundant mark/unmark operations.
      *
@@ -202,22 +243,6 @@ public class TaskManager {
             throw new InvalidTaskOperationException(
                     InvalidTaskOperationException.ErrorType.TASK_STATE,
                     state, undo, index + 1
-            );
-        }
-    }
-
-    /**
-     * Validates that the given index is within the valid range of task list.
-     *
-     * @param index 0-based index of the task to validate
-     * @throws InvalidTaskOperationException if index is negative or
-     *                                       greater than or equal to the list size
-     */
-    private void validateIndex(int index) throws InvalidTaskOperationException {
-        if (index < 0 || index >= taskList.size()) {
-            throw new InvalidTaskOperationException(
-                    InvalidTaskOperationException.ErrorType.TASK_NOT_FOUND,
-                    index + 1
             );
         }
     }

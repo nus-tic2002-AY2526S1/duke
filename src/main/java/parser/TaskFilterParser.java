@@ -2,7 +2,7 @@ package parser;
 
 import exception.InvalidDateTimeException;
 import exception.InvalidFilterException;
-import task.Task;
+import task.ReadOnlyTask;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,10 +14,11 @@ import java.util.function.Predicate;
  * Utility class for converting string arguments into task filter {@link Predicate}
  * objects that can be used to filter task collections.
  * <p>
- * <strong>Supported Filter Types:</strong><ul>
- * <li><strong>task:</strong> Filters by task type keyword (case-insensitive)</li>
- * <li><strong>done:</strong> Filters by completion status (true/false)</li>
- * <li><strong>date:</strong> Filters by date (matches any task with the specified date)</li>
+ * <strong>Supported Filter Types:</strong>
+ * <ul>
+ *     <li><strong>task:</strong> Filters by task type keyword (case-insensitive)</li>
+ *     <li><strong>done:</strong> Filters by completion status (true/false)</li>
+ *     <li><strong>date:</strong> Filters by date (matches any task with the specified date)</li>
  * </ul>
  * <p><strong>Thread Safety:</strong> This class is thread-safe as it contains only static methods
  * and maintains no mutable state.
@@ -40,7 +41,7 @@ public final class TaskFilterParser {
      * @throws InvalidFilterException   if filter format is invalid or too many filters are provided
      * @throws InvalidDateTimeException if date filter contains invalid date format
      */
-    public static Predicate<Task> chainPredicate(String args)
+    public static Predicate<ReadOnlyTask> chainPredicate(String args)
             throws InvalidFilterException, InvalidDateTimeException {
 
         // "task:deadline & done:true & date:2024-01-15" → ["task:deadline", "done:true", "date:2024-01-15"]
@@ -49,13 +50,13 @@ public final class TaskFilterParser {
             throw new InvalidFilterException(InvalidFilterException.ErrorType.TOO_MANY_FILTERS);
         }
 
-        List<Predicate<Task>> predicates = new ArrayList<>();
+        List<Predicate<ReadOnlyTask>> predicates = new ArrayList<>();
         for (String token : tokens) {
             predicates.add(parseFilterToken(token));
         }
         // Chain all predicates with AND logic
-        Predicate<Task> chained = task -> true;
-        for (Predicate<Task> p : predicates) {
+        Predicate<ReadOnlyTask> chained = task -> true;
+        for (Predicate<ReadOnlyTask> p : predicates) {
             chained = chained.and(p);
         }
         return chained;
@@ -70,7 +71,7 @@ public final class TaskFilterParser {
      * @throws InvalidFilterException   if token format is invalid (wrong format, empty key/value)
      * @throws InvalidDateTimeException if date filter contains invalid date format
      */
-    public static Predicate<Task> parseFilterToken(String token)
+    public static Predicate<ReadOnlyTask> parseFilterToken(String token)
             throws InvalidFilterException, InvalidDateTimeException {
         // "task:deadline" → ["task", "deadline"]
         String[] parts = token.split(":");
@@ -96,7 +97,7 @@ public final class TaskFilterParser {
      * @throws InvalidFilterException   for unknown keys or invalid values
      * @throws InvalidDateTimeException if date value cannot be parsed
      */
-    public static Predicate<Task> createPredicate(String key, String value)
+    public static Predicate<ReadOnlyTask> createPredicate(String key, String value)
             throws InvalidFilterException, InvalidDateTimeException {
 
         switch (key) {
@@ -115,10 +116,13 @@ public final class TaskFilterParser {
     }
 
     /**
+     * Extracts a date from a command argument string containing key-value pairs.
      *
-     * @param args
-     * @return
-     * @throws InvalidDateTimeException
+     * @param args the argument string containing filter criteria in the format
+     *             "key:value" separated by '&' (ampersand)
+     * @return an {@link Optional} containing the parsed {@link LocalDate} if a date filter
+     *         is present, or {@link Optional#empty()} if no date filter is found
+     * @throws InvalidDateTimeException if the date value cannot be parsed into a valid date
      */
     public static Optional<LocalDate> extractFilterDate(String args)
             throws InvalidDateTimeException {

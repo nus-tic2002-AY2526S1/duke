@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Base class for all task types. This abstract class provides common
- * functionality for all task types while requiring subclasses to implement
- * type-specific behaviour.
+ * Abstract base class representing a mutable task entity.
+ * <p>
+ * Each task has a description, completion state and recurrence rule.
+ * This abstract class provides common functionality for all task types while
+ * requiring subclasses {@link TodoTask} {@link DeadlineTask} {@link EventTask}
+ * to implement type-specific behaviour.
  */
-public abstract class Task {
+public abstract class Task implements ReadOnlyTask{
     private final String description;
     private final Recurrence recurrence;
     private boolean isDone;
@@ -26,17 +29,18 @@ public abstract class Task {
      */
     public Task(String description, Recurrence recurrence) {
         this.description = description;
-        this.recurrence = recurrence != null ? recurrence : Recurrence.none(LocalDate.now());
+        this.recurrence = recurrence != null
+                ? recurrence
+                : Recurrence.none(LocalDate.now());
         this.isDone = false;    // tasks are incomplete by default
     }
 
-    // ========================================
-    // Abstract Methods
-    // ========================================
+    /* =============== Abstract Methods =============== */
 
     /**
      * Gets the type of task.
      */
+    @Override
     public abstract TaskType getTaskType();
 
     /**
@@ -49,11 +53,13 @@ public abstract class Task {
      * @return a list of {@link LocalDateTime} objects representing task dates;
      *         may be empty for tasks without date/time information
      */
+    @Override
     public abstract List<LocalDateTime> getDates();
 
     /**
      * Returns the JSON field representation of task's date/time.
      */
+    @Override
     public abstract String toJsonFields();
 
     /**
@@ -69,9 +75,7 @@ public abstract class Task {
      */
     protected abstract Task copy(LocalDateTime start, LocalDateTime end);
 
-    // ========================================
-    // Public Methods
-    // ========================================
+    /* =============== Public Methods =============== */
 
     /**
      * Attempts to materialize this task as it would occur on a specific date,
@@ -86,11 +90,12 @@ public abstract class Task {
      * For non-recurring tasks, the returned instance is simply a copy of the original task.
      *
      * @param filterDate the date to check for a possible occurrence (must not be null)
-     * @return an {@code Optional<Task>} containing a new task instance that falls on
+     * @return an {@code Optional<ReadOnlyTask>} containing a new task instance that falls on
      *         {@code filterDate}, or {@code Optional.empty()} if the task does not
      *         occur on that date
      */
-    public Optional<Task> createInstance(LocalDate filterDate) {
+    @Override
+    public Optional<ReadOnlyTask> createInstance(LocalDate filterDate) {
         if (!occursOn(filterDate)) return Optional.empty();
 
         List<LocalDateTime> dates = getDates();
@@ -120,6 +125,7 @@ public abstract class Task {
      * @return {@code true} if this task should be considered as occurring on
      *         {@code filterDate}, {@code false} otherwise
      */
+    @Override
     public boolean occursOn(LocalDate filterDate) {
         List<LocalDateTime> dates = getDates();
         if (dates.isEmpty()) return false;
@@ -128,7 +134,6 @@ public abstract class Task {
         LocalDate originalEnd = dates.size() > 1
                 ? dates.get(1).toLocalDate()
                 : originalStart;
-
         return recurrence.occursOn(filterDate, originalStart, originalEnd);
     }
 
@@ -151,9 +156,8 @@ public abstract class Task {
         isDone = false;
     }
 
-    // ========================================
-    // Protected Utility Methods
-    // ========================================
+    /* =============== Utility Methods =============== */
+
 
     /**
      * Formats the recurrence information for display in string representations.
@@ -186,14 +190,15 @@ public abstract class Task {
                 description);
     }
 
-    // ========================================
-    // Getters (Simple accessors)
-    // ========================================
+    /* =========== Getters (Simple Accessor) =========== */
 
+
+    @Override
     public String getDescription() {
         return description;
     }
 
+    @Override
     public Recurrence getRecurrence() {
         return recurrence;
     }
@@ -203,6 +208,7 @@ public abstract class Task {
      *
      * @return true if the task is completed, false otherwise
      */
+    @Override
     public boolean isDone() {
         return isDone;
     }

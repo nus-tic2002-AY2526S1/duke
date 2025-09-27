@@ -2,6 +2,7 @@ package storage;
 
 import exception.MeeBotException;
 import manager.TaskManager;
+import task.ReadOnlyTask;
 import task.Task;
 
 import java.io.BufferedWriter;
@@ -66,7 +67,7 @@ public class Storage {
      */
     public void saveTasks() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
-            List<Task> taskList = tm.getReadOnlyList();
+            List<ReadOnlyTask> taskList = tm.getReadOnlyList();
             writer.write(TaskSerializer.tasksToJson(taskList));
         } catch (IOException e) {
             throw new RuntimeException("Failed to save tasks", e);

@@ -1,6 +1,6 @@
 package message;
 
-import task.Task;
+import task.ReadOnlyTask;
 
 import java.util.List;
 
@@ -8,14 +8,14 @@ import java.util.List;
  * Message displaying filtered task results with 1-based numbering and filter criteria summary.
  */
 public class FilteredListMessage implements Message {
-    private final List<Task> tasks;
+    private final List<ReadOnlyTask> tasks;
     private final String filterCriteria;
 
     /**
      * @param tasks          filtered task list (may be empty); this list is copied defensively
      * @param filterCriteria original filter criteria for display
      */
-    public FilteredListMessage(List<Task> tasks, String filterCriteria) {
+    public FilteredListMessage(List<ReadOnlyTask> tasks, String filterCriteria) {
         this.tasks = List.copyOf(tasks);
         this.filterCriteria = filterCriteria;
     }
@@ -44,7 +44,7 @@ public class FilteredListMessage implements Message {
             content.append("Filtered by: ").append(filterCriteria).append("\n");
         }
         for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
+            ReadOnlyTask task = tasks.get(i);
             content.append(String.format("%d. %s\n", i + 1, task.toString()));
         }
         return content.toString().trim();

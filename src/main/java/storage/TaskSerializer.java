@@ -1,13 +1,14 @@
 package storage;
 
+import task.ReadOnlyTask;
 import task.Recurrence;
-import task.Task;
 
 import java.util.List;
 
 public class TaskSerializer {
 
-    private TaskSerializer() {}
+    private TaskSerializer() {
+    }
 
     /**
      * Utility class to serialize Task objects into JSON string representations.
@@ -16,7 +17,7 @@ public class TaskSerializer {
      *
      * @see Storage#saveTasks()
      */
-    public static String tasksToJson(List<Task> taskList) {
+    public static String tasksToJson(List<ReadOnlyTask> taskList) {
         if (taskList.isEmpty()) return "[]";
 
         StringBuilder sb = new StringBuilder("[\n");
@@ -36,8 +37,8 @@ public class TaskSerializer {
     /**
      * Converts a single task into a JSON string representation.
      */
-    public static String taskToJson(Task t) {
-        Recurrence r = t.getRecurrence();
+    public static String taskToJson(ReadOnlyTask task) {
+        Recurrence r = task.getRecurrence();
         return """
                 {
                   "type": "%s",
@@ -51,10 +52,10 @@ public class TaskSerializer {
                   }
                 }
                 """.formatted(
-                t.getTaskType().getKeyword(),
-                t.isDone(),
-                t.getDescription().replace("\"", "\\\""),   //"description": "Read \"Java\" book"
-                t.toJsonFields(),
+                task.getTaskType().getKeyword(),
+                task.isDone(),
+                task.getDescription().replace("\"", "\\\""),   //"description": "Read \"Java\" book"
+                task.toJsonFields(),
                 r.type(),
                 r.frequency(),
                 r.anchorDate(),

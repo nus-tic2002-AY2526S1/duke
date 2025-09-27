@@ -1,20 +1,20 @@
 package message;
 
-import task.Task;
+import task.ReadOnlyTask;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchResultMessage implements Message {
-    private final List<Task> results;
+    private final List<ReadOnlyTask> results;
     private final String[] keywords;
 
     /**
      * @param results  filtered task list (may be empty); this list is copied defensively
      * @param keywords search keyword for display
      */
-    public SearchResultMessage(List<Task> results, String[] keywords) {
+    public SearchResultMessage(List<ReadOnlyTask> results, String[] keywords) {
         this.results = List.copyOf(results);
         this.keywords = keywords;
     }
@@ -22,12 +22,15 @@ public class SearchResultMessage implements Message {
     @Override
     public String message() {
         if (results.isEmpty()) {
-            return "Mee searched high and low… but found nada. Try searching for something else.";
+            return """
+                    There's no easy way to say this…
+                    Mee searched high and low but found nada.
+                    Try searching for something else.
+                    """;
         }
-
         StringBuilder sb = new StringBuilder("Mee found these tasks:\n");
         for (int i = 0; i < results.size(); i++) {
-            Task task = results.get(i);
+            ReadOnlyTask task = results.get(i);
             String desc = task.getDescription();
             String highlighted = highlight(desc, keywords);
 
@@ -38,7 +41,6 @@ public class SearchResultMessage implements Message {
             );
             sb.append(String.format("%d. %s\n", i + 1, rendered));
         }
-
         return sb.toString().trim();
     }
 

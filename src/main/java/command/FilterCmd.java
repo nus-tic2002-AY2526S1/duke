@@ -6,10 +6,9 @@ import manager.TaskManager;
 import message.FilteredListMessage;
 import message.Message;
 import parser.TaskFilterParser;
-import task.Task;
+import task.ReadOnlyTask;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -52,23 +51,18 @@ public class FilterCmd extends BaseTaskCommand {
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
-        try {
-            Predicate<Task> predicates = TaskFilterParser.chainPredicate(args);
-            List<Task> filteredList = taskManager.filter(predicates);
 
+        try {
+            Predicate<ReadOnlyTask> predicates = TaskFilterParser.chainPredicate(args);
+            List<ReadOnlyTask> filteredList = taskManager.filter(predicates);
             Optional<LocalDate> dateFilter = TaskFilterParser.extractFilterDate(args);
-            List<Task> instanceList;
-            // Try to extract a date, only materialize instances when a date filter exists
-            if (dateFilter.isPresent()) {
-                LocalDate date = dateFilter.get();
-                instanceList = new ArrayList<>(filteredList.size());
-                for (Task filteredTask : filteredList) {
-                    filteredTask.createInstance(date).ifPresent(instanceList::add);
-                }
-            } else {
-                // No date filter provided, show initial filter list as-is
-                instanceList = filteredList;
-            }
+            List<ReadOnlyTask> instanceList = dateFilter
+                    .map(date -> filteredList.stream()
+                            .map(task -> task.createInstance(date))
+                            .flatMap(Optional::stream)
+                            .toList()
+                    )
+                    .orElse(filteredList);
             return new FilteredListMessage(instanceList, args);
         } catch (MeeBotException e) {
             return e.toErrorMessage();
