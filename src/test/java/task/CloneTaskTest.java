@@ -1,11 +1,12 @@
 package task;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.ParsedDateTime;
+import parser.datetime.ParsedDateTime;
+
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * To test for:
@@ -16,49 +17,53 @@ import java.util.List;
  * </ol>
  */
 class CloneTaskTest {
-    @Test
-    void todoTaskClone() {
-        Task original = new TodoTask("water plants");
-        Task clone = original.copy();
 
-        // Test: description and completion
+    @Test
+    @DisplayName("Cloned events should preserve description and date/time, but no recurrence")
+    void eventTaskClone() {
+        ParsedDateTime start = new ParsedDateTime(
+                LocalDateTime.of(2025, 9, 28, 10, 10), true);
+        ParsedDateTime end = new ParsedDateTime(
+                LocalDateTime.of(2025, 9, 28, 11, 10), true);
+        Recurrence r = new Recurrence(
+                Recurrence.RecurrenceType.WEEKLY, 5, start.dateTime().toLocalDate(), null);
+
+        Task original = new EventTask("yoga", start, end, r);
+        Task clone = original.copy(start.dateTime(), end.dateTime());
+
+        // Test: description, completion, date-time
         assertEquals(original.getDescription(), clone.getDescription());
         assertEquals(original.isDone(), clone.isDone());
+        assertEquals(original.getDates(), clone.getDates());
 
-        // Test: date-time
-        assertEquals(List.of(), original.getDates());
-        assertEquals(List.of(), clone.getDates());
-        assertNotSame(original, clone); // different object references
+        // Test: different object references
+        assertNotSame(original, clone);
+        assertNotSame(original.getRecurrence(), clone.getRecurrence());
+
+        // Test: recurrence reset
+        assertNotNull(clone.getRecurrence());
+        assertEquals(clone.getRecurrence().type(), Recurrence.RecurrenceType.NONE);
     }
 
     @Test
-    void deadlineTaskClone() {
-        ParsedDateTime pdt = new ParsedDateTime(LocalDateTime.of(2025, 9, 21, 10, 10), true);
-        Task original = new DeadlineTask("pay bills", pdt);
-        Task clone = original.copy();
+    @DisplayName("Todo clones should preserve description only and no recurrence")
+    void todoTaskClone() {
+        Task original = new TodoTask("pay bills", null);
+        // Any start/end passed in should be irrelevant
+        LocalDateTime dummyStart = LocalDateTime.of(2025, 9, 28, 10, 0);
+        LocalDateTime dummyEnd   = LocalDateTime.of(2025, 9, 28, 10, 0);
+        Task clone = original.copy(dummyStart, dummyEnd);
 
-        // Test: description and completion
+        // Test: description date-time completion
         assertEquals(original.getDates(), clone.getDates());
         assertEquals(original.isDone(), clone.isDone());
-
-        // Test: date-time
         assertEquals(original.getDates(), clone.getDates());
-        assertNotSame(original, clone); // different object references
-    }
 
-    @Test
-    void eventTaskClone() {
-        ParsedDateTime start = new ParsedDateTime(LocalDateTime.of(2025, 9, 22, 10, 0), true);
-        ParsedDateTime end   = new ParsedDateTime(LocalDateTime.of(2025, 9, 22, 10, 10), true);
-        Task original = new EventTask("Meeting", start, end);
-        Task clone = original.copy();
+        // Test different object references
+        assertNotSame(original, clone);
+        assertNotSame(original.getRecurrence(), clone.getRecurrence());
 
-        // Test: description and completion
-        assertEquals(original.getDates(), clone.getDates());
-        assertEquals(original.isDone(), clone.isDone());
-
-        // Test: date-time
-        assertEquals(original.getDates(), clone.getDates());
-        assertNotSame(original, clone); // different object references
+        assertNotNull(clone.getRecurrence());
+        assertEquals(clone.getRecurrence().type(), Recurrence.RecurrenceType.NONE);
     }
 }
