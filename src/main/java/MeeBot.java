@@ -4,7 +4,10 @@ import common.ErrorMessage;
 import message.Message;
 import storage.Storage;
 import ui.UserInterface;
-import parser.CommandProcessor;
+import parser.taskops.CommandProcessor;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Entry point of MeeBot application.
@@ -38,6 +41,8 @@ public class MeeBot {
     }
 
     public static void main(String[] args) {
+        Logger.getLogger("com.zoho.hawking").setLevel(Level.OFF);
+        Logger.getLogger("com.zoho.hawking.language").setLevel(Level.OFF);
         MeeBot mb = new MeeBot();
         mb.run();
     }

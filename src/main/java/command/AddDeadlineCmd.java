@@ -6,10 +6,10 @@ import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskAddedMessage;
-import parser.DateTimeParser;
-import parser.ParsedDateTime;
-import parser.RecurrenceParser;
-import parser.TokenizerUtil;
+import parser.datetime.DateTimeParser;
+import parser.datetime.ParsedDateTime;
+import parser.taskops.RecurrenceParser;
+import parser.taskops.StringTokenizer;
 import task.DeadlineTask;
 import task.Recurrence;
 import task.Task;
@@ -53,11 +53,9 @@ public class AddDeadlineCmd extends BaseTaskCommand {
     @Override
     public Message execute() {
         Message help = showHelpText(CommandType.DEADLINE);
-        if (help != null) {
-            return help;
-        }
+        if (help != null) return help;
         try {
-            String[] tokens = TokenizerUtil.tokenize(
+            String[] tokens = StringTokenizer.tokenize(
                     args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE
             );
             ParsedDateTime parsed = DateTimeParser.parse(tokens[1]);

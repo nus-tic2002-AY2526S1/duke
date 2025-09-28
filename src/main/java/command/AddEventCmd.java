@@ -6,10 +6,10 @@ import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskAddedMessage;
-import parser.DateTimeParser;
-import parser.ParsedDateTime;
-import parser.RecurrenceParser;
-import parser.TokenizerUtil;
+import parser.datetime.DateTimeParser;
+import parser.datetime.ParsedDateTime;
+import parser.taskops.RecurrenceParser;
+import parser.taskops.StringTokenizer;
 import task.EventTask;
 import task.Recurrence;
 import task.Task;
@@ -40,7 +40,7 @@ public class AddEventCmd extends BaseTaskCommand {
     /**
      * Executes the event task creation command.
      * <p>
-     * Parses user input in the format {@code "description /from dateTime /to dateTime [recurrence]"}.
+     * Parses user input in the format {@code "description /from dateTime /to dateTime [recurrence]"}
      * to extract the task description, date/time and optional recurrence pattern.
      * Creates a new {@link EventTask}, and adds it to the {@link TaskManager}.
      *
@@ -52,13 +52,9 @@ public class AddEventCmd extends BaseTaskCommand {
     @Override
     public Message execute() {
         Message help = showHelpText(CommandType.EVENT);
-        if (help != null) {
-            return help;
-        }
-
+        if (help != null) return help;
         try {
-            // Split input: "attend event /from 11/11/2011 /to 12/11/2011" → ["attend event", "11/11/2011", "12/11/2011"]
-            String[] tokens = TokenizerUtil.tokenize(
+            String[] tokens = StringTokenizer.tokenize(
                     args, EVENT_PATTERN, 3, ErrorType.EVENT
             );
             ParsedDateTime start = DateTimeParser.parse(tokens[1]);

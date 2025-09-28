@@ -11,7 +11,8 @@ repositories {
 dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
-    implementation("com.zoho:hawking:0.1.9") // https://mvnrepository.com/artifact/com.zoho/hawking
+    implementation 'org.slf4j:slf4j-nop:2.0.9'
+    implementation 'com.zoho:hawking:0.1.9' // https://mvnrepository.com/artifact/com.zoho/hawking
 }
 
 test {
@@ -19,7 +20,6 @@ test {
 
     testLogging {
         events "passed", "skipped", "failed"
-
         showExceptions true
         exceptionFormat "full"
         showCauses true
