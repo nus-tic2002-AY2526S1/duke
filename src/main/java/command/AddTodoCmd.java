@@ -1,17 +1,14 @@
 package command;
 
 import common.ErrorMessage;
-import exception.InvalidTaskFormatException.ErrorType;
 import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskAddedMessage;
-import parser.taskops.StringTokenizer;
-import task.Recurrence;
 import task.Task;
 import task.TodoTask;
-
-import java.util.regex.Pattern;
+import task.factory.TaskCreator;
+import task.factory.TodoCreator;
 
 /**
  * Command to add a todo without any date constraints or recurrence.
@@ -19,12 +16,7 @@ import java.util.regex.Pattern;
  * @see TaskManager#addTask(Task)
  */
 public class AddTodoCmd extends BaseTaskCommand {
-
-    /**
-     * Simple capture-all regular expression pattern since todo tasks have minimal parsing
-     * requirements. Unlike other task commands, todo tasks have no special syntax or delimiters.
-     */
-    private static final Pattern TODO_PATTERN = Pattern.compile("(.+)");
+    private final TaskCreator creator = new TodoCreator();
 
     public AddTodoCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
@@ -44,17 +36,8 @@ public class AddTodoCmd extends BaseTaskCommand {
     public Message execute() {
         Message help = showHelpText(CommandType.TODO);
         if (help != null) return help;
-
         try {
-            String[] tokens = StringTokenizer.tokenize(
-                    args, TODO_PATTERN, 1, null
-            );
-            if (!"none".equalsIgnoreCase(tokens[tokens.length - 1])) {
-                throw ErrorType.TODO.createException();
-            }
-            Recurrence recurrence = Recurrence.none(null);
-
-            Task todo = new TodoTask(tokens[0], recurrence);
+            Task todo = creator.createFromArgs(args);
             boolean wasSorted = taskManager.isSorted();
             taskManager.addTask(todo);
             return new TaskAddedMessage(todo, taskManager, wasSorted);

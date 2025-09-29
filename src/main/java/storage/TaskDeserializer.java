@@ -3,13 +3,14 @@ package storage;
 import exception.FileContentException;
 import exception.FileContentException.ErrorType;
 import exception.MeeBotException;
-import parser.DateTimeParser;
-import parser.ParsedDateTime;
 import parser.json.JsonTokenizer;
 import parser.json.SimpleJsonObject;
 import parser.json.SimpleJsonParser;
-import task.*;
-import task.Recurrence.RecurrenceType;
+import task.Task;
+import task.factory.DeadlineCreator;
+import task.factory.EventCreator;
+import task.factory.TaskCreator;
+import task.factory.TodoCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ import java.util.List;
  * Task objects. It handles parsing of the JSON array format and reconstruction
  * of different task types (TodoTask, DeadlineTask, EventTask) based on the
  * type field in the JSON data.
- * </p>
- * <p>The deserialization process is resilient to individual task failures - if some
+ * <p>
+ * The deserialization process is resilient to individual task failures - if some
  * tasks cannot be parsed, the method will continue processing remaining tasks
  * and report the number of failed tasks.</p>
  *
@@ -31,8 +32,7 @@ import java.util.List;
  */
 public class TaskDeserializer {
 
-    private TaskDeserializer() {
-    }
+    private TaskDeserializer() {}
 
     /**
      * Reconstructs a list of Task objects from a JSON array string.
@@ -67,53 +67,19 @@ public class TaskDeserializer {
      * Deserializes a single SimpleJsonObject into the appropriate Task instance.
      */
     static Task deserialize(SimpleJsonObject obj) throws MeeBotException {
-        String type = requireNonEmpty(obj, "type").toLowerCase();
-        String desc = requireNonEmpty(obj, "description");
-
-        // --- recurrence block check ---
-        Object recurObj = obj.get("recurrence");
-        if (!(recurObj instanceof SimpleJsonObject)) {
-            throw new FileContentException(ErrorType.INVALID_INPUT);
-        }
-        SimpleJsonObject recJson = (SimpleJsonObject) obj.get("recurrence");
-        String recType = requireNonEmpty(recJson, "type").toUpperCase();
-        int freq = Integer.parseInt(requireNonEmpty(recJson, "count"));
-        RecurrenceType recurType = RecurrenceType.valueOf(recType);
-
-        // --- construct appropriate task based on task type ---
-        Task task = switch (type) {
-            case "todo" -> new TodoTask(desc, Recurrence.none(null));
-
-            case "deadline" -> {
-                ParsedDateTime dl = DateTimeParser.parse(requireNonEmpty(obj, "deadline"));
-                yield new DeadlineTask(desc, dl,
-                        Recurrence.of(recurType, freq, dl.dateTime().toLocalDate()));
-            }
-            case "event" -> {
-                ParsedDateTime start = DateTimeParser.parse(requireNonEmpty(obj, "start"));
-                ParsedDateTime end = DateTimeParser.parse(requireNonEmpty(obj, "end"));
-                yield new EventTask(desc, start, end,
-                        Recurrence.of(recurType, freq, end.dateTime().toLocalDate()));
-            }
+        String type = obj.requireNonEmpty("type").toLowerCase();
+        TaskCreator creator = switch (type) {
+            case "todo" -> new TodoCreator();
+            case "deadline" -> new DeadlineCreator();
+            case "event" -> new EventCreator();
             default -> throw new FileContentException(ErrorType.INVALID_INPUT);
         };
 
-        // --- update task completion status ---
-        if (Boolean.parseBoolean(requireNonEmpty(obj, "done"))) {
+        Task task = creator.createFromJson(obj);
+        String done = obj.requireNonEmpty("done");
+        if (Boolean.parseBoolean(done)) {
             task.markAsDone();
         }
         return task;
-    }
-
-    /**
-     * Validates that a required field exists and is not empty in the SimpleJsonObject.
-     * before creating Task objects.
-     */
-    private static String requireNonEmpty(SimpleJsonObject obj, String key) {
-        String value = obj.get(key).toString();
-        if (value == null || value.isBlank()) {
-            throw new FileContentException(FileContentException.ErrorType.INVALID_INPUT);
-        }
-        return value;
     }
 }

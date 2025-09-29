@@ -1,20 +1,14 @@
 package command;
 
 import common.ErrorMessage;
-import exception.InvalidTaskFormatException.ErrorType;
 import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskAddedMessage;
-import parser.datetime.DateTimeParser;
-import parser.datetime.ParsedDateTime;
-import parser.taskops.RecurrenceParser;
-import parser.taskops.StringTokenizer;
 import task.EventTask;
-import task.Recurrence;
 import task.Task;
-
-import java.util.regex.Pattern;
+import task.factory.EventCreator;
+import task.factory.TaskCreator;
 
 /**
  * Command to add a new event task with a time period and optional recurrence.
@@ -22,16 +16,7 @@ import java.util.regex.Pattern;
  * @see TaskManager#addTask(Task)
  */
 public class AddEventCmd extends BaseTaskCommand {
-
-    /**
-     * Regular expression pattern to parse event command input.
-     *
-     * @apiNote Pattern generated with AI assistance for optimal matching
-     */
-    private static final Pattern EVENT_PATTERN = Pattern.compile(
-            "(.+?)\\s*/from\\s*(.+?)\\s*/to\\s*(.+)",
-            Pattern.CASE_INSENSITIVE
-    );
+    private final TaskCreator creator = new EventCreator();
 
     public AddEventCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
@@ -54,16 +39,7 @@ public class AddEventCmd extends BaseTaskCommand {
         Message help = showHelpText(CommandType.EVENT);
         if (help != null) return help;
         try {
-            String[] tokens = StringTokenizer.tokenize(
-                    args, EVENT_PATTERN, 3, ErrorType.EVENT
-            );
-            ParsedDateTime start = DateTimeParser.parse(tokens[1]);
-            ParsedDateTime end = DateTimeParser.parse(tokens[2]);
-            Recurrence recurrence = RecurrenceParser.parse(
-                    tokens[tokens.length - 1], end.dateTime().toLocalDate(), ErrorType.RECURRENCE
-            );
-
-            Task event = new EventTask(tokens[0], start, end, recurrence);
+            Task event = creator.createFromArgs(args);
             boolean wasSorted = taskManager.isSorted();
             taskManager.addTask(event);
             return new TaskAddedMessage(event, taskManager, wasSorted);

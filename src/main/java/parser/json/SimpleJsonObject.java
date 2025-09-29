@@ -1,13 +1,17 @@
 package parser.json;
 
+import exception.FileContentException;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A simple representation of a JSON object that stores key-value pairs.
  * This class serves as a simplified container for holding JSON object data
  * as a collection of string keys mapped to object values.
- * <p>Supported value types include:</p>
+ * <p>
+ * Supported value types include:
  * {@link String} {@link Number} {@link Boolean} {@code null} and
  * {@link SimpleJsonObject} for nested JSON objects
  *
@@ -29,7 +33,6 @@ public class SimpleJsonObject {
      * The return type is {@link Object} and callers are expected to cast
      * the result to the appropriate type:
      * <ul>
-     *   <li>Use {@link #getAsString(String)} for a string representation.</li>
      *   <li>Cast to {@link SimpleJsonObject} for nested objects.</li>
      *   <li>Cast to {@link Integer} for numbers.</li>
      *   <li>Cast to {@link Boolean} for true/false values.</li>
@@ -42,9 +45,13 @@ public class SimpleJsonObject {
         return fields.get(key);
     }
 
-    public String getAsString(String key) {
-        Object value = fields.get(key);
-        return value != null ? value.toString() : null;
+    public String requireNonEmpty(String key) {
+        return Optional.ofNullable(this.get(key))
+                .map(Object::toString)
+                .filter(s -> !s.isBlank())
+                .orElseThrow(() ->
+                        new FileContentException(FileContentException.ErrorType.INVALID_INPUT)
+                );
     }
 
     @Override

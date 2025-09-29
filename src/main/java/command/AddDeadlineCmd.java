@@ -1,21 +1,14 @@
 package command;
 
 import common.ErrorMessage;
-import exception.InvalidTaskFormatException.ErrorType;
 import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskAddedMessage;
-import parser.datetime.DateTimeParser;
-import parser.datetime.ParsedDateTime;
-import parser.taskops.RecurrenceParser;
-import parser.taskops.StringTokenizer;
 import task.DeadlineTask;
-import task.Recurrence;
 import task.Task;
-
-import java.util.regex.Pattern;
-
+import task.factory.DeadlineCreator;
+import task.factory.TaskCreator;
 
 /**
  * Command to add a new deadline task with a due date and optional recurrence.
@@ -23,16 +16,7 @@ import java.util.regex.Pattern;
  * @see TaskManager#addTask(Task)
  */
 public class AddDeadlineCmd extends BaseTaskCommand {
-
-    /**
-     * Regular expression pattern to parse deadline command input.
-     *
-     * @apiNote Pattern generated with AI assistance for optimal matching
-     */
-    private static final Pattern DEADLINE_PATTERN = Pattern.compile(
-            "(.+?)\\s*/by\\s*(.+)",
-            Pattern.CASE_INSENSITIVE
-    );
+    private final TaskCreator creator = new DeadlineCreator();
 
     public AddDeadlineCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
@@ -55,15 +39,7 @@ public class AddDeadlineCmd extends BaseTaskCommand {
         Message help = showHelpText(CommandType.DEADLINE);
         if (help != null) return help;
         try {
-            String[] tokens = StringTokenizer.tokenize(
-                    args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE
-            );
-            ParsedDateTime parsed = DateTimeParser.parse(tokens[1]);
-            Recurrence recurrence = RecurrenceParser.parse(
-                    tokens[tokens.length - 1], parsed.dateTime().toLocalDate(), ErrorType.RECURRENCE
-            );
-
-            Task deadline = new DeadlineTask(tokens[0], parsed, recurrence);
+            Task deadline = creator.createFromArgs(args);
             boolean wasSorted = taskManager.isSorted();
             taskManager.addTask(deadline);
             return new TaskAddedMessage(deadline, taskManager, wasSorted);
