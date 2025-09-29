@@ -5,7 +5,7 @@ import exception.MeeBotException;
 import manager.TaskManager;
 import message.FilteredListMessage;
 import message.Message;
-import parser.TaskFilterParser;
+import parser.commandargs.TaskFilterParser;
 import task.ReadOnlyTask;
 
 import java.time.LocalDate;
@@ -51,7 +51,6 @@ public class FilterCmd extends BaseTaskCommand {
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
-
         try {
             Predicate<ReadOnlyTask> predicates = TaskFilterParser.chainPredicate(args);
             List<ReadOnlyTask> filteredList = taskManager.filter(predicates);

@@ -5,7 +5,7 @@ import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskDeletedMessage;
-import parser.TaskIndexParser;
+import parser.commandargs.TaskIndexParser;
 import task.ReadOnlyTask;
 
 /**

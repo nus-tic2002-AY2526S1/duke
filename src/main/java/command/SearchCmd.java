@@ -6,7 +6,7 @@ import manager.TaskManager;
 import message.FilteredListMessage;
 import message.Message;
 import message.SearchResultMessage;
-import parser.TokenizerUtil;
+import parser.commandargs.StringTokenizer;
 import task.ReadOnlyTask;
 
 import java.util.List;
@@ -51,9 +51,8 @@ public class SearchCmd extends BaseTaskCommand {
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
-
         try {
-            String[] tokens = TokenizerUtil.tokenize(
+            String[] tokens = StringTokenizer.tokenize(
                     args, SEARCH_PATTERN, 1, null
             );
             String[] keywords = tokens[0].toLowerCase().split("\\s+");

@@ -6,14 +6,15 @@ import exception.MeeBotException;
 import manager.TaskManager;
 import message.ListTaskMessage;
 import message.Message;
-import parser.TokenizerUtil;
+import parser.commandargs.StringTokenizer;
 
 import java.util.regex.Pattern;
 
 /**
  * Command class for sorting tasks by specified sorting mode. Sorting operations
  * are stable and the sorted order will persist until the list is modified.
- * <p>New tasks are always inserted at the bottom of the list, so a new sort command
+ * <p>
+ * New tasks are always inserted at the bottom of the list, so a new sort command
  * must be executed to maintain the desired ordering after adding tasks.
  *
  * @see TaskManager#sortByDate()
@@ -42,14 +43,12 @@ public class SortCmd extends BaseTaskCommand {
     @Override
     public Message execute() {
         Message help = showHelpText(CommandType.SORT);
-        if (help != null) {
-            return help;
-        }
+        if (help != null) return help;
         if (taskManager.isEmpty()) {
             return new ErrorMessage(ErrorMessage.EMPTY_LIST);
         }
         try {
-            String[] tokens = TokenizerUtil.tokenize(
+            String[] tokens = StringTokenizer.tokenize(
                     args, SORT_PATTERN, 1, ErrorType.SORT
             );
             String sortMode = tokens[0].toLowerCase();

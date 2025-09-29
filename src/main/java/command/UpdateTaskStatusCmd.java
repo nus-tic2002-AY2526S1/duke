@@ -6,7 +6,7 @@ import manager.TaskManager;
 import message.Message;
 import message.TaskMarkedMessage;
 import message.TaskUnmarkedMessage;
-import parser.TaskIndexParser;
+import parser.commandargs.TaskIndexParser;
 import task.ReadOnlyTask;
 
 /**
