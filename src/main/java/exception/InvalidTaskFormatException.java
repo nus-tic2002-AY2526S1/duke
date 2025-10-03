@@ -34,7 +34,13 @@ public class InvalidTaskFormatException extends MeeBotException {
                 Or : sort /by status
                 """),
 
+        TODO("""
+                Todos don't repeat.
+                Try creating a Deadline or Event instead?
+                """),
+
         RECURRENCE("""
+                Repeating events need '/repeat' interval and count.
                 Try: /repeat <daily|weekly|monthly|yearly> <number of times>
                 """);
 

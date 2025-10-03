@@ -63,12 +63,12 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
     /**
      * Parses a date/time string using strict date/time pattern matching.
      * <p>
-     * Attempts to parse the input using predefined DateTimeFormatter patterns for exact format matches.
+     * Attempts to parse the input using predefined {@link DateTimePattern} for exact format matches.
      * If time is omitted from the input, it defaults to 00:00 (midnight).
      *
      * @param dateTimeString the date/time string to parse
      * @return {@link ParsedDateTime} object if the input matches a supported pattern,
-     *         or {@code null} if no pattern matches (allowing other strategies to try)
+     *         or {@code null} if no pattern matches (allowing NLP strategy to try)
      * @throws InvalidDateTimeException if the input matches a pattern but contains
      *                                  invalid date-time values (e.g., February 30,
      *                                  hour 25, minute 60)
@@ -110,7 +110,6 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
      * <p>
      * Invalid values include out-of-range months, days, hours, or minutes
      * (e.g., month 13, day 32, hour 25, minute 60).
-     *
      */
     private static boolean isInvalidDateTimeValue(DateTimeParseException e) {
         if (e.getMessage() == null) return false;

@@ -11,20 +11,28 @@ import task.Recurrence.RecurrenceType;
 import java.time.LocalDate;
 
 /**
- * Utility class for parsing recurrence patterns from string input.
- * This class provides static methods to convert string representations
- * of task recurrence into {@link Recurrence} objects.
+ * Utility class for parsing recurrence patterns from different input sources.
+ * This class provides static methods to convert string representations and
+ * JSON objects into {@link Recurrence} objects.
  */
 public class RecurrenceParser {
     private RecurrenceParser() {
     }
 
     /**
-     * Parses a string representation of recurrence into a {@link Recurrence} object.
+     * Parses a string representation of recurrence from user command input.
+     * <p>
+     * <strong>Expected Format:</strong> {@code "<TYPE> <FREQUENCY>"}
+     * where:
+     * <ul>
+     *     <li>TYPE is a valid {@link RecurrenceType} value (case-insensitive)</li>
+     *     <li>FREQUENCY is a positive integer</li>
+     * </ul>
      *
-     * @param args      the string to parse, expected format: "{TYPE} {FREQUENCY}".
-     *                  If blank or "none" (case-insensitive), returns {@link Recurrence#none(LocalDate)}.
-     * @param errorType the error type to use when creating exceptions for malformed input
+     * @param args       the string to parse (e.g., "weekly 2", "monthly 12").
+     *                   If blank, returns {@link Recurrence#none(LocalDate)}
+     * @param anchorDate the reference date for calculating date of last recurrence
+     * @param errorType  the error type to use when creating exceptions for malformed input
      * @return a {@link Recurrence} object representing the parsed recurrence pattern
      * @throws InvalidTaskFormatException    if the input format is invalid (wrong number of tokens,
      *                                       invalid recurrence type, or invalid frequency)
@@ -56,9 +64,31 @@ public class RecurrenceParser {
         }
     }
 
+    /**
+     * Parses a recurrence pattern from a JSON object representation.
+     * The JSON object must contain a "recurrence" field with nested "type" and "count" properties.
+     * <p>
+     * <strong>Expected JSON Structure:</strong>
+     * <pre>{@code
+     * {
+     *   "recurrence": {
+     *     "type": "WEEKLY",
+     *     "count": "2"
+     *   }
+     * }
+     * }</pre>
+     *
+     * @param obj        the JSON object containing recurrence data
+     * @param anchorDate the reference date for calculating date of last recurrence
+     * @return a {@link Recurrence} object representing the parsed pattern
+     * @throws FileContentException if the JSON structure is invalid, required fields are missing,
+     *                              the recurrence type is unrecognized, or the count cannot be parsed as an integer
+     * @see Recurrence#of(RecurrenceType, int, LocalDate)
+     * @see SimpleJsonObject
+     */
     public static Recurrence parse(SimpleJsonObject obj,
-                                   LocalDate anchorDate
-    ) {
+                                   LocalDate anchorDate)
+            throws FileContentException {
         Object recurObj = obj.get("recurrence");
         if (!(recurObj instanceof SimpleJsonObject recJson)) {
             throw new FileContentException(FileContentException.ErrorType.INVALID_INPUT);

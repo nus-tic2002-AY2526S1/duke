@@ -136,7 +136,7 @@ public class TaskManager {
      * @return a new list of {@link ReadOnlyTask} instances whose descriptions contain
      *         at least one of the search terms, or an empty list if no matches are found
      */
-    public List<ReadOnlyTask> search(String[] terms) {
+    public List<ReadOnlyTask> search(String... terms) {
         return filter(task -> {
             String desc = task.getDescription().toLowerCase();
             for (String term : terms) {

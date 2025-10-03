@@ -8,12 +8,12 @@ import java.util.function.BiFunction;
 
 /**
  * A lexical analyzer (tokenizer) for JSON text that breaks input into discrete tokens.
- *
- * <p>This tokenizer processes JSON input character by character and produces a stream
+ * <p>
+ * This tokenizer processes JSON input character by character and produces a stream
  * of {@link JsonToken} objects representing the structural elements, literals, and
  * values found in the JSON text.
- *
- * <p><strong>Supported JSON Elements:</strong></p>
+ * <p>
+ * <strong>Supported JSON Elements:</strong>
  * <ul>
  *   <li>Structural characters: <code>{ } [ ] : ,</code></li>
  *   <li>String literals with basic escape sequence handling</li>
@@ -22,15 +22,15 @@ import java.util.function.BiFunction;
  *   <li>Null literal: <code>null</code></li>
  *   <li>Automatic whitespace skipping</li>
  * </ul>
- *
- * <p><strong>Limitations:</strong></p>
+ * <p>
+ * <strong>Limitations:</strong>
  * <ul>
  *   <li>String escape sequence handling assumes no consecutive backslashes</li>
  *   <li>Number parsing accepts malformed numbers (validation left to parser)</li>
  *   <li>No validation of JSON structure (handled by parser layer)</li>
  * </ul>
- *
- * <p><em>Solution adapted from:
+ * <p>
+ * <em>Solution adapted from:
  * <a href="https://www.sunshine2k.de/articles/coding/jsonparser/simplejsonparser.html">
  * Simple JSON Parser Tutorial</a></em></p>
  *
@@ -111,16 +111,16 @@ public final class JsonTokenizer {
 
     /**
      * Returns the next token from the input stream.
-     *
-     * <p>This method processes the input character by character, automatically skipping
+     * <p>
+     * This method processes the input character by character, automatically skipping
      * whitespace and identifying JSON tokens. Each call advances the internal position
-     * and returns the next logical token in the input.</p>
+     * and returns the next logical token in the input.
      *
      * @return the next {@link JsonToken} in the input, or
      *         a token with type {@link JsonTokenType#EOF} when the end of input is reached
-     * @throws RuntimeException if an unexpected character is encountered that doesn't match any token pattern
+     * @throws FileContentException if an unexpected character is encountered that doesn't match any token pattern
      */
-    public JsonToken nextToken() {
+    public JsonToken nextToken() throws FileContentException {
         skipWhitespace();
         if (pos >= input.length()) {
             return new JsonToken(JsonTokenType.EOF, null);
@@ -148,13 +148,13 @@ public final class JsonTokenizer {
 
     /**
      * Parses a JSON string literal starting at the current position.
-     *
-     * <p>Expects the current position to be at an opening double quote and processes
+     * <p>
+     * Expects the current position to be at an opening double quote and processes
      * all characters until an unescaped closing quote is found. The method handles
-     * basic escape sequences but assumes no consecutive backslashes (e.g., {@code \\\\}).</p>
-     *
-     * <p><strong>Note:</strong> This implementation has simplified escape handling
-     * that may not correctly process all valid JSON escape sequences.</p>
+     * basic escape sequences but assumes no consecutive backslashes (e.g., {@code \\\\}).
+     * <p>
+     * <strong>Usage Note:</strong> This implementation has simplified escape handling
+     * that may not correctly process all valid JSON escape sequences.
      *
      * @return a {@link JsonToken} of type {@link JsonTokenType#STRING} containing the parsed string content
      */
@@ -173,14 +173,14 @@ public final class JsonTokenizer {
 
     /**
      * Parses a JSON numeric literal starting at the current position.
-     *
-     * <p>Processes consecutive characters that can appear in JSON numbers:
+     * <p>
+     * Processes consecutive characters that can appear in JSON numbers:
      * digits (0-9), decimal point (.), and minus sign (-). The method does not
      * validate the numeric format; malformed numbers like {@code "--1.2.3"} will
-     * be accepted and passed to the parser layer for validation.</p>
-     *
-     * <p>Both integer and floating-point numbers are supported, following
-     * the general JSON number format.</p>
+     * be accepted and passed to the parser layer for validation.
+     * <p>
+     * Both integer and floating-point numbers are supported, following
+     * the general JSON number format.
      *
      * @return a {@link JsonToken} of type {@link JsonTokenType#NUMBER} containing the parsed number string
      */
@@ -198,10 +198,10 @@ public final class JsonTokenizer {
 
     /**
      * Advances the position past any whitespace characters.
-     *
-     * <p>Uses {@link Character#isWhitespace(char)} to identify whitespace,
+     * <p>
+     * Uses {@link Character#isWhitespace(char)} to identify whitespace,
      * which includes spaces, tabs, newlines, and other Unicode whitespace characters.
-     * This method is called automatically by {@link #nextToken()} before token recognition.</p>
+     * This method is called automatically by {@link #nextToken()} before token recognition.
      */
     private void skipWhitespace() {
         while (pos < input.length() && Character.isWhitespace(input.charAt(pos))) {
