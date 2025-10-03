@@ -1,6 +1,7 @@
 package parser.json;
 
 import exception.FileContentException;
+import exception.FileContentException.ErrorType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +12,9 @@ import java.util.Optional;
  * This class serves as a simplified container for holding JSON object data
  * as a collection of string keys mapped to object values.
  * <p>
- * Supported value types include:
+ * <strong>Supported value types include:</strong>
  * {@link String} {@link Number} {@link Boolean} {@code null} and
  * {@link SimpleJsonObject} for nested JSON objects
- *
- * @see SimpleJsonParser
  */
 public class SimpleJsonObject {
     private final Map<String, Object> fields = new HashMap<>();
@@ -45,12 +44,11 @@ public class SimpleJsonObject {
         return fields.get(key);
     }
 
-    public String requireNonEmpty(String key) {
+    public String requireNonEmpty(String key) throws FileContentException {
         return Optional.ofNullable(this.get(key))
                 .map(Object::toString)
                 .filter(s -> !s.isBlank())
-                .orElseThrow(() ->
-                        new FileContentException(FileContentException.ErrorType.INVALID_INPUT)
+                .orElseThrow(() -> new FileContentException(ErrorType.INVALID_INPUT)
                 );
     }
 

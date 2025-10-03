@@ -1,6 +1,7 @@
 package parser.json;
 
 import exception.FileContentException;
+import exception.FileContentException.ErrorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * <p>
  * The parser uses a tokenizer-based approach with recursive descent parsing
  * to handle JSON structures. It throws {@link FileContentException} for invalid
- * JSON format or unexpected tokens.</p>
+ * JSON format or unexpected tokens.
  *
  * @see JsonTokenizer
  * @see SimpleJsonObject
@@ -30,7 +31,7 @@ public final class SimpleJsonParser {
      *
      * @param tokenizer the tokenizer providing JSON tokens
      */
-    public SimpleJsonParser(JsonTokenizer tokenizer) {
+    public SimpleJsonParser(JsonTokenizer tokenizer) throws FileContentException {
         this.tokenizer = tokenizer;
         this.current = tokenizer.nextToken();
     }
@@ -42,9 +43,9 @@ public final class SimpleJsonParser {
      * @param expected the expected token type
      * @throws FileContentException if the current token doesn't match the expected type
      */
-    private void consume(JsonTokenType expected) {
+    private void consume(JsonTokenType expected) throws FileContentException {
         if (current.type() != expected) {
-            throw new FileContentException(FileContentException.ErrorType.INVALID_JSON_FORMAT);
+            throw new FileContentException(ErrorType.INVALID_JSON_FORMAT);
         }
         current = tokenizer.nextToken();
     }
@@ -53,14 +54,13 @@ public final class SimpleJsonParser {
      * Parses the complete JSON input, expecting an array the root element.
      * <p>
      * This method assumes the JSON structure follows the pattern:
-     * <pre>[{"key1": "value1", "key2": "value2"}, {...}, ...]</pre></p>
+     * <pre>[{"key1": "value1", "key2": "value2"}, {...}, ...]</pre>
      *
      * @return a list of {@link SimpleJsonObject} instances representing the parsed objects
      * @throws FileContentException if the JSON format is invalid or doesn't start with an array
      */
-    public List<SimpleJsonObject> parseJson() {
+    public List<SimpleJsonObject> parseJson() throws FileContentException {
         List<SimpleJsonObject> result = new ArrayList<>();
-
         consume(JsonTokenType.SQUARE_OPEN);
         while (current.type() != JsonTokenType.SQUARE_CLOSE) {
             result.add(parseObject());
@@ -82,9 +82,8 @@ public final class SimpleJsonParser {
      * @return a new {@link SimpleJsonObject} containing the parsed key-value pairs
      * @throws FileContentException if the object format is invalid
      */
-    private SimpleJsonObject parseObject() {
+    private SimpleJsonObject parseObject() throws FileContentException {
         SimpleJsonObject obj = new SimpleJsonObject();
-
         consume(JsonTokenType.CURLY_OPEN);
         while (current.type() != JsonTokenType.CURLY_CLOSE) {
             // key must be a string
@@ -105,8 +104,8 @@ public final class SimpleJsonParser {
 
     /**
      * Parses a JSON value, which can be a string, number, boolean, null, or nested object.
-     *
-     * <p>Supported value types:</p>
+     * <p>
+     * Supported value types:
      * <ul>
      *   <li>Strings - returned as {@link String}</li>
      *   <li>Numbers - returned as {@link Integer}</li>
@@ -114,13 +113,13 @@ public final class SimpleJsonParser {
      *   <li>null - returned as null</li>
      *   <li>Objects - returned as {@link SimpleJsonObject} (recursive parsing)</li>
      * </ul>
-     *
-     * <p>Arrays are not supported and will cause a {@link FileContentException}.</p>
+     * <p>
+     * Arrays are not supported and will cause a {@link FileContentException}.</p>
      *
      * @return the parsed value as an appropriate Java object
      * @throws FileContentException if the current token represents an unsupported value type
      */
-    private Object parseValue() {
+    private Object parseValue() throws FileContentException {
         switch (current.type()) {
         case STRING:
             String s = current.value();

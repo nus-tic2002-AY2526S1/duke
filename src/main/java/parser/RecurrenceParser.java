@@ -32,8 +32,8 @@ public class RecurrenceParser {
      */
     public static Recurrence parse(String args,
                                    LocalDate anchorDate,
-                                   ErrorType errorType
-    ) {
+                                   ErrorType errorType)
+            throws InvalidTaskFormatException, InvalidTaskOperationException {
         if (args.isBlank() || args.equalsIgnoreCase("none")) {
             return Recurrence.none(anchorDate);
         }

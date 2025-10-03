@@ -1,7 +1,8 @@
 package task.factory;
 
+import exception.FileContentException;
+import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;
-import exception.MeeBotException;
 import parser.commandargs.StringTokenizer;
 import parser.json.SimpleJsonObject;
 import task.Recurrence;
@@ -18,8 +19,15 @@ public class TodoCreator implements TaskCreator {
      */
     private static final Pattern TODO_PATTERN = Pattern.compile("(.+)");
 
+    /**
+     * Creates a todo task from user command arguments.
+     *
+     * @param args the command arguments in format {@code description}
+     * @return a new {@link TodoTask} instance
+     * @throws InvalidTaskFormatException if the input doesn't match the expected format
+     */
     @Override
-    public Task createFromArgs(String args) throws MeeBotException {
+    public Task createFromArgs(String args) throws InvalidTaskFormatException {
         String[] tokens = StringTokenizer.tokenize(
                 args, TODO_PATTERN, 1, null);
         if (!"none".equalsIgnoreCase(tokens[tokens.length - 1])) {
@@ -28,8 +36,15 @@ public class TodoCreator implements TaskCreator {
         return new TodoTask(tokens[0], Recurrence.none(null));
     }
 
+    /**
+     * Creates a todo task from a JSON object representation.
+     *
+     * @param obj the JSON object containing todo task data
+     * @return a new {@link TodoTask} instance
+     * @throws FileContentException if required fields are missing or invalid
+     */
     @Override
-    public Task createFromJson(SimpleJsonObject obj) throws MeeBotException {
+    public Task createFromJson(SimpleJsonObject obj) throws FileContentException {
         String desc = obj.requireNonEmpty("description");
         return new TodoTask(desc, Recurrence.none(null));
     }

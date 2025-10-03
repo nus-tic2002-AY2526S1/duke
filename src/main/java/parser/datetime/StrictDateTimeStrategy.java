@@ -82,7 +82,8 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
         return null; // let another strategy handle it
     }
 
-    private ParsedDateTime tryParse(String dateTimeString, DateTimePattern pattern) {
+    private ParsedDateTime tryParse(String dateTimeString, DateTimePattern pattern)
+            throws InvalidDateTimeException {
         try {
             if (pattern.hasTime()) {
                 LocalDateTime dt = LocalDateTime.parse(dateTimeString, pattern.getFormatter());

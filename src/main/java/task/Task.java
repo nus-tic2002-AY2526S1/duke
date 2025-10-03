@@ -1,5 +1,7 @@
 package task;
 
+import exception.InvalidDateTimeException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -73,7 +75,7 @@ public abstract class Task implements ReadOnlyTask{
      * @param end   the new end date/time for the copied task
      * @return a new Task instance with the specified dates
      */
-    protected abstract Task copy(LocalDateTime start, LocalDateTime end);
+    protected abstract Task copy(LocalDateTime start, LocalDateTime end) throws InvalidDateTimeException;
 
     /* =============== Public Methods =============== */
 
@@ -95,7 +97,8 @@ public abstract class Task implements ReadOnlyTask{
      *         occur on that date
      */
     @Override
-    public Optional<ReadOnlyTask> createInstance(LocalDate filterDate) {
+    public Optional<ReadOnlyTask> createInstance(LocalDate filterDate)
+            throws InvalidDateTimeException {
         if (!occursOn(filterDate)) return Optional.empty();
 
         List<LocalDateTime> dates = getDates();
@@ -172,7 +175,7 @@ public abstract class Task implements ReadOnlyTask{
     protected String formatRecurrence() {
         return recurrence.isNone()
                 ? ""
-                : String.format(" (recurs %s × %d)",
+                : String.format(" (repeats %s × %d)",
                 recurrence.type().name().toLowerCase(),
                 recurrence.frequency());
     }

@@ -18,8 +18,7 @@ public class EventTask extends Task {
             String description,
             ParsedDateTime start,
             ParsedDateTime end,
-            Recurrence recurrence
-    ) {
+            Recurrence recurrence) throws InvalidDateTimeException {
         super(description, recurrence);
         this.start = start.dateTime();
         this.end = end.dateTime();
@@ -48,7 +47,8 @@ public class EventTask extends Task {
      *         but with recurrence set to {@link Recurrence#none(java.time.LocalDate)}
      */
     @Override
-    protected Task copy(LocalDateTime start, LocalDateTime end) {
+    protected Task copy(LocalDateTime start, LocalDateTime end)
+            throws InvalidDateTimeException {
         ParsedDateTime instanceStart = new ParsedDateTime(start, this.hasTime);
         ParsedDateTime instanceEnd = new ParsedDateTime(end, this.hasTime);
         return new EventTask(this.getDescription(), instanceStart, instanceEnd, null);

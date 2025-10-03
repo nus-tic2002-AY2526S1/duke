@@ -15,7 +15,7 @@ import common.ErrorMessage;
  *
  * @see ErrorMessage
  */
-public abstract class MeeBotException extends RuntimeException {
+public abstract class MeeBotException extends Exception {
     public MeeBotException(String message) {
         super(message);
     }

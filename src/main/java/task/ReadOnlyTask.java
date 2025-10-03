@@ -1,5 +1,7 @@
 package task;
 
+import exception.InvalidDateTimeException;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,5 +22,5 @@ public interface ReadOnlyTask {
 
     boolean occursOn(LocalDate filterDate);
 
-    Optional<ReadOnlyTask> createInstance(LocalDate filterDate);
+    Optional<ReadOnlyTask> createInstance(LocalDate filterDate) throws InvalidDateTimeException;
 }
