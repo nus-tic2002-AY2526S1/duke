@@ -1,7 +1,6 @@
 package command;
 
-import common.ErrorMessage;
-import exception.MeeBotException;
+import exception.InvalidTaskOperationException;
 import manager.TaskManager;
 import message.Message;
 import message.TaskMarkedMessage;
@@ -12,11 +11,11 @@ import task.ReadOnlyTask;
 /**
  * Command to update the completion status of a task by its index number.
  * <p>
- * This command can either mark a task as completed or mark it as pending,
+ * This command toggles a task's completion state between done and not done,
  * depending on the {@code markDone} parameter provided during construction.
  * <p>
  * The index number refers to the task's position in the currently displayed list,
- * which may vary depending on the active sort order or filter. The task is identified
+ * which may vary depending on the active sort order. The task is identified
  * by its position at the time this command executes, not by any permanent ID.
  *
  * @see TaskManager#markTaskDone(int)
@@ -35,30 +34,28 @@ public class UpdateTaskStatusCmd extends BaseTaskCommand {
      * operations, and updates the completion status of the specified task.
      *
      * @return {@link TaskMarkedMessage} on successful mark done, or
-     *         {@link TaskUnmarkedMessage} on successful unmark, or
-     *         {@link ErrorMessage} if validation fails or task doesn't exist
+     *         {@link TaskUnmarkedMessage} on successful unmark
+     * @throws InvalidTaskOperationException if the task index is invalid, out of bounds
+     *                                       or invalid task status
      */
     @Override
-    public Message execute() {
-        CommandType type = markDone ? CommandType.MARK : CommandType.UNMARK;
-        Message help = showHelpText(type);
-        if (help != null) return help;
+    public Message executes() throws InvalidTaskOperationException {
+        int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
+        boolean wasSorted = taskManager.isSorted();
 
-        try {
-            int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
-            boolean wasSorted = taskManager.isSorted();
-            ReadOnlyTask task;
-            if (markDone) {
-                taskManager.markTaskDone(taskNumber);
-                task = taskManager.getTask(taskNumber);
-                return new TaskMarkedMessage(task, wasSorted);
-            } else {
-                taskManager.unmarkTask(taskNumber);
-                task = taskManager.getTask(taskNumber);
-                return new TaskUnmarkedMessage(task, wasSorted);
-            }
-        } catch (MeeBotException e) {
-            return e.toErrorMessage();
+        if (markDone) {
+            taskManager.markTaskDone(taskNumber);
+        } else {
+            taskManager.unmarkTask(taskNumber);
         }
+        ReadOnlyTask task = taskManager.getTask(taskNumber);
+        return markDone
+                ? new TaskMarkedMessage(task, wasSorted)
+                : new TaskUnmarkedMessage(task, wasSorted);
+    }
+
+    @Override
+    protected CommandType getCommandType() {
+        return markDone ? CommandType.MARK : CommandType.UNMARK;
     }
 }

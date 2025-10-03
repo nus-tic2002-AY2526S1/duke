@@ -1,6 +1,6 @@
 package command;
 
-import common.ErrorMessage;
+import exception.InvalidTaskFormatException;
 import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
@@ -27,22 +27,26 @@ public class AddTodoCmd extends BaseTaskCommand {
      * completed but have no specific timing requirements. Unlike deadline and event tasks,
      * todo tasks cannot be configured with recurrence patterns.
      *
-     * @return {@link TaskAddedMessage} on successful task creation, or
-     *         {@link ErrorMessage} if no description provided or invalid recurrence specified
+     * @return {@link TaskAddedMessage} on successful task creation
+     * @throws InvalidTaskFormatException if the input format is invalid or recurrence specified
      * @apiNote Todos are designed for simple, timeless activities. Use {@code Deadline} or
      *         {@code Event} for time-sensitive tasks.
      */
     @Override
-    public Message execute() {
-        Message help = showHelpText(CommandType.TODO);
-        if (help != null) return help;
-        try {
-            Task todo = creator.createFromArgs(args);
-            boolean wasSorted = taskManager.isSorted();
-            taskManager.addTask(todo);
-            return new TaskAddedMessage(todo, taskManager, wasSorted);
-        } catch (MeeBotException e) {
-            return e.toErrorMessage();
-        }
+    public Message executes() throws MeeBotException {
+        Task todo = creator.createFromArgs(args);
+        boolean wasSorted = taskManager.isSorted();
+        taskManager.addTask(todo);
+        return new TaskAddedMessage(todo, taskManager, wasSorted);
+    }
+
+    @Override
+    protected CommandType getCommandType() {
+        return CommandType.TODO;
+    }
+
+    @Override
+    protected boolean requiresNonEmptyList() {
+        return false;
     }
 }

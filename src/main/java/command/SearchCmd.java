@@ -1,9 +1,7 @@
 package command;
 
-import common.ErrorMessage;
-import exception.MeeBotException;
+import exception.InvalidTaskFormatException;
 import manager.TaskManager;
-import message.FilteredListMessage;
 import message.Message;
 import message.SearchResultMessage;
 import parser.commandargs.StringTokenizer;
@@ -14,7 +12,19 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
- * Command that performs a search operation over task.
+ * Command to search for tasks by keywords in their descriptions.
+ * <p>
+ * This command performs a case-insensitive, partial-match search across task descriptions.
+ * Multiple keywords are combined using OR logic, meaning a task matches if its description
+ * contains <em>any</em> of the provided keywords.
+ * <p>
+ * <strong>Matching Rules:</strong>
+ * <ul>
+ *     <li><strong>Case-insensitive:</strong> {@code "MEETING"} matches "meeting"</li>
+ *     <li><strong>Partial matches:</strong> {@code "proj"} matches "project"</li>
+ *     <li><strong>OR logic:</strong> Multiple keywords match if any keyword is found</li>
+ *     <li><strong>Whitespace-separated:</strong> Keywords are split by spaces</li>
+ * </ul>
  */
 public class SearchCmd extends BaseTaskCommand {
     private static final Pattern SEARCH_PATTERN = Pattern.compile("(.+)");
@@ -26,40 +36,24 @@ public class SearchCmd extends BaseTaskCommand {
     /**
      * Search for tasks by extracting keywords from user input and retrieving
      * matching tasks from the {@link TaskManager}.
-     * <p>
-     * Supports multiple keywords separated by whitespace {@code "search keyword1 keyword2 ..."}.
-     * A task will be included in the results if its description matches <em>any</em>
-     * of the keywords (OR logic).
-     * <p>
-     * <b>Matching rules:</b>
-     * <ul>
-     *     <li>Case-insensitive: e.g. {@code "MEETING"} matches "meeting".</li>
-     *     <li>Partial matches allowed: e.g. {@code "proj"} matches "project".</li>
-     *     <li>Whitespace-delimited keywords: e.g. {@code "search proj urgent"} will match
-     *     tasks containing either "proj" or "urgent".</li>
-     * </ul>
      *
-     * @return {@link FilteredListMessage} containing tasks matching search terms, or
-     *         {@link ErrorMessage} if validation fails or no criteria are provided
+     * @return {@link SearchResultMessage} containing tasks matching any of the search terms
+     * @throws InvalidTaskFormatException if the search query format is invalid
      * @see TaskManager#search(String[])
      * @see TaskManager#filter(Predicate)
      */
     @Override
-    public Message execute() {
-        Message help = showHelpText(CommandType.SEARCH);
-        if (help != null) return help;
-        if (taskManager.isEmpty()) {
-            return new ErrorMessage(ErrorMessage.EMPTY_LIST);
-        }
-        try {
-            String[] tokens = StringTokenizer.tokenize(
-                    args, SEARCH_PATTERN, 1, null
-            );
-            String[] keywords = tokens[0].toLowerCase().split("\\s+");
-            List<ReadOnlyTask> results = taskManager.search(keywords);
-            return new SearchResultMessage(results, keywords);
-        } catch (MeeBotException e) {
-            return e.toErrorMessage();
-        }
+    public Message executes() throws InvalidTaskFormatException {
+        String[] tokens = StringTokenizer.tokenize(
+                args, SEARCH_PATTERN, 1, null
+        );
+        String[] keywords = tokens[0].toLowerCase().split("\\s+");
+        List<ReadOnlyTask> results = taskManager.search(keywords);
+        return new SearchResultMessage(results, keywords);
+    }
+
+    @Override
+    protected CommandType getCommandType() {
+        return CommandType.SEARCH;
     }
 }

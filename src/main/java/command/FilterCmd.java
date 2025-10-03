@@ -1,20 +1,23 @@
 package command;
 
-import common.ErrorMessage;
-import exception.MeeBotException;
+import exception.InvalidDateTimeException;
+import exception.InvalidFilterException;
 import manager.TaskManager;
 import message.FilteredListMessage;
 import message.Message;
 import parser.commandargs.TaskFilterParser;
 import task.ReadOnlyTask;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
  * Command to filter tasks based on specified criteria (task type, completion status, date).
+ * <p>
+ * This command allows users to retrieve tasks that match one or more filter conditions.
+ * All specified criteria are combined using logical AND, meaning tasks must satisfy
+ * all conditions to be included in the results.
  * <p>
  * <strong>Usage Notes:</strong>
  * <ol>
@@ -24,6 +27,12 @@ import java.util.function.Predicate;
  *     {@code task:todo & done:true} returns only Todo task that are completed</li>
  *     <li>Conflicting criteria (e.g. {@code task:todo & task:event}) will return empty results
  *     since no task can satisfy contradictory conditions</li>
+ * </ol><p>
+ * <strong>Supported Filter Criteria:</strong>
+ * <ul>
+ *     <li>filter by task type - {@code task:todo|deadline|event}</li>
+ *     <li>filter by completion status - {@code done:true|false}</li>
+ *     <li>filter by date - {@code date:YYYY-MM-DD}</li>
  */
 public class FilterCmd extends BaseTaskCommand {
     public FilterCmd(TaskManager taskManager, String args) {
@@ -31,40 +40,56 @@ public class FilterCmd extends BaseTaskCommand {
     }
 
     /**
-     * Filters task based on provided criteria and returns matching results.
-     * <p>Supported filter criteria:
-     * <ol>
-     *     <li>{@code task:todo|deadline|event} - filter by task type</li>
-     *     <li>{@code done:true|false} - filter by completion status</li>
-     *     <li>{@code date:YYYY-MM-DD} - filter by date</li>
-     * </ol>
+     * Builds a filtered message containing tasks that match the specified criteria.
+     * <p>
+     * This method parses the filter arguments into predicates, applies them to the master task list,
+     * and materialize recurring task to specific instance if a date filter is present.
      *
-     * @return {@link FilteredListMessage} containing tasks matching all criteria, or
-     *         {@link ErrorMessage} if validation fails or no criteria are provided
+     * @return {@link FilteredListMessage} containing tasks matching all criteria
+     * @throws InvalidFilterException   if the filter syntax is invalid or unsupported
+     * @throws InvalidDateTimeException if a date filter contains an invalid date format
      * @see TaskFilterParser#chainPredicate(String)
      * @see TaskManager#filter(Predicate)
      */
     @Override
-    public Message execute() {
-        Message help = showHelpText(CommandType.FILTER);
-        if (help != null) return help;
-        if (taskManager.isEmpty()) {
-            return new ErrorMessage(ErrorMessage.EMPTY_LIST);
-        }
-        try {
-            Predicate<ReadOnlyTask> predicates = TaskFilterParser.chainPredicate(args);
-            List<ReadOnlyTask> filteredList = taskManager.filter(predicates);
-            Optional<LocalDate> dateFilter = TaskFilterParser.extractFilterDate(args);
-            List<ReadOnlyTask> instanceList = dateFilter
-                    .map(date -> filteredList.stream()
-                            .map(task -> task.createInstance(date))
-                            .flatMap(Optional::stream)
-                            .toList()
-                    )
-                    .orElse(filteredList);
-            return new FilteredListMessage(instanceList, args);
-        } catch (MeeBotException e) {
-            return e.toErrorMessage();
-        }
+    public Message executes() throws InvalidFilterException, InvalidDateTimeException {
+        Predicate<ReadOnlyTask> predicates = TaskFilterParser.chainPredicate(args);
+        List<ReadOnlyTask> filteredList = taskManager.filter(predicates);
+        List<ReadOnlyTask> finalFilteredList = expandRecurringTasks(filteredList, args);
+        return new FilteredListMessage(finalFilteredList, args);
+    }
+
+    @Override
+    protected CommandType getCommandType() {
+        return CommandType.FILTER;
+    }
+
+    /**
+     * Expands recurring tasks to specific instances for the filtered date.
+     * <p>
+     * If the filter arguments contain a date criterion, this method creates
+     * specific task instances for that date from any recurring tasks in the
+     * filtered list. If no date filter is present, the original filtered list is returned.
+     *
+     * @param filteredList the list of tasks after applying filter predicates
+     * @param args         the filter criteria string, potentially containing a date filter
+     * @return a list with recurring tasks expanded to specific date instances,
+     *         or the original list if no date filter is present
+     * @throws InvalidDateTimeException if the date filter contains an invalid date format
+     */
+    private List<ReadOnlyTask> expandRecurringTasks(List<ReadOnlyTask> filteredList, String args)
+            throws InvalidDateTimeException {
+        return TaskFilterParser.extractFilterDate(args)
+                .map(date -> filteredList.stream()
+                        .map(task -> {
+                            try {
+                                return task.createInstance(date);
+                            } catch (InvalidDateTimeException e) {
+                                return Optional.<ReadOnlyTask>empty();
+                            }
+                        })
+                        .flatMap(Optional::stream)
+                        .toList())
+                .orElse(filteredList);
     }
 }

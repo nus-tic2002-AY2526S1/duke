@@ -1,6 +1,8 @@
 package command;
 
-import common.ErrorMessage;
+import exception.InvalidDateTimeException;
+import exception.InvalidTaskFormatException;
+import exception.InvalidTaskOperationException;
 import exception.MeeBotException;
 import manager.TaskManager;
 import message.Message;
@@ -26,25 +28,31 @@ public class AddDeadlineCmd extends BaseTaskCommand {
      * Executes the deadline task creation command.
      * <p>
      * Parses user input in the format {@code "description /by dateTime [recurrence]"}
-     * to extract the task description, date/time and optional recurrence pattern.
+     * to extract the task description, date/time and recurrence pattern.
      * Creates a new {@link DeadlineTask}, and adds it to the {@link TaskManager}.
      *
-     * @return {@link TaskAddedMessage} on successful task creation, or
-     *         {@link ErrorMessage} on invalid command format or date parsing
+     * @return {@link TaskAddedMessage} on successful task creation
+     * @throws InvalidTaskFormatException    if the input format is invalid
+     * @throws InvalidDateTimeException      if the date/time cannot be parsed
+     * @throws InvalidTaskOperationException if the task creation fails
      * @implNote Captures task manager's sorted state before modification to provide
      *         accurate context in return messages
      */
     @Override
-    public Message execute() {
-        Message help = showHelpText(CommandType.DEADLINE);
-        if (help != null) return help;
-        try {
-            Task deadline = creator.createFromArgs(args);
-            boolean wasSorted = taskManager.isSorted();
-            taskManager.addTask(deadline);
-            return new TaskAddedMessage(deadline, taskManager, wasSorted);
-        } catch (MeeBotException e) {
-            return e.toErrorMessage();
-        }
+    public Message executes() throws MeeBotException {
+        Task deadline = creator.createFromArgs(args);
+        boolean wasSorted = taskManager.isSorted();
+        taskManager.addTask(deadline);
+        return new TaskAddedMessage(deadline, taskManager, wasSorted);
+    }
+
+    @Override
+    protected CommandType getCommandType() {
+        return CommandType.DEADLINE;
+    }
+
+    @Override
+    protected boolean requiresNonEmptyList() {
+        return false;
     }
 }
