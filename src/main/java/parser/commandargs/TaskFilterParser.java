@@ -105,9 +105,12 @@ public final class TaskFilterParser {
         switch (key) {
         case "task":
             return task -> task.getTaskType().getKeyword().equalsIgnoreCase(value);
+
         case "done":
-            boolean isDone = Boolean.parseBoolean(value);
-            return task -> task.isDone() == isDone;
+            if (value.equalsIgnoreCase("true")) return ReadOnlyTask::isDone;
+            if (value.equalsIgnoreCase("false")) return task -> !task.isDone();
+            return task -> false;
+
         case "date":
             ParsedDateTime parsed = DateTimeParser.parse(value);
             LocalDate filterDate = parsed.dateTime().toLocalDate(); // ignore time
