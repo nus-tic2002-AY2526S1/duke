@@ -19,7 +19,7 @@ public class InvalidTaskOperationException extends MeeBotException {
      * allowing for specific error handling and appropriate user feedback.
      */
     public enum ErrorType {
-        EMPTY_LIST,
+        DUPLICATE_TASK,
         INVALID_NUMBER_FORMAT,
         TASK_NOT_FOUND,
         TASK_STATE
@@ -45,7 +45,7 @@ public class InvalidTaskOperationException extends MeeBotException {
     @Override
     public ErrorMessage toErrorMessage() {
         return switch (type) {
-            case EMPTY_LIST -> new ErrorMessage(ErrorMessage.EMPTY_LIST);
+            case DUPLICATE_TASK -> new ErrorMessage(String.format(ErrorMessage.DUPLICATE_TASK, inputs));
             case INVALID_NUMBER_FORMAT -> new ErrorMessage(String.format(ErrorMessage.INVALID_NUMBER_FORMAT, inputs));
             case TASK_NOT_FOUND -> new ErrorMessage(String.format(ErrorMessage.TASK_NOT_FOUND, inputs));
             case TASK_STATE -> new ErrorMessage(String.format(ErrorMessage.TASK_STATE, inputs));

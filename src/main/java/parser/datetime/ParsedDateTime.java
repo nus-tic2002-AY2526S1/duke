@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Wrapper class for LocalDateTime with time metadata.
- * When time is omitted from the input, it defaults to 00:00 (midnight).
+ * When time is omitted from the input, it defaults to 23:59.
  */
 public record ParsedDateTime(LocalDateTime dateTime, boolean hasTime) {
     private static final DateTimeFormatter DISPLAY_DATETIME =

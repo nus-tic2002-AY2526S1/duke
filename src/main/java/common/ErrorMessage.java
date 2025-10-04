@@ -47,6 +47,10 @@ public record ErrorMessage(String message) implements Message {
             Task is already %s, no point doing it again what!
             Try '%s %d' instead.
             """;
+    public static final String DUPLICATE_TASK = """
+            I am getting déjà vu!
+            '%s' is already in your list.
+            """;
 
     // Date time errors
     public static final String INVALID_DATETIME_VALUE = """

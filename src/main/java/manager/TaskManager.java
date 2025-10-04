@@ -5,7 +5,6 @@ import task.ReadOnlyTask;
 import task.Task;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -16,20 +15,37 @@ import java.util.function.Predicate;
  */
 public class TaskManager {
 
-    private final List<Task> taskList = new ArrayList<>();
+    private final UniqueTaskList tasks = new UniqueTaskList();
     private boolean isSorted = false;
 
     /**
      * Adds task to end of collection.
+     *
+     * @param task the task to add
+     * @throws InvalidTaskOperationException if task already exists
      */
-    public void addTask(Task task) {
-        taskList.add(task);
+    public void addTask(Task task) throws InvalidTaskOperationException {
+        tasks.add(task);
         isSorted = false;
     }
 
     /**
+     * Removes a task from the list by index.
+     *
+     * @param userIndex 1-based index as provided by user
+     * @throws InvalidTaskOperationException if the index is out of bounds
+     * @see #validateIndex(int)
+     */
+    public void deleteTask(int userIndex) throws InvalidTaskOperationException {
+        int actualIndex = toActualIndex(userIndex);
+        Task task = tasks.get(actualIndex);
+        tasks.remove(task);
+    }
+
+    /**
      * Marks a task as completed by index.
-     * <p>If the task is already marked as done, an exception is thrown to prevent redundant operations.
+     * <p>
+     * If the task is already marked as done, an exception is thrown to prevent redundant operations.
      *
      * @param userIndex 1-based index as provided by user
      * @throws InvalidTaskOperationException if the index is out of bounds or
@@ -40,7 +56,7 @@ public class TaskManager {
     public void markTaskDone(int userIndex) throws InvalidTaskOperationException {
         int actualIndex = toActualIndex(userIndex);
         validateTaskState(actualIndex, true);
-        Task task = taskList.get(actualIndex);
+        Task task = tasks.get(actualIndex);
         task.markAsDone();
         isSorted = false;
     }
@@ -58,22 +74,9 @@ public class TaskManager {
     public void unmarkTask(int userIndex) throws InvalidTaskOperationException {
         int actualIndex = toActualIndex(userIndex);
         validateTaskState(actualIndex, false);
-        Task task = taskList.get(actualIndex);
+        Task task = tasks.get(actualIndex);
         task.markAsUndone();
         isSorted = false;
-    }
-
-    /**
-     * Removes a task from the list by index.
-     *
-     * @param userIndex 1-based index as provided by user
-     * @throws InvalidTaskOperationException if the index is out of bounds
-     * @see #validateIndex(int)
-     */
-    public void deleteTask(int userIndex) throws InvalidTaskOperationException {
-        int actualIndex = toActualIndex(userIndex);
-        Task task = taskList.get(actualIndex);
-        taskList.remove(task);
     }
 
     /**
@@ -82,10 +85,10 @@ public class TaskManager {
      * <p>
      * <em>Comparator implementation adapted from:
      * <a href="https://dev.java/learn/lambdas/writing-comparators/">
-     * Oracle: Writing and Combining Comparators</a></em></p>
+     * Oracle: Writing and Combining Comparators</a></em>
      */
     public void sortByDate() {
-        taskList.sort(Comparator.comparing(
+        tasks.sort(Comparator.comparing(
                 task -> task.getDates().isEmpty() ? null : task.getDates().get(0),
                 Comparator.nullsLast(Comparator.naturalOrder())
         ));
@@ -97,7 +100,7 @@ public class TaskManager {
      * <p>Tasks are sorted with incomplete tasks appearing first, followed by completed tasks.
      */
     public void sortByStatus() {
-        taskList.sort(Comparator.comparing(Task::isDone));
+        tasks.sort(Comparator.comparing(Task::isDone));
         isSorted = true;
     }
 
@@ -161,7 +164,7 @@ public class TaskManager {
      *         {@link ReadOnlyTask} providing read-only access to task data
      */
     public List<ReadOnlyTask> getReadOnlyList() {
-        return Collections.unmodifiableList(taskList);
+        return tasks.asUnmodifiableList();
     }
 
     /**
@@ -176,7 +179,7 @@ public class TaskManager {
      * @see #validateIndex(int)
      */
     public ReadOnlyTask getTask(int userIndex) throws InvalidTaskOperationException {
-        return taskList.get(toActualIndex(userIndex));
+        return tasks.get(toActualIndex(userIndex));
     }
 
     /**
@@ -199,7 +202,7 @@ public class TaskManager {
      * Returns total number of tasks (complete and pending).
      */
     public int getTotalTasks() {
-        return taskList.size();
+        return tasks.size();
     }
 
     /* ==================== Validators ==================== */
@@ -218,7 +221,7 @@ public class TaskManager {
      *                                       greater than or equal to the list size
      */
     private void validateIndex(int index) throws InvalidTaskOperationException {
-        if (index < 0 || index >= taskList.size()) {
+        if (index < 0 || index >= tasks.size()) {
             throw new InvalidTaskOperationException(
                     InvalidTaskOperationException.ErrorType.TASK_NOT_FOUND,
                     index + 1
@@ -236,7 +239,7 @@ public class TaskManager {
      * @throws InvalidTaskOperationException if task already in desired state
      */
     private void validateTaskState(int index, boolean markDone) throws InvalidTaskOperationException {
-        Task task = taskList.get(index);
+        Task task = tasks.get(index);
         if (markDone == task.isDone()) {
             String state = markDone ? "done" : "unmarked";
             String undo = markDone ? "unmark" : "mark";

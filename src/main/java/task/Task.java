@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -159,9 +160,6 @@ public abstract class Task implements ReadOnlyTask{
         isDone = false;
     }
 
-    /* =============== Utility Methods =============== */
-
-
     /**
      * Formats the recurrence information for display in string representations.
      * <p>
@@ -193,8 +191,23 @@ public abstract class Task implements ReadOnlyTask{
                 description);
     }
 
-    /* =========== Getters (Simple Accessor) =========== */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Task other)) return false;
 
+        return Objects.equals(description, other.description)
+                && Objects.equals(getTaskType(), other.getTaskType())
+                && Objects.equals(getDates(), other.getDates())
+                && Objects.equals(recurrence, other.recurrence);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description, getTaskType(), getDates(), recurrence);
+    }
+
+    /* =========== Getters (Simple Accessor) =========== */
 
     @Override
     public String getDescription() {

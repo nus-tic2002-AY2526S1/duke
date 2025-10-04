@@ -15,7 +15,7 @@ import java.time.format.DateTimeParseException;
  * that exactly match supported formats. It supports various date notations (slash,
  * dash, long month names, ISO 8601) with or without time components.
  * <p>
- * When time is omitted from the input, it defaults to 00:00 (midnight).
+ * When time is omitted from the input, it defaults to 23:59.
  * All times are interpreted as 24-hour format.
  *
  * @see NlpDateTimeStrategy
@@ -64,7 +64,7 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
      * Parses a date/time string using strict date/time pattern matching.
      * <p>
      * Attempts to parse the input using predefined {@link DateTimePattern} for exact format matches.
-     * If time is omitted from the input, it defaults to 00:00 (midnight).
+     * If time is omitted from the input, it defaults to 23:59.
      *
      * @param dateTimeString the date/time string to parse
      * @return {@link ParsedDateTime} object if the input matches a supported pattern,
@@ -90,7 +90,7 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
                 return new ParsedDateTime(dt, true);
             } else {
                 LocalDate date = LocalDate.parse(dateTimeString, pattern.getFormatter());
-                return new ParsedDateTime(date.atStartOfDay(), false);
+                return new ParsedDateTime(date.atTime(23, 59, 59), false);
             }
         } catch (DateTimeParseException e) {
             if (isInvalidDateTimeValue(e)) {
