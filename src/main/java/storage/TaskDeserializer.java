@@ -1,5 +1,14 @@
 package storage;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
+
 import exception.FileContentException;
 import exception.FileContentException.ErrorType;
 import exception.MeeBotException;
@@ -11,15 +20,6 @@ import task.factory.DeadlineCreator;
 import task.factory.EventCreator;
 import task.factory.TaskCreator;
 import task.factory.TodoCreator;
-
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility class to deserialize JSON-like task objects into Task instances.

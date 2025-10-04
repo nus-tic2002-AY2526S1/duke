@@ -1,15 +1,15 @@
 package command;
 
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+
 import exception.InvalidTaskFormatException;
 import manager.TaskManager;
 import message.Message;
 import message.SearchResultMessage;
 import parser.commandargs.StringTokenizer;
 import task.ReadOnlyTask;
-
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
 
 /**
  * Command to search for tasks by keywords in their descriptions.

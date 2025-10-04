@@ -1,9 +1,9 @@
 package message;
 
+import java.util.List;
+
 import manager.TaskManager;
 import task.ReadOnlyTask;
-
-import java.util.List;
 
 /**
  * Dynamic task listing with 1-based numbering for user display.

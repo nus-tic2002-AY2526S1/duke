@@ -1,5 +1,7 @@
 package task.factory;
 
+import java.util.regex.Pattern;
+
 import exception.FileContentException;
 import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;
@@ -8,8 +10,6 @@ import parser.json.SimpleJsonObject;
 import task.Recurrence;
 import task.Task;
 import task.TodoTask;
-
-import java.util.regex.Pattern;
 
 public class TodoCreator implements TaskCreator {
 

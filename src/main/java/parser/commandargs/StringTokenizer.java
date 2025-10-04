@@ -1,17 +1,16 @@
 package parser.commandargs;
 
-import exception.InvalidTaskFormatException;
-import exception.InvalidTaskFormatException.ErrorType;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import exception.InvalidTaskFormatException;
+import exception.InvalidTaskFormatException.ErrorType;
 
 /**
  * Utility class providing static utility methods for tokenizing and parsing
  * command-line arguments using regex patterns.
  */
 public final class StringTokenizer {
-
     private StringTokenizer() {}
 
     /**

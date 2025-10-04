@@ -1,11 +1,12 @@
 package task;
 
-import exception.InvalidDateTimeException;
-import parser.datetime.ParsedDateTime;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import exception.InvalidDateTimeException;
+import exception.InvalidDateTimeException.ErrorType;
+import parser.datetime.ParsedDateTime;
 
 /**
  * Task with a start and end date/time.
@@ -19,15 +20,14 @@ public class EventTask extends Task {
             ParsedDateTime start,
             ParsedDateTime end,
             Recurrence recurrence) throws InvalidDateTimeException {
+
         super(description, recurrence);
         this.start = start.dateTime();
         this.end = end.dateTime();
         this.hasTime = start.hasTime() && end.hasTime();
         if (this.end.isBefore(this.start)) {
-            throw new InvalidDateTimeException(
-                    InvalidDateTimeException.ErrorType.END_BEFORE_START, "");
+            throw new InvalidDateTimeException(ErrorType.END_BEFORE_START, "");
         }
-
     }
 
     @Override

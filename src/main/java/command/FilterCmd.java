@@ -1,5 +1,9 @@
 package command;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import exception.InvalidDateTimeException;
 import exception.InvalidFilterException;
 import manager.TaskManager;
@@ -7,10 +11,6 @@ import message.FilteredListMessage;
 import message.Message;
 import parser.commandargs.TaskFilterParser;
 import task.ReadOnlyTask;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * Command to filter tasks based on specified criteria (task type, completion status, date).

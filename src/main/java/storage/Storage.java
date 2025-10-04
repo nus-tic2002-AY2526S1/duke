@@ -1,16 +1,16 @@
 package storage;
 
-import exception.MeeBotException;
-import manager.TaskManager;
-import task.ReadOnlyTask;
-import task.Task;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+
+import exception.MeeBotException;
+import manager.TaskManager;
+import task.ReadOnlyTask;
+import task.Task;
 
 /**
  * Handles persistent storage of tasks to and from the file system.
@@ -19,7 +19,6 @@ import java.util.List;
  * to ensure that only authorized operations can modify the underlying task data.
  */
 public class Storage {
-
     private static final String DEFAULT_DIR = "data";
     private static final String DEFAULT_FILE = "tasks.json";
     private final File dataFile;
@@ -58,7 +57,8 @@ public class Storage {
 
     /**
      * Persists all current tasks to the storage file in JSON format.
-     * <p>Retrieves the current task list from the {@link TaskManager}, serializes
+     * <p>
+     * Retrieves the current task list from the {@link TaskManager}, serializes
      * it to JSON format using {@link TaskSerializer}, and writes the complete
      * JSON array to the storage file. The entire file is overwritten with the current state.
      *
@@ -86,7 +86,6 @@ public class Storage {
     public void loadTasks() {
         try {
             String content = Files.readString(dataFile.toPath()).trim();
-//            System.out. println("Raw JSON content:\n" + content);
             List<Task> tasks = TaskDeserializer.reconstructTask(content);
             for (Task task : tasks) {
                 tm.addTask(task);

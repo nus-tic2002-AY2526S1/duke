@@ -1,20 +1,19 @@
 package manager;
 
-import exception.InvalidTaskOperationException;
-import task.ReadOnlyTask;
-import task.Task;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
+
+import exception.InvalidTaskOperationException;
+import task.ReadOnlyTask;
+import task.Task;
 
 /**
  * Owns the data model and manages task collection with basic CRUD operations.
  * Tasks are stored in insertion order and accessed by 0-based index internally.
  */
 public class TaskManager {
-
     private final UniqueTaskList tasks = new UniqueTaskList();
     private boolean isSorted = false;
 

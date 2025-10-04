@@ -1,5 +1,7 @@
 package task.factory;
 
+import java.util.regex.Pattern;
+
 import exception.FileContentException;
 import exception.InvalidDateTimeException;
 import exception.InvalidTaskFormatException;
@@ -13,8 +15,6 @@ import parser.json.SimpleJsonObject;
 import task.DeadlineTask;
 import task.Recurrence;
 import task.Task;
-
-import java.util.regex.Pattern;
 
 /**
  * Factory for creating deadline task instances from user input or JSON data.

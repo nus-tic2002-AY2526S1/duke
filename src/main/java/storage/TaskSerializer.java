@@ -1,19 +1,19 @@
 package storage;
 
+import java.util.List;
+
 import task.ReadOnlyTask;
 import task.Recurrence;
 
-import java.util.List;
-
 public class TaskSerializer {
 
-    private TaskSerializer() {
-    }
+    private TaskSerializer() {}
 
     /**
      * Utility class to serialize Task objects into JSON string representations.
-     * <p>The JSON format includes common task fields (type, done status, description)
-     * as well as task-specific fields for different task types.</p>
+     * <p>
+     * The JSON format includes common task fields (type, done status, description)
+     * as well as task-specific fields for different task types.
      *
      * @see Storage#saveTasks()
      */

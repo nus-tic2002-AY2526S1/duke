@@ -1,11 +1,11 @@
 package task;
 
-import exception.InvalidDateTimeException;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import exception.InvalidDateTimeException;
 
 public interface ReadOnlyTask {
     TaskType getTaskType();

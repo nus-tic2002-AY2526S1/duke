@@ -19,7 +19,7 @@ public class InvalidDateTimeException extends MeeBotException {
     public enum ErrorType {
         UNSUPPORTED_FORMAT,
         INVALID_DATETIME_VALUE,
-        END_BEFORE_START;
+        END_BEFORE_START
     }
 
     private final ErrorType type;

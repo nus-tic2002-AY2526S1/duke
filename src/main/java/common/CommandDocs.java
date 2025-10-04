@@ -98,11 +98,11 @@ public record CommandDocs() {
                     Try:    search day yoga plants
                     """;
             case SORT -> """
-                    📅 Sort by date: earliest first
+                    📅 Sort by date:   earliest first
                     🗂️ Sort by status: pending tasks first
                     Format: sort /by <date|status>
-                    Try: sort /by date
-                    Or:  sort /by status
+                    Try:    sort /by date
+                    Or:     sort /by status
                     """;
             case FILTER -> """
                     🔎 To filter tasks — pick 1 to 3 conditions.

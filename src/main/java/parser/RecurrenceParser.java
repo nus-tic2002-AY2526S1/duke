@@ -1,5 +1,7 @@
 package parser;
 
+import java.time.LocalDate;
+
 import exception.FileContentException;
 import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;
@@ -8,16 +10,13 @@ import parser.json.SimpleJsonObject;
 import task.Recurrence;
 import task.Recurrence.RecurrenceType;
 
-import java.time.LocalDate;
-
 /**
  * Utility class for parsing recurrence patterns from different input sources.
  * This class provides static methods to convert string representations and
  * JSON objects into {@link Recurrence} objects.
  */
 public class RecurrenceParser {
-    private RecurrenceParser() {
-    }
+    private RecurrenceParser() {}
 
     /**
      * Parses a string representation of recurrence from user command input.

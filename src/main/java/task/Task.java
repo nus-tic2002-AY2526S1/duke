@@ -1,13 +1,13 @@
 package task;
 
-import exception.InvalidDateTimeException;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import exception.InvalidDateTimeException;
 
 /**
  * Abstract base class representing a mutable task entity.
@@ -17,7 +17,7 @@ import java.util.Optional;
  * requiring subclasses {@link TodoTask} {@link DeadlineTask} {@link EventTask}
  * to implement type-specific behaviour.
  */
-public abstract class Task implements ReadOnlyTask{
+public abstract class Task implements ReadOnlyTask {
     private final String description;
     private final Recurrence recurrence;
     private boolean isDone;
@@ -167,7 +167,7 @@ public abstract class Task implements ReadOnlyTask{
      * implementations to provide consistent recurrence formatting.
      *
      * @return empty string if no recurrence, otherwise a formatted string
-     *         in the format: " (recurs {type} × {frequency})"
+     *         in the format: {@code (recurs {type} × {frequency})}
      *         where type is recurrence pattern (e.g. "daily", "weekly").
      */
     protected String formatRecurrence() {

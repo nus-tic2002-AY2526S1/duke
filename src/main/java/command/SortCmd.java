@@ -1,13 +1,13 @@
 package command;
 
+import java.util.regex.Pattern;
+
 import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;
 import manager.TaskManager;
 import message.ListTaskMessage;
 import message.Message;
 import parser.commandargs.StringTokenizer;
-
-import java.util.regex.Pattern;
 
 /**
  * Command to sort the task list by a specified criterion.
@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
  * @see TaskManager#sortByStatus()
  */
 public class SortCmd extends BaseTaskCommand {
-
     private static final Pattern SORT_PATTERN = Pattern.compile(
             "/by\\s+(date|status)",
             Pattern.CASE_INSENSITIVE

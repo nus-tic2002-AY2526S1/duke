@@ -32,7 +32,7 @@ public class TodoTask extends Task {
      * Creates a copy of this todo task with no recurrence.
      *
      * @return a new {@link TodoTask} instance with the same description,
-     * but with recurrence set to {@link Recurrence#none(LocalDate)}
+     *         but with recurrence set to {@link Recurrence#none(LocalDate)}
      */
     @Override
     protected Task copy(LocalDateTime start, LocalDateTime end) {

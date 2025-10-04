@@ -1,9 +1,9 @@
 package parser.datetime;
 
+import java.util.List;
+
 import exception.InvalidDateTimeException;
 import exception.InvalidDateTimeException.ErrorType;
-
-import java.util.List;
 
 /**
  * Facade for parsing date-time strings using multiple strategies in sequence.
@@ -18,7 +18,6 @@ import java.util.List;
  * strategies are not invoked.
  */
 public final class DateTimeParser {
-
     private DateTimeParser() {}
 
     private static final List<DateTimeStrategy> STRATEGIES = List.of(

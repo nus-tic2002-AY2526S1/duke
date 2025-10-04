@@ -1,11 +1,11 @@
 package task;
 
-import parser.datetime.ParsedDateTime;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+
+import parser.datetime.ParsedDateTime;
 
 /**
  * Task with a specific date/time.

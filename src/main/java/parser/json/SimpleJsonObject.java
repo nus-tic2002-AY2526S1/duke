@@ -1,11 +1,11 @@
 package parser.json;
 
-import exception.FileContentException;
-import exception.FileContentException.ErrorType;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import exception.FileContentException;
+import exception.FileContentException.ErrorType;
 
 /**
  * A simple representation of a JSON object that stores key-value pairs.

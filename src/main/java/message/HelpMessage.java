@@ -1,10 +1,10 @@
 package message;
 
+import java.util.Objects;
+
 import command.CommandType;
 import command.HelpCmd;
 import common.CommandDocs;
-
-import java.util.Objects;
 
 /**
  * Generates formatted help documentation for available commands in the application.

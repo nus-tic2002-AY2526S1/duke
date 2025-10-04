@@ -1,10 +1,10 @@
 package message;
 
-import task.ReadOnlyTask;
-
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import task.ReadOnlyTask;
 
 public class SearchResultMessage implements Message {
     private final List<ReadOnlyTask> results;

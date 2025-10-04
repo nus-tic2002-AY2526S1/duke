@@ -1,8 +1,9 @@
 package ui;
 
-import message.*;
+import java.util.Scanner;
 
-import java.util.*;
+import message.Message;
+import message.WelcomeMessage;
 
 /**
  * Handles console-based user interactions for MeeBot.

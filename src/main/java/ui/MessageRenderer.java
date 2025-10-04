@@ -1,7 +1,9 @@
 package ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import message.Message;
-import java.util.*;
 
 /**
  * Handles console output formatting for MeeBot responses with right-aligned layout
@@ -12,7 +14,7 @@ public class MessageRenderer {
     private final int consoleWidth;
 
     /**
-     * @param maxWidth maximum characters per line for message content
+     * @param maxWidth     maximum characters per line for message content
      * @param consoleWidth total console width for right-alignment calculation
      */
     public MessageRenderer(int maxWidth, int consoleWidth) {

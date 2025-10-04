@@ -1,16 +1,16 @@
 package parser.commandargs;
 
-import exception.InvalidDateTimeException;
-import exception.InvalidFilterException;
-import parser.datetime.DateTimeParser;
-import parser.datetime.ParsedDateTime;
-import task.ReadOnlyTask;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import exception.InvalidDateTimeException;
+import exception.InvalidFilterException;
+import parser.datetime.DateTimeParser;
+import parser.datetime.ParsedDateTime;
+import task.ReadOnlyTask;
 
 /**
  * Utility class for converting string arguments into task filter {@link Predicate}
@@ -26,7 +26,6 @@ import java.util.function.Predicate;
  * and maintains no mutable state.
  */
 public final class TaskFilterParser {
-
     private TaskFilterParser() {}
 
     /**

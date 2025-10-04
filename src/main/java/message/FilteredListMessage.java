@@ -1,8 +1,8 @@
 package message;
 
-import task.ReadOnlyTask;
-
 import java.util.List;
+
+import task.ReadOnlyTask;
 
 /**
  * Message displaying filtered task results with 1-based numbering and filter criteria summary.
@@ -11,10 +11,6 @@ public class FilteredListMessage implements Message {
     private final List<ReadOnlyTask> tasks;
     private final String filterCriteria;
 
-    /**
-     * @param tasks          filtered task list (may be empty); this list is copied defensively
-     * @param filterCriteria original filter criteria for display
-     */
     public FilteredListMessage(List<ReadOnlyTask> tasks, String filterCriteria) {
         this.tasks = List.copyOf(tasks);
         this.filterCriteria = filterCriteria;

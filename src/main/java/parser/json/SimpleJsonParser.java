@@ -1,10 +1,10 @@
 package parser.json;
 
-import exception.FileContentException;
-import exception.FileContentException.ErrorType;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import exception.FileContentException;
+import exception.FileContentException.ErrorType;
 
 /**
  * A simple JSON parser that parses a restricted subset of JSON format.

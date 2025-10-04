@@ -1,9 +1,9 @@
 package command;
 
+import java.util.function.BiFunction;
+
 import common.CommandDocs;
 import manager.TaskManager;
-
-import java.util.function.BiFunction;
 
 /**
  * Enumeration defining all available commands and factory methods.

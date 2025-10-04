@@ -1,10 +1,10 @@
 package parser.json;
 
-import exception.FileContentException;
-import exception.FileContentException.ErrorType;
-
 import java.util.Map;
 import java.util.function.BiFunction;
+
+import exception.FileContentException;
+import exception.FileContentException.ErrorType;
 
 /**
  * A lexical analyzer (tokenizer) for JSON text that breaks input into discrete tokens.

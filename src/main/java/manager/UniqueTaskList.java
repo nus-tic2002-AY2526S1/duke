@@ -1,11 +1,15 @@
 package manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
 import exception.InvalidTaskOperationException;
 import exception.InvalidTaskOperationException.ErrorType;
 import task.ReadOnlyTask;
 import task.Task;
-
-import java.util.*;
 
 /**
  * Represents a list of tasks that enforces uniqueness among its elements.
@@ -16,7 +20,6 @@ import java.util.*;
  * se-edu addressbook-level2</a></em></p>
  */
 public class UniqueTaskList {
-
     private final List<Task> taskList = new ArrayList<>();
 
     /**

@@ -1,12 +1,12 @@
 package parser.datetime;
 
-import com.zoho.hawking.HawkingTimeParser;
-import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration;
-import com.zoho.hawking.language.english.model.DatesFound;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+
+import com.zoho.hawking.HawkingTimeParser;
+import com.zoho.hawking.datetimeparser.configuration.HawkingConfiguration;
+import com.zoho.hawking.language.english.model.DatesFound;
 
 
 /**
@@ -22,7 +22,6 @@ import java.util.Date;
  * @see StrictDateTimeStrategy
  */
 public final class NlpDateTimeStrategy implements DateTimeStrategy {
-
     private static final HawkingTimeParser HAWKING = new HawkingTimeParser();
     private static final HawkingConfiguration CONFIG;
 

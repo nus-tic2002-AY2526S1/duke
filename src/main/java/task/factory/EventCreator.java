@@ -1,5 +1,7 @@
 package task.factory;
 
+import java.util.regex.Pattern;
+
 import exception.FileContentException;
 import exception.InvalidDateTimeException;
 import exception.InvalidTaskFormatException;
@@ -13,8 +15,6 @@ import parser.json.SimpleJsonObject;
 import task.EventTask;
 import task.Recurrence;
 import task.Task;
-
-import java.util.regex.Pattern;
 
 /**
  * Factory for creating event task instances from user input or JSON data.
