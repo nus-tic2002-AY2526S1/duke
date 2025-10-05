@@ -37,7 +37,7 @@ public class FilteredListMessage implements Message {
 
         StringBuilder content = new StringBuilder();
         if (filterCriteria != null && !filterCriteria.isBlank()) {
-            content.append("Filtered by: ").append(filterCriteria).append("\n");
+            content.append("Filtered by ").append(filterCriteria).append("\n");
         }
         for (int i = 0; i < tasks.size(); i++) {
             ReadOnlyTask task = tasks.get(i);

@@ -1,0 +1,18 @@
+.label {
+    -fx-padding: 10 14;
+    -fx-background-radius: 16;
+    -fx-font-family: "Roboto";
+    -fx-font-size: 16px;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.user-bubble {
+    -fx-background-color: #45c468;
+    -fx-text-fill: white;
+}
+
+.bot-bubble {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+}
