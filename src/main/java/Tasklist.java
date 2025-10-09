@@ -1,68 +1,92 @@
 import java.util.ArrayList;
-
+//additional added: Memory Management & Data Recovery
 public class TaskList {
     private ArrayList<Task> tasks;
+    private static final int MAX_TASKS = 1000;
+    private static final int WARNING_THRESHOLD = 500;
 
     public TaskList() {
         this.tasks = new ArrayList<>();
     }
 
+    // Memory Management: Check limits before adding
     public void addTodo(String description) {
-        if (description == null || description.trim().isEmpty()) {
+        if (tasks.size() >= MAX_TASKS) {
+            System.out.println("❌ Task limit reached (" + MAX_TASKS + ")! Complete or remove some tasks first.");
+            return;
+        }
+
+        String sanitizedDesc = InputSanitizer.sanitizeDescription(description);
+        if (sanitizedDesc.isEmpty()) {
             System.out.println("Wait, what's the todo? Give me the details!");
             return;
         }
 
         try {
-            Todo newTask = new Todo(description);
+            Todo newTask = new Todo(sanitizedDesc);
             tasks.add(newTask);
             System.out.println("🎉 Got it. I've added this task:");
             System.out.println("  " + newTask.toString());
             System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
         } catch (Exception e) {
-            System.out.println("❌ Oops! Couldn't add the todo. Let's try that again!");
+            System.out.println("❌ Oops! Couldn't add the todo: " + e.getMessage());
         }
     }
 
     public void addDeadline(String input) {
-        if (input == null || input.trim().isEmpty()) {
+        if (tasks.size() >= MAX_TASKS) {
+            System.out.println("❌ Task limit reached (" + MAX_TASKS + ")! Complete or remove some tasks first.");
+            return;
+        }
+
+        String sanitizedInput = InputSanitizer.sanitizeInput(input);
+        if (sanitizedInput.isEmpty()) {
             System.out.println("Wait, what's the deadline? Give me the details!");
             return;
         }
 
-        String[] deadlineParts = input.split(" /by ", 2);
+        String[] deadlineParts = sanitizedInput.split(" /by ", 2);
         if (deadlineParts.length < 2) {
             System.out.println("⏰ Deadline format should be: deadline DESCRIPTION /by TIME");
             return;
         }
 
-        if (deadlineParts[0].trim().isEmpty()) {
+        String description = InputSanitizer.sanitizeDescription(deadlineParts[0]);
+        String by = InputSanitizer.sanitizeTime(deadlineParts[1]);
+
+        if (description.isEmpty()) {
             System.out.println("Wait, what's the deadline description? Give me the details!");
             return;
         }
-        if (deadlineParts[1].trim().isEmpty()) {
+        if (by.isEmpty()) {
             System.out.println("When is this deadline due? Add the time after /by!");
             return;
         }
 
         try {
-            Deadline newTask = new Deadline(deadlineParts[0], deadlineParts[1]);
+            Deadline newTask = new Deadline(description, by);
             tasks.add(newTask);
             System.out.println("🎉 Got it. I've added this task:");
             System.out.println("  " + newTask.toString());
             System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
         } catch (Exception e) {
-            System.out.println("❌ Oops! Couldn't add the deadline. Let's try that again!");
+            System.out.println("❌ Oops! Couldn't add the deadline: " + e.getMessage());
         }
     }
 
     public void addEvent(String input) {
-        if (input == null || input.trim().isEmpty()) {
+        if (tasks.size() >= MAX_TASKS) {
+            System.out.println("❌ Task limit reached (" + MAX_TASKS + ")! Complete or remove some tasks first.");
+            return;
+        }
+
+        String sanitizedInput = InputSanitizer.sanitizeInput(input);
+        if (sanitizedInput.isEmpty()) {
             System.out.println("Wait, what's the event? Give me the details!");
             return;
         }
 
-        String[] eventParts = input.split(" /from ", 2);
+        String[] eventParts = sanitizedInput.split(" /from ", 2);
         if (eventParts.length < 2) {
             System.out.println("🎉 Event format should be: event DESCRIPTION /from START_TIME /to END_TIME");
             return;
@@ -74,36 +98,85 @@ public class TaskList {
             return;
         }
 
-        if (eventParts[0].trim().isEmpty()) {
+        String description = InputSanitizer.sanitizeDescription(eventParts[0]);
+        String from = InputSanitizer.sanitizeTime(timeParts[0]);
+        String to = InputSanitizer.sanitizeTime(timeParts[1]);
+
+        if (description.isEmpty()) {
             System.out.println("Wait, what's the event description? Give me the details!");
             return;
         }
-        if (timeParts[0].trim().isEmpty()) {
+        if (from.isEmpty()) {
             System.out.println("When does this event start? Add the start time after /from!");
             return;
         }
-        if (timeParts[1].trim().isEmpty()) {
+        if (to.isEmpty()) {
             System.out.println("When does this event end? Add the end time after /to!");
             return;
         }
 
         try {
-            Event newTask = new Event(eventParts[0], timeParts[0], timeParts[1]);
+            Event newTask = new Event(description, from, to);
             tasks.add(newTask);
             System.out.println("🎉 Got it. I've added this task:");
             System.out.println("  " + newTask.toString());
             System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
         } catch (Exception e) {
-            System.out.println("❌ Oops! Couldn't add the event. Let's try that again!");
+            System.out.println("❌ Oops! Couldn't add the event: " + e.getMessage());
         }
     }
 
+    // Data Corruption Recovery
+    public boolean validateTaskIntegrity() {
+        boolean integrityOk = true;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task == null || !task.isValid()) {
+                System.out.println("⚠️  Found corrupted task at position " + (i+1) + ", removing...");
+                tasks.remove(i);
+                i--; // Adjust index after removal
+                integrityOk = false;
+            }
+        }
+        return integrityOk;
+    }
+
+    // Performance Monitoring
+    public void checkPerformance() {
+        if (tasks.size() > WARNING_THRESHOLD) {
+            System.out.println("🐢 You have " + tasks.size() + " tasks. Consider archiving old ones for better performance.");
+        }
+
+        Runtime runtime = Runtime.getRuntime();
+        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+        long maxMemory = runtime.maxMemory();
+
+        if (usedMemory > maxMemory * 0.7) {
+            System.out.println("⚠️  Memory usage is high! The app might slow down.");
+        }
+
+        if (tasks.size() > MAX_TASKS * 0.8) {
+            System.out.println("📈 You're approaching the task limit (" + MAX_TASKS + "). Consider completing some tasks.");
+        }
+    }
+
+    // Direct task addition for file loading (bypasses normal validation)
+    public void addTaskDirectly(Task task) {
+        if (task != null && task.isValid() && tasks.size() < MAX_TASKS) {
+            tasks.add(task);
+        }
+    }
+
+    // Existing methods with minor updates for new features
     public void listTasks() {
         if (tasks.isEmpty()) {
             System.out.println("📭 Your task list is empty! Time to add some tasks?");
             System.out.println("💡 Try 'todo', 'deadline', or 'event' to get started!");
             return;
         }
+
+        // Validate integrity before listing
+        validateTaskIntegrity();
 
         System.out.println("📋 Here are the tasks in your list:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -129,7 +202,7 @@ public class TaskList {
                     System.out.println("  " + task.toString());
                 }
             } catch (Exception e) {
-                System.out.println("❌ Oops! Something went wrong marking the task.");
+                System.out.println("❌ Oops! Something went wrong marking the task: " + e.getMessage());
             }
         } else {
             System.out.println("❌ It's giving 'error'. That task number is sus.");
@@ -154,7 +227,7 @@ public class TaskList {
                     System.out.println("  " + task.toString());
                 }
             } catch (Exception e) {
-                System.out.println("❌ Oops! Something went wrong unmarking the task.");
+                System.out.println("❌ Oops! Something went wrong unmarking the task: " + e.getMessage());
             }
         } else {
             System.out.println("❌ It's giving 'error'. That task number is sus.");

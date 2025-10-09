@@ -2,11 +2,12 @@ public class Deadline extends Task {
     private String by;
 
     public Deadline(String description, String by) {
-        super(description);
+        //added to improve erroe handling system
+        super(InputSanitizer.sanitizeDescription(description));
         if (by == null || by.trim().isEmpty()) {
             throw new IllegalArgumentException("Deadline time cannot be empty!");
         }
-        this.by = by.trim();
+        this.by = InputSanitizer.sanitizeTime(by);
     }
 
     public Deadline(String description, String by, boolean validateTimes) {

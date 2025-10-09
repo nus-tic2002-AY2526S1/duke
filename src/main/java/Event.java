@@ -3,15 +3,16 @@ public class Event extends Task {
     private String to;
 
     public Event(String description, String from, String to) {
-        super(description);
+        //added to improve error handling system
+        super(InputSanitizer.sanitizeDescription(description));
         if (from == null || from.trim().isEmpty()) {
             throw new IllegalArgumentException("Event start time cannot be empty!");
         }
         if (to == null || to.trim().isEmpty()) {
             throw new IllegalArgumentException("Event end time cannot be empty!");
         }
-        this.from = from.trim();
-        this.to = to.trim();
+        this.from = InputSanitizer.sanitizeTime(from);
+        this.to = InputSanitizer.sanitizeTime(to);
     }
 
     public Event(String description, String from, String to, boolean validateTimes) {

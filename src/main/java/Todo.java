@@ -1,6 +1,7 @@
 public class Todo extends Task {
+    //added to improve error handling system
     public Todo(String description) {
-        super(description);
+        super(InputSanitizer.sanitizeDescription(description));
     }
 
     public Todo(String description, boolean validate) {
