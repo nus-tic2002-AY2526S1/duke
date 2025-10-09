@@ -14,6 +14,9 @@ public class Whisperwind {
         System.out.println("Type 'list' to see the whole vibe for today");
         System.out.println("Type 'mark X' to mark a task as done. Slay!");
         System.out.println("Type 'unmark X' to get that task back on the grind");
+        System.out.println("Type 'todo DESCRIPTION' to add a simple task");
+        System.out.println("Type 'deadline DESCRIPTION /by TIME' to add a task with deadline");
+        System.out.println("Type 'event DESCRIPTION /from START_TIME /to END_TIME' to add an event");
         System.out.println("Type 'view instruction' to peep these instructions again");
         System.out.println("Type 'bye' to say goodbye.");
     }
@@ -58,6 +61,27 @@ public class Whisperwind {
                         System.out.println("Give me the number so I can unmark it.");
                     }
                     break;
+                case "todo":
+                    if (parts.length > 1) {
+                        tasks.addTodo(parts[1]);
+                    } else {
+                        System.out.println("Wait, what's the todo? Give me the details!");
+                    }
+                    break;
+                case "deadline":
+                    if (parts.length > 1) {
+                        tasks.addDeadline(parts[1]);
+                    } else {
+                        System.out.println("Wait, what's the deadline? Give me the details!");
+                    }
+                    break;
+                case "event":
+                    if (parts.length > 1) {
+                        tasks.addEvent(parts[1]);
+                    } else {
+                        System.out.println("Wait, what's the event? Give me the details!");
+                    }
+                    break;
                 case "bye":
                     isExit = true;
                     break;
@@ -65,11 +89,11 @@ public class Whisperwind {
                     if (parts.length > 1 && parts[1].equalsIgnoreCase("instruction")) {
                         showInstructions();
                     } else {
-                        tasks.addTask(input);
+                        System.out.println("If you're trying to add a task, use 'todo', 'deadline', or 'event' commands!");
                     }
                     break;
                 default:
-                    tasks.addTask(input);
+                    System.out.println("I don't know that command! Type 'view instruction' to see what I can do.");
                     break;
             }
         }
@@ -81,3 +105,4 @@ public class Whisperwind {
         new Whisperwind().start();
     }
 }
+
