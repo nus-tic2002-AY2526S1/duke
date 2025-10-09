@@ -1,4 +1,4 @@
-public class Task {
+public abstract class Task {
     private String description;
     private boolean isDone;
 
@@ -9,6 +9,8 @@ public class Task {
         this.description = description.trim();
         this.isDone = false;
     }
+
+    public abstract TaskType getTaskType();
 
     public String getStatusIcon() {
         return (isDone ? "[X]" : "[ ]");

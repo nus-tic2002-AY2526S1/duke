@@ -1,16 +1,15 @@
-//AI write this for Error Handling Improvement in my system
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TaskFileManager {
     private static final String TASKS_FILE = "whisperwind_tasks.txt";
     private static final String BACKUP_FILE = "whisperwind_tasks_backup.txt";
-    private static final int MAX_AUTO_SAVE_INTERVAL = 30000; // 30 seconds
+    private static final int MAX_AUTO_SAVE_INTERVAL = 30000;
 
     private long lastSaveTime = 0;
 
     public void saveTasks(TaskList tasks) throws IOException {
+        createBackup(tasks);
+
         try (PrintWriter writer = new PrintWriter(new FileWriter(TASKS_FILE))) {
             for (int i = 0; i < tasks.getTaskCount(); i++) {
                 Task task = tasks.getTask(i + 1);
@@ -65,7 +64,6 @@ public class TaskFileManager {
 
     public void autoSaveTasks(TaskList tasks) throws IOException {
         long currentTime = System.currentTimeMillis();
-        // Only auto-save if enough time has passed to prevent excessive I/O
         if (currentTime - lastSaveTime > MAX_AUTO_SAVE_INTERVAL) {
             saveTasks(tasks);
         }
@@ -91,7 +89,6 @@ public class TaskFileManager {
     }
 
     private String serializeTask(Task task) {
-        // Simple serialization format: TYPE|DESCRIPTION|STATUS|EXTRA_DATA
         if (task instanceof Todo) {
             return "T|" + task.getDescription() + "|" + task.isDone();
         } else if (task instanceof Deadline) {
@@ -106,7 +103,7 @@ public class TaskFileManager {
 
     private Task deserializeTask(String line) {
         try {
-            String[] parts = line.split("\\|", -1); // -1 to keep trailing empty strings
+            String[] parts = line.split("\\|", -1);
             if (parts.length < 3) return null;
 
             String type = parts[0];

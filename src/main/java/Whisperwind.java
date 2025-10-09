@@ -6,41 +6,22 @@ public class Whisperwind {
     private TaskList tasks;
     private Scanner scanner;
     private TaskFileManager fileManager;
+    private DeleteManager deleteManager;
+    private TaskManager taskManager; // NEW
     private long lastCommandTime = 0;
-    private static final long MIN_COMMAND_INTERVAL = 300; // milliseconds
+    private static final long MIN_COMMAND_INTERVAL = 300;
 
     public Whisperwind() {
         this.tasks = new TaskList();
         this.scanner = new Scanner(System.in);
         this.fileManager = new TaskFileManager();
-    }
-
-    private void showInstructions() {
-        System.out.println("\n🎊 POP-UP INSTRUCTIONS 🎊");
-        System.out.println("╔══════════════════════════════════════════════════╗");
-        System.out.println("║              AVAILABLE COMMANDS                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
-        System.out.println("║ 🗒️   list              - View all tasks          ║");
-        System.out.println("║ ✅   mark [number]     - Complete a task         ║");
-        System.out.println("║ 🔄   unmark [number]   - Uncomplete a task       ║");
-        System.out.println("║ 📝   todo [task]       - Add simple task         ║");
-        System.out.println("║ ⏰   deadline [task]   - Add task with deadline  ║");
-        System.out.println("║ 🎉   event [task]      - Add event with times    ║");
-        System.out.println("║ 💾   save              - Force save tasks        ║");
-        System.out.println("║ ❓   view instruction  - Show this pop-up        ║");
-        System.out.println("║ 👋   bye               - Exit gracefully         ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
-        System.out.println("✨ Press Enter to return to your tasks... ✨");
-        scanner.nextLine();
-
-        System.out.println("\n".repeat(2));
-        System.out.println("Welcome back! What would you like to do next?");
+        this.deleteManager = new DeleteManager(tasks, scanner);
+        this.taskManager = new TaskManager(tasks, scanner); // NEW
     }
 
     public void start() {
-        // Resource leak prevention: Use try-with-resources
         try {
-            showWelcomeMessage();
+            InstructionManager.showWelcomeMessage();
             loadTasksOnStartup();
 
             boolean isExit = false;
@@ -48,7 +29,6 @@ public class Whisperwind {
                 System.out.print("> ");
                 String input = scanner.nextLine().trim();
 
-                // Input sanitization
                 input = InputSanitizer.sanitizeInput(input);
 
                 if (input.isEmpty()) {
@@ -56,8 +36,18 @@ public class Whisperwind {
                     continue;
                 }
 
-                // Rate limiting
                 if (!checkRateLimit()) {
+                    continue;
+                }
+
+                // Handle instruction commands first
+                if (input.equalsIgnoreCase("view instruction")) {
+                    InstructionManager.showBasicInstructions();
+                    continue;
+                }
+
+                if (input.equalsIgnoreCase("delete instruction")) {
+                    InstructionManager.showDeleteInstructions();
                     continue;
                 }
 
@@ -71,82 +61,56 @@ public class Whisperwind {
                             break;
                         case "mark":
                             if (parts.length > 1) {
-                                try {
-                                    int taskNumber = Integer.parseInt(parts[1]);
-                                    tasks.markTask(taskNumber);
-                                    autoSaveTasks();
-                                } catch (NumberFormatException e) {
-                                    System.out.println("It's giving 'error'. That number ain't it.");
-                                } catch (IndexOutOfBoundsException e) {
-                                    System.out.println("That task number doesn't exist in the list!");
-                                }
+                                taskManager.handleMarkCommand(parts); // UPDATED
+                                autoSaveTasks();
                             } else {
                                 System.out.println("Wait, which task are we marking?");
+                                System.out.println("💡 You can mark multiple: mark 1,3,5");
                             }
                             break;
                         case "unmark":
                             if (parts.length > 1) {
-                                try {
-                                    int taskNumber = Integer.parseInt(parts[1]);
-                                    tasks.unmarkTask(taskNumber);
-                                    autoSaveTasks();
-                                } catch (NumberFormatException e) {
-                                    System.out.println("It's giving 'error'. That number ain't it.");
-                                } catch (IndexOutOfBoundsException e) {
-                                    System.out.println("That task number doesn't exist in the list!");
-                                }
+                                taskManager.handleUnmarkCommand(parts); // UPDATED
+                                autoSaveTasks();
                             } else {
                                 System.out.println("Give me the number so I can unmark it.");
+                                System.out.println("💡 You can unmark multiple: unmark 1,3,5");
+                            }
+                            break;
+                        case "delete":
+                            if (parts.length > 1) {
+                                if (parts[1].equalsIgnoreCase("instruction")) {
+                                    InstructionManager.showDeleteInstructions();
+                                } else {
+                                    deleteManager.handleDeleteCommand(parts);
+                                    autoSaveTasks();
+                                }
+                            } else {
+                                System.out.println("Wait, what do you want to delete?");
+                                deleteManager.showDeleteHelp();
                             }
                             break;
                         case "todo":
-                            if (parts.length > 1) {
-                                if (parts[1].trim().isEmpty()) {
-                                    System.out.println("Wait, what's the todo? Give me the details!");
-                                } else {
-                                    tasks.addTodo(parts[1]);
-                                    autoSaveTasks();
-                                }
-                            } else {
-                                System.out.println("Wait, what's the todo? Give me the details!");
-                            }
+                            handleTodoCommand(parts);
                             break;
                         case "deadline":
-                            if (parts.length > 1) {
-                                if (parts[1].trim().isEmpty()) {
-                                    System.out.println("Wait, what's the deadline? Give me the details!");
-                                } else {
-                                    tasks.addDeadline(parts[1]);
-                                    autoSaveTasks();
-                                }
-                            } else {
-                                System.out.println("Wait, what's the deadline? Give me the details!");
-                            }
+                            handleDeadlineCommand(parts);
                             break;
                         case "event":
-                            if (parts.length > 1) {
-                                if (parts[1].trim().isEmpty()) {
-                                    System.out.println("Wait, what's the event? Give me the details!");
-                                } else {
-                                    tasks.addEvent(parts[1]);
-                                    autoSaveTasks();
-                                }
-                            } else {
-                                System.out.println("Wait, what's the event? Give me the details!");
-                            }
+                            handleEventCommand(parts);
                             break;
                         case "save":
                             saveTasks();
                             break;
                         case "bye":
-                            saveTasks(); // Auto-save on exit
+                            saveTasks();
                             isExit = true;
                             break;
                         case "view":
                             if (parts.length > 1 && parts[1].equalsIgnoreCase("instruction")) {
-                                showInstructions();
+                                InstructionManager.showBasicInstructions();
                             } else {
-                                System.out.println("If you're trying to add a task, use 'todo', 'deadline', or 'event' commands!");
+                                System.out.println("Did you mean 'view instruction'?");
                             }
                             break;
                         default:
@@ -158,17 +122,42 @@ public class Whisperwind {
                     System.out.println("💡 Error: " + e.getMessage());
                 }
 
-                // Performance monitoring
                 tasks.checkPerformance();
             }
-            showGoodbyeMessage();
+            InstructionManager.showGoodbyeMessage();
         } catch (Exception e) {
             System.out.println("❌ Critical error in application: " + e.getMessage());
         } finally {
-            // Resource leak prevention: Ensure scanner is closed
             if (scanner != null) {
                 scanner.close();
             }
+        }
+    }
+
+    private void handleTodoCommand(String[] parts) {
+        if (parts.length > 1 && !parts[1].trim().isEmpty()) {
+            tasks.addTodo(parts[1]);
+            autoSaveTasks();
+        } else {
+            System.out.println("Wait, what's the todo? Give me the details!");
+        }
+    }
+
+    private void handleDeadlineCommand(String[] parts) {
+        if (parts.length > 1 && !parts[1].trim().isEmpty()) {
+            tasks.addDeadline(parts[1]);
+            autoSaveTasks();
+        } else {
+            System.out.println("Wait, what's the deadline? Give me the details!");
+        }
+    }
+
+    private void handleEventCommand(String[] parts) {
+        if (parts.length > 1 && !parts[1].trim().isEmpty()) {
+            tasks.addEvent(parts[1]);
+            autoSaveTasks();
+        } else {
+            System.out.println("Wait, what's the event? Give me the details!");
         }
     }
 
@@ -194,13 +183,12 @@ public class Whisperwind {
 
     private void saveTasks() {
         try {
-            // Data corruption recovery: Validate before saving
             if (tasks.validateTaskIntegrity()) {
                 fileManager.saveTasks(tasks);
                 System.out.println("💾 Tasks saved successfully!");
             } else {
                 System.out.println("⚠️  Fixed some task issues before saving.");
-                fileManager.saveTasks(tasks); // Save after recovery
+                fileManager.saveTasks(tasks);
             }
         } catch (IOException e) {
             System.out.println("❌ Failed to save tasks: " + e.getMessage());
@@ -211,32 +199,12 @@ public class Whisperwind {
 
     private void autoSaveTasks() {
         try {
-            // Only auto-save if we have tasks to prevent unnecessary I/O
             if (tasks.getTaskCount() > 0) {
                 fileManager.autoSaveTasks(tasks);
             }
         } catch (Exception e) {
             System.out.println("⚠️  Auto-save failed: " + e.getMessage());
         }
-    }
-
-    private void showWelcomeMessage() {
-        System.out.println("╔══════════════════════════════════════════════════╗");
-        System.out.println("║                 🌸 WHISPERWIND 🌸                 ║");
-        System.out.println("║            Your Personal Task Manager            ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
-        System.out.println("║   Type 'view instruction' for command pop-up!    ║");
-        System.out.println("║   Type 'save' to manually backup your tasks      ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
-        System.out.println("\nWhat can I do for you today? 💫");
-    }
-
-    private void showGoodbyeMessage() {
-        System.out.println("\n╔══════════════════════════════════════════════════╗");
-        System.out.println("║                    👋 GOODBYE!                    ║");
-        System.out.println("║         Thanks for using Whisperwind! 🌸          ║");
-        System.out.println("║      Your tasks are saved for next time! 💾       ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
     }
 
     public static void main(String[] args) {

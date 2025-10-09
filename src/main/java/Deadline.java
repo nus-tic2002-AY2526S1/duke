@@ -2,38 +2,30 @@ public class Deadline extends Task {
     private String by;
 
     public Deadline(String description, String by) {
-        //added to improve erroe handling system
-        super(InputSanitizer.sanitizeDescription(description));
+        super(description);
         if (by == null || by.trim().isEmpty()) {
             throw new IllegalArgumentException("Deadline time cannot be empty!");
         }
         this.by = InputSanitizer.sanitizeTime(by);
     }
 
-    public Deadline(String description, String by, boolean validateTimes) {
-        super(description);
-        if (by == null || by.trim().isEmpty()) {
-            throw new IllegalArgumentException("Deadline time cannot be empty!");
-        }
-        String trimmedBy = by.trim();
-        if (validateTimes && trimmedBy.length() < 2) {
-            throw new IllegalArgumentException("Deadline time seems too short!");
-        }
-        this.by = trimmedBy;
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.DEADLINE;
     }
 
     @Override
     public String toString() {
         try {
             if (!isValid()) {
-                return "[D][INVALID] Invalid Deadline Task";
+                return TaskType.DEADLINE.getPrefix() + "[INVALID] Invalid Deadline Task";
             }
             if (by == null || by.trim().isEmpty()) {
-                return "[D]" + super.toString() + " (by: unspecified)";
+                return TaskType.DEADLINE.getPrefix() + super.toString() + " (by: unspecified)";
             }
-            return "[D]" + super.toString() + " (by: " + by + ")";
+            return TaskType.DEADLINE.getPrefix() + super.toString() + " (by: " + by + ")";
         } catch (Exception e) {
-            return "[D][ERROR] Could not display deadline task";
+            return TaskType.DEADLINE.getPrefix() + "[ERROR] Could not display deadline task";
         }
     }
 
@@ -45,14 +37,7 @@ public class Deadline extends Task {
         if (by == null || by.trim().isEmpty()) {
             throw new IllegalArgumentException("Deadline time cannot be empty!");
         }
-        this.by = by.trim();
-    }
-
-    @Override
-    public boolean isValid() {
-        return super.isValid() &&
-                by != null &&
-                !by.trim().isEmpty();
+        this.by = InputSanitizer.sanitizeTime(by);
     }
 
     public static Deadline createDeadline(String description, String by) {
@@ -63,12 +48,6 @@ public class Deadline extends Task {
             throw new IllegalArgumentException("Deadline time cannot be empty!");
         }
         return new Deadline(description.trim(), by.trim());
-    }
-
-    public boolean meetsDeadlineRequirements() {
-        return isValid() &&
-                getDescription().length() <= 1000 &&
-                by.length() <= 100;
     }
 
     public boolean hasReasonableTimeFormat() {

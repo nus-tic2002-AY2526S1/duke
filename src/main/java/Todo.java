@@ -1,31 +1,23 @@
 public class Todo extends Task {
-    //added to improve error handling system
     public Todo(String description) {
-        super(InputSanitizer.sanitizeDescription(description));
+        super(description);
     }
 
-    public Todo(String description, boolean validate) {
-        super(description);
-        if (validate && (description == null || description.trim().isEmpty())) {
-            throw new IllegalArgumentException("Todo description cannot be empty!");
-        }
+    @Override
+    public TaskType getTaskType() {
+        return TaskType.TODO;
     }
 
     @Override
     public String toString() {
         try {
             if (!isValid()) {
-                return "[T][INVALID] Invalid Todo Task";
+                return TaskType.TODO.getPrefix() + "[INVALID] Invalid Todo Task";
             }
-            return "[T]" + super.toString();
+            return TaskType.TODO.getPrefix() + super.toString();
         } catch (Exception e) {
-            return "[T][ERROR] Could not display task";
+            return TaskType.TODO.getPrefix() + "[ERROR] Could not display task";
         }
-    }
-
-    @Override
-    public boolean isValid() {
-        return super.isValid() && getDescription() != null;
     }
 
     public static Todo createTodo(String description) {
