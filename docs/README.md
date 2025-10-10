@@ -1,4 +1,4 @@
-# Whisperwind User Guide
+# main.Whisperwind User Guide
 
 // Update the title above to match the actual product name
 

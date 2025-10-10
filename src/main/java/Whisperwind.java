@@ -1,5 +1,12 @@
+package whisperwind;
+
+import whisperwind.controller.*;
+import whisperwind.model.*;
+import whisperwind.storage.*;
+import whisperwind.util.*;
 import java.util.Scanner;
 import java.io.IOException;
+
 
 public class Whisperwind {
 
@@ -211,7 +218,7 @@ public class Whisperwind {
         try {
             new Whisperwind().start();
         } catch (Exception e) {
-            System.out.println("💥 Critical error! Whisperwind has to close. Bye!");
+            System.out.println("💥 Critical error! main.Whisperwind has to close. Bye!");
             System.out.println("Error: " + e.getMessage());
         }
     }
