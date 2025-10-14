@@ -1,7 +1,25 @@
 package whisperwind.controller;
 
+/**
+ * The {@code InstructionManager} class is responsible for displaying user instructions,
+ * guides, and messages for the Whisperwind task management application.
+ * <p>
+ * It provides visual, text-based guides to help users understand the available commands,
+ * such as task management, deletion operations, and quick start instructions.
+ * </p>
+ *
+ * <p>All methods are static so they can be accessed without creating an instance.</p>
+ */
 public class InstructionManager {
 
+    /**
+     * Displays the basic command instructions for Whisperwind, including
+     * task management, adding tasks, deleting basics, and a quick start guide.
+     * <p>
+     * This method prints a formatted set of instructions in the console
+     * with visual borders and icons to improve readability.
+     * </p>
+     */
     public static void showBasicInstructions() {
         System.out.println();
         System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");
@@ -75,6 +93,13 @@ public class InstructionManager {
         System.out.println();
     }
 
+    /**
+     * Displays advanced delete instructions for Whisperwind, explaining
+     * bulk deletion, pattern matching, deletion by type, and advanced safety features.
+     * <p>
+     * This method is meant for users who want finer control over their task deletion commands.
+     * </p>
+     */
     public static void showDeleteInstructions() {
         System.out.println();
         System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");
@@ -172,6 +197,12 @@ public class InstructionManager {
         System.out.println();
     }
 
+    /**
+     * Displays a welcome message when Whisperwind starts.
+     * <p>
+     * Includes helpful hints for accessing instructions and delete guides.
+     * </p>
+     */
     public static void showWelcomeMessage() {
         System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");
         System.out.println("║                              🌸 WHISPERWIND 🌸                                ║");
@@ -184,6 +215,12 @@ public class InstructionManager {
         System.out.println("What can I do for you today? 💫");
     }
 
+    /**
+     * Displays a farewell message when the user exits Whisperwind.
+     * <p>
+     * Confirms that tasks have been saved and thanks the user.
+     * </p>
+     */
     public static void showGoodbyeMessage() {
         System.out.println();
         System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");

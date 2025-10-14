@@ -7,15 +7,27 @@ import whisperwind.model.Event;
 import whisperwind.controller.TaskList;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+/**
+ * Manages saving and loading tasks to/from files.
+ * Handles file operations including backups and auto-saving.
+ */
 public class TaskFileManager {
     private static final String DATA_DIR = "./data";
     private static final String TASKS_FILE = DATA_DIR + File.separator + "whisperwind_tasks.txt";
     private static final String BACKUP_FILE = DATA_DIR + File.separator + "whisperwind_tasks_backup.txt";
     private static final int MAX_AUTO_SAVE_INTERVAL = 30000;
 
+    private static final DateTimeFormatter STORAGE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private long lastSaveTime = 0;
 
+    /**
+     * Saves all tasks to the tasks file.
+     * @param tasks the task list to save
+     * @throws IOException if saving fails
+     */
     public void saveTasks(TaskList tasks) throws IOException {
         ensureDataDirectoryExists();
         createBackup(tasks);
@@ -34,6 +46,11 @@ public class TaskFileManager {
         }
     }
 
+    /**
+     * Loads tasks from the tasks file.
+     * @param tasks the task list to load into
+     * @throws IOException if loading fails
+     */
     public void loadTasks(TaskList tasks) throws IOException {
         File file = new File(TASKS_FILE);
         if (!file.exists()) {
@@ -77,6 +94,11 @@ public class TaskFileManager {
         }
     }
 
+    /**
+     * Auto-saves tasks if enough time has passed since last save.
+     * @param tasks the task list to save
+     * @throws IOException if saving fails
+     */
     public void autoSaveTasks(TaskList tasks) throws IOException {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastSaveTime > MAX_AUTO_SAVE_INTERVAL) {
@@ -84,6 +106,11 @@ public class TaskFileManager {
         }
     }
 
+    /**
+     * Creates a backup of the current tasks file.
+     * @param tasks the current task list
+     * @throws IOException if backup fails
+     */
     public void createBackup(TaskList tasks) throws IOException {
         ensureDataDirectoryExists();
         try {
@@ -101,6 +128,43 @@ public class TaskFileManager {
             }
         } catch (IOException e) {
             throw new IOException("Failed to create backup: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Finds tasks that occur on a specific date.
+     * @param tasks the task list to search
+     * @param dateString the date in yyyy-MM-dd format
+     */
+    public void findTasksOnDate(TaskList tasks, String dateString) {
+        try {
+            java.time.LocalDate targetDate = java.time.LocalDate.parse(dateString);
+            System.out.println("📅 Tasks occurring on " + targetDate.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ":");
+
+            boolean found = false;
+            for (int i = 0; i < tasks.getTaskCount(); i++) {
+                Task task = tasks.getTask(i + 1);
+                if (task instanceof Deadline) {
+                    Deadline deadline = (Deadline) task;
+                    if (deadline.getBy().toLocalDate().equals(targetDate)) {
+                        System.out.println("  " + (i + 1) + ". " + task);
+                        found = true;
+                    }
+                } else if (task instanceof Event) {
+                    Event event = (Event) task;
+                    if (event.getFrom().toLocalDate().equals(targetDate) ||
+                            event.getTo().toLocalDate().equals(targetDate)) {
+                        System.out.println("  " + (i + 1) + ". " + task);
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found) {
+                System.out.println("  No tasks found for this date.");
+            }
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println("❌ Invalid date format. Please use yyyy-MM-dd format (e.g., 2019-12-02)");
         }
     }
 
@@ -137,10 +201,13 @@ public class TaskFileManager {
             return "T | " + doneFlag + " | " + task.getDescription();
         } else if (task instanceof Deadline) {
             Deadline deadline = (Deadline) task;
-            return "D | " + doneFlag + " | " + task.getDescription() + " | " + deadline.getBy();
+            String byString = deadline.getBy().format(STORAGE_FORMATTER);
+            return "D | " + doneFlag + " | " + task.getDescription() + " | " + byString;
         } else if (task instanceof Event) {
             Event event = (Event) task;
-            return "E | " + doneFlag + " | " + task.getDescription() + " | " + event.getFrom() + " | " + event.getTo();
+            String fromString = event.getFrom().format(STORAGE_FORMATTER);
+            String toString = event.getTo().format(STORAGE_FORMATTER);
+            return "E | " + doneFlag + " | " + task.getDescription() + " | " + fromString + " | " + toString;
         }
         return null;
     }
@@ -163,12 +230,18 @@ public class TaskFileManager {
                     break;
                 case "D":
                     if (parts.length >= 4) {
-                        task = new Deadline(description, parts[3].trim());
+                        String byString = parts[3].trim();
+                        LocalDateTime by = LocalDateTime.parse(byString, STORAGE_FORMATTER);
+                        task = new Deadline(description, by);
                     }
                     break;
                 case "E":
                     if (parts.length >= 5) {
-                        task = new Event(description, parts[3].trim(), parts[4].trim());
+                        String fromString = parts[3].trim();
+                        String toString = parts[4].trim();
+                        LocalDateTime from = LocalDateTime.parse(fromString, STORAGE_FORMATTER);
+                        LocalDateTime to = LocalDateTime.parse(toString, STORAGE_FORMATTER);
+                        task = new Event(description, from, to);
                     }
                     break;
                 default:

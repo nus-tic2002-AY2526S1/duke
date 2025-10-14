@@ -1,31 +1,50 @@
 package whisperwind;
 
 import whisperwind.controller.*;
+import whisperwind.exceptions.CommandException;
+import whisperwind.exceptions.TaskException;
 import whisperwind.model.*;
 import whisperwind.storage.*;
 import whisperwind.util.*;
 import java.util.Scanner;
 import java.io.IOException;
 
-
+/**
+ * The {@code Whisperwind} class is the main entry point for the Whisperwind task management application.
+ * It handles user input, command processing, and coordinates between different components of the system.
+ * <p>
+ * This class manages the application lifecycle including startup, command processing, and shutdown.
+ * </p>
+ */
 public class Whisperwind {
 
     private TaskList tasks;
     private Scanner scanner;
     private TaskFileManager fileManager;
     private DeleteManager deleteManager;
-    private TaskManager taskManager; // NEW
+    private TaskManager taskManager;
     private long lastCommandTime = 0;
     private static final long MIN_COMMAND_INTERVAL = 300;
 
+    /**
+     * Constructs a new Whisperwind application instance.
+     * Initializes all necessary components including task list, file manager, and command handlers.
+     */
     public Whisperwind() {
         this.tasks = new TaskList();
         this.scanner = new Scanner(System.in);
         this.fileManager = new TaskFileManager();
         this.deleteManager = new DeleteManager(tasks, scanner);
-        this.taskManager = new TaskManager(tasks, scanner); // NEW
+        this.taskManager = new TaskManager(tasks, scanner);
     }
 
+    /**
+     * Starts the main application loop.
+     * <p>
+     * This method displays the welcome message, loads existing tasks, and processes
+     * user commands until the exit command is received.
+     * </p>
+     */
     public void start() {
         try {
             InstructionManager.showWelcomeMessage();
@@ -68,7 +87,7 @@ public class Whisperwind {
                             break;
                         case "mark":
                             if (parts.length > 1) {
-                                taskManager.handleMarkCommand(parts); // UPDATED
+                                taskManager.handleMarkCommand(parts);
                                 autoSaveTasks();
                             } else {
                                 System.out.println("Wait, which task are we marking?");
@@ -77,7 +96,7 @@ public class Whisperwind {
                             break;
                         case "unmark":
                             if (parts.length > 1) {
-                                taskManager.handleUnmarkCommand(parts); // UPDATED
+                                taskManager.handleUnmarkCommand(parts);
                                 autoSaveTasks();
                             } else {
                                 System.out.println("Give me the number so I can unmark it.");
@@ -120,6 +139,14 @@ public class Whisperwind {
                                 System.out.println("Did you mean 'view instruction'?");
                             }
                             break;
+                        case "find":
+                            if (parts.length > 1 && parts[1].startsWith("on ")) {
+                                handleFindOnDateCommand(parts[1].substring(3).trim());
+                            } else {
+                                System.out.println("Usage: find on YYYY-MM-DD");
+                                System.out.println("Example: find on 2024-12-25");
+                            }
+                            break;
                         default:
                             System.out.println("I don't know that command! Type 'view instruction' to see what I can do.");
                             break;
@@ -141,25 +168,52 @@ public class Whisperwind {
         }
     }
 
+    /**
+     * Handles the todo command to add a new simple task.
+     *
+     * @param parts The command parts containing the todo description
+     */
     private void handleTodoCommand(String[] parts) {
         if (parts.length > 1 && !parts[1].trim().isEmpty()) {
-            tasks.addTodo(parts[1]);
+            try {
+                tasks.addTodo(parts[1]);
+            } catch (TaskException e) {
+                throw new RuntimeException(e);
+            } catch (CommandException e) {
+                throw new RuntimeException(e);
+            }
             autoSaveTasks();
         } else {
             System.out.println("Wait, what's the todo? Give me the details!");
         }
     }
 
+    /**
+     * Handles the deadline command to add a new task with a deadline.
+     *
+     * @param parts The command parts containing the deadline description and time
+     */
     private void handleDeadlineCommand(String[] parts) {
         if (parts.length > 1 && !parts[1].trim().isEmpty()) {
-            tasks.addDeadline(parts[1]);
+            try {
+                tasks.addDeadline(parts[1]);
+            } catch (TaskException e) {
+                throw new RuntimeException(e);
+            } catch (CommandException e) {
+                throw new RuntimeException(e);
+            }
             autoSaveTasks();
         } else {
             System.out.println("Wait, what's the deadline? Give me the details!");
         }
     }
 
-    private void handleEventCommand(String[] parts) {
+    /**
+     * Handles the event command to add a new event with start and end times.
+     *
+     * @param parts The command parts containing the event description and times
+     */
+    private void handleEventCommand(String[] parts) throws TaskException, CommandException {
         if (parts.length > 1 && !parts[1].trim().isEmpty()) {
             tasks.addEvent(parts[1]);
             autoSaveTasks();
@@ -168,6 +222,24 @@ public class Whisperwind {
         }
     }
 
+    /**
+     * Handles the find on command to search for tasks on a specific date.
+     *
+     * @param dateString The date string in YYYY-MM-DD format
+     */
+    private void handleFindOnDateCommand(String dateString) {
+        if (dateString == null || dateString.trim().isEmpty()) {
+            System.out.println("Please provide a date in YYYY-MM-DD format");
+            return;
+        }
+        fileManager.findTasksOnDate(tasks, dateString.trim());
+    }
+
+    /**
+     * Checks if the command rate limit has been exceeded.
+     *
+     * @return true if the command can proceed, false if rate limited
+     */
     private boolean checkRateLimit() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastCommandTime < MIN_COMMAND_INTERVAL) {
@@ -178,6 +250,9 @@ public class Whisperwind {
         return true;
     }
 
+    /**
+     * Loads tasks from storage on application startup.
+     */
     private void loadTasksOnStartup() {
         try {
             System.out.println("🔍 Looking for saved tasks...");
@@ -188,6 +263,9 @@ public class Whisperwind {
         }
     }
 
+    /**
+     * Manually saves all tasks to persistent storage.
+     */
     private void saveTasks() {
         try {
             if (tasks.validateTaskIntegrity()) {
@@ -204,6 +282,9 @@ public class Whisperwind {
         }
     }
 
+    /**
+     * Automatically saves tasks based on internal timing logic.
+     */
     private void autoSaveTasks() {
         try {
             if (tasks.getTaskCount() > 0) {
@@ -214,11 +295,16 @@ public class Whisperwind {
         }
     }
 
+    /**
+     * The main entry point for the Whisperwind application.
+     *
+     * @param args Command line arguments (not used)
+     */
     public static void main(String[] args) {
         try {
             new Whisperwind().start();
         } catch (Exception e) {
-            System.out.println("💥 Critical error! main.Whisperwind has to close. Bye!");
+            System.out.println("💥 Critical error! Whisperwind has to close. Bye!");
             System.out.println("Error: " + e.getMessage());
         }
     }
