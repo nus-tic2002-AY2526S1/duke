@@ -37,7 +37,7 @@ import task.factory.TodoCreator;
  * @see SimpleJsonObject
  */
 public class TaskDeserializer {
-    private static final Path ERROR_LOG_PATH = Paths.get("task_load_errors.log");
+    private static final Path ERROR_LOG_PATH = Paths.get("logs").resolve("task_load_errors.log");
 
     private TaskDeserializer() {}
 
@@ -52,21 +52,23 @@ public class TaskDeserializer {
      * @return a list of successfully deserialized Task objects (may be empty if all tasks failed)
      * @throws FileContentException if the JSON array format itself is invalid (not individual tasks)
      */
-    public static List<Task> reconstructTask(String jsonArray) throws FileContentException {
+    static TaskLoadResult reconstructTask(String jsonArray) throws FileContentException {
+        List<Task> tasks = new ArrayList<>();
+        List<String> errorLog = new ArrayList<>();
         SimpleJsonParser parser = new SimpleJsonParser(new JsonTokenizer(jsonArray));
         List<SimpleJsonObject> objects = parser.parseJson();
 
-        List<Task> tasks = new ArrayList<>();
-        List<String> errorLogs = new ArrayList<>();
         for (SimpleJsonObject obj : objects) {
             try {
                 tasks.add(deserialize(obj));
             } catch (MeeBotException e) {
-                errorLogs.add(formatError(e, obj));
+                errorLog.add(formatError(e, obj));
             }
         }
-        handleErrors(errorLogs);
-        return tasks;
+
+        writeErrorLog(errorLog);
+        String errorLogFile = errorLog.isEmpty() ? null : ERROR_LOG_PATH.getFileName().toString();
+        return new TaskLoadResult(tasks, errorLog.size(), errorLogFile);
     }
 
     /**
@@ -83,13 +85,13 @@ public class TaskDeserializer {
      */
     static Task deserialize(SimpleJsonObject obj) throws MeeBotException {
         String type = obj.requireNonEmpty("type").toLowerCase();
+
         TaskCreator creator = switch (type) {
             case "todo" -> new TodoCreator();
             case "deadline" -> new DeadlineCreator();
             case "event" -> new EventCreator();
             default -> throw new FileContentException(ErrorType.INVALID_INPUT);
         };
-
         Task task = creator.createFromJson(obj);
         if (Boolean.parseBoolean(obj.requireNonEmpty("done"))) {
             task.markAsDone();
@@ -107,29 +109,7 @@ public class TaskDeserializer {
     }
 
     /**
-     * Handles task loading errors by writing them to a log file and notifying the user.
-     * <p>
-     * If no errors occurred, this method returns immediately without any action.
-     * Otherwise, it:
-     * <ol>
-     *     <li>Writes all error messages to the error log file</li>
-     *     <li>Prints a summary message to the console with the error count and log file location</li>
-     * </ol>
-     *
-     * @param errorLogs list of formatted error messages from failed task deserialization
-     */
-    private static void handleErrors(List<String> errorLogs) {
-        if (errorLogs.isEmpty()) return;
-        writeErrorLog(errorLogs);
-        System.out.printf("""
-                        %d tasks failed to load.
-                        See '%s' for details.
-                        """,
-                errorLogs.size(), ERROR_LOG_PATH.getFileName());
-    }
-
-    /**
-     * Writes task loading errors to a log file in the logs directory.
+     * Writes task loading errors to a log file in the log directory.
      * <p>
      * <strong>Log Format:</strong> Each error entry includes:
      * <ul>
@@ -144,14 +124,15 @@ public class TaskDeserializer {
      * @param errors a list of formatted error messages to write to the log file
      */
     private static void writeErrorLog(List<String> errors) {
-        Path logDir = Paths.get("logs");
-        Path logPath = logDir.resolve("task_load_errors.log");
+        if (errors.isEmpty()) return;
+
         try {
-            if (Files.notExists(logDir)) {
-                Files.createDirectories(logDir);
+            Path dir = ERROR_LOG_PATH.getParent();
+            if (dir != null && Files.notExists(dir)) {
+                Files.createDirectories(dir);
             }
             try (BufferedWriter writer = Files.newBufferedWriter(
-                    logPath,
+                    ERROR_LOG_PATH,
                     StandardOpenOption.CREATE,
                     StandardOpenOption.TRUNCATE_EXISTING
             )) {

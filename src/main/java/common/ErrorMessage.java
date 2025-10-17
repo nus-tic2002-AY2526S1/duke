@@ -50,6 +50,7 @@ public record ErrorMessage(String message) implements Message {
     public static final String DUPLICATE_TASK = """
             I am getting déjà vu!
             '%s' is already in your list.
+            Type 'list' to see what's actually in your task list lah!
             """;
 
     // Date time errors
@@ -70,12 +71,16 @@ public record ErrorMessage(String message) implements Message {
             """;
     public static final String END_BEFORE_START = """
             End time cannot be earlier than start time. That's like eating dessert before the main course lah!
-            Common fix: If you didn't specify time, it becomes 00:00.
             Make sure both dates have proper timing, or end time is after start time!
             """;
 
     // File errors
     public static final String INVALID_JSON_FORMAT = """
             The file is corrupted lah, did a cat walk over the keyboard when you are saving the file?
+            """;
+
+    // Catch-all
+    public static final String CATCH_ALL = """
+            Mee-stakes happen lah, try again!
             """;
 }

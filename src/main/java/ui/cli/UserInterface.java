@@ -4,19 +4,22 @@ import java.util.Scanner;
 
 import message.Message;
 import message.WelcomeMessage;
+import storage.TaskLoadResult;
 
 /**
  * Handles console-based user interactions for MeeBot.
  * Provides input/output operations with consistent message formatting and display.
  */
 public class UserInterface {
-    private final Scanner sc = new Scanner(System.in);
     private final MessageRenderer renderer;
+    private final TaskLoadResult stats;
+    private final Scanner sc = new Scanner(System.in);
     private static final int MAX_WIDTH = 60;      // For MeeBot text wrap
     private static final int CONSOLE_WIDTH = 110;
 
-    public UserInterface() {
+    public UserInterface(TaskLoadResult stats) {
         this.renderer = new MessageRenderer(MAX_WIDTH, CONSOLE_WIDTH);
+        this.stats = stats;
     }
 
     /**

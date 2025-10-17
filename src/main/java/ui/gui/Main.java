@@ -1,4 +1,5 @@
 package ui.gui;
+
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -9,8 +10,14 @@ import javafx.stage.Stage;
 import meebot.MeeBot;
 
 public class Main extends Application {
+    private static MeeBot meebot;
 
-    private MeeBot meebot = new MeeBot();
+    /**
+     * Injects the MeeBot instance before Application.launch
+     */
+    public static void setMeeBot(MeeBot mb) {
+        meebot = mb;
+    }
 
     @Override
     public void start(Stage stage) {
@@ -24,7 +31,7 @@ public class Main extends Application {
             stage.setScene(scene);
             stage.setTitle("MeeBot");
             stage.setMinHeight(700);
-            stage.setMinWidth(1050);
+            stage.setMinWidth(1080);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

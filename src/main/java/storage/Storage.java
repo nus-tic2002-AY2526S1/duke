@@ -14,15 +14,16 @@ import task.Task;
 
 /**
  * Handles persistent storage of tasks to and from the file system.
- * <p>This class manages the creation and maintenance of storage directories and files,
- * and provides methods to save tasks in JSON format. It uses a key-based access pattern
- * to ensure that only authorized operations can modify the underlying task data.
+ * <p>
+ * This class manages the creation and maintenance of storage directories and files,
+ * and provides methods to save and load tasks in JSON format.
  */
 public class Storage {
     private static final String DEFAULT_DIR = "data";
     private static final String DEFAULT_FILE = "tasks.json";
     private final File dataFile;
     private final TaskManager tm;
+    private TaskLoadResult loadResult = TaskLoadResult.empty();
 
     public Storage(TaskManager tm) {
         this.tm = tm;
@@ -39,7 +40,6 @@ public class Storage {
      */
     private File initStorage() {
         File dir = new File(DEFAULT_DIR);
-
         if (!dir.exists() && !dir.mkdirs()) {
             throw new RuntimeException("Unable to create storage directory: " + dir.getAbsolutePath());
         }
@@ -66,9 +66,10 @@ public class Storage {
      * @see TaskSerializer#tasksToJson(List)
      */
     public void saveTasks() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dataFile))) {
+        try {
             List<ReadOnlyTask> taskList = tm.getReadOnlyList();
-            writer.write(TaskSerializer.tasksToJson(taskList));
+            String json = TaskSerializer.tasksToJson(taskList);
+            Files.writeString(dataFile.toPath(), json);
         } catch (IOException e) {
             throw new RuntimeException("Failed to save tasks", e);
         }
@@ -77,7 +78,7 @@ public class Storage {
     /**
      * Loads tasks from storage file in JSON format and populates the task list.
      * <p>
-     * Reconstruct the appropriate task from the JSON data using TaskDeserializer
+     * Reconstruct the appropriate task from the JSON data using {@link TaskDeserializer}
      * and adds it to the task list managed by {@link TaskManager}.
      *
      * @throws RuntimeException if the file cannot be read due to I/O errors
@@ -86,16 +87,21 @@ public class Storage {
     public void loadTasks() {
         try {
             String content = Files.readString(dataFile.toPath()).trim();
-            List<Task> tasks = TaskDeserializer.reconstructTask(content);
-            for (Task task : tasks) {
+            loadResult = TaskDeserializer.reconstructTask(content);
+
+            for (Task task : loadResult.tasks()) {
                 tm.addTask(task);
             }
-            System.out.printf("%d tasks loaded%n", tm.getTotalTasks());
+            TaskLoadResult.setCurrent(loadResult);
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to load tasks: ", e);
         } catch (MeeBotException e) {
             System.err.println(e.toErrorMessage());
         }
+    }
+
+    public TaskLoadResult getLoadResult() {
+        return loadResult;
     }
 }
