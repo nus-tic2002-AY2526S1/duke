@@ -1,0 +1,14 @@
+I would like to have more extensive deletion task for users ease of use
+(more than what is stated in Level 6. Delete)
+
+Preparation:
+1. Delete single task
+2. Delete multiple tasks
+3. Delete completed tasks
+4. Delete all tasks
+5. Delete by pattern
+6. Delete by task type
+7. Unknown operation
+
+Also since in this case, new creation also made to have multiple mark and unmark
+instead of doing it only once

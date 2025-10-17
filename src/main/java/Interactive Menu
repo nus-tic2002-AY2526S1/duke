@@ -1,0 +1,17 @@
+AI is used to ensure good visibility for user friendly interaction (mostly use to edit System.out.println).
+For example, I realised that the view instruction are too difficult to see when i try to read.
+With the new implementation, I feel that it is user friendly with a pop of colour.
+Pleasant to see and have segregation for user to understand
+
+Key Features of the Interactive Menu Style:
+🎊 Pop-up Visual Design: Uses box-drawing characters and emojis for a polished look
+
+⏸️ Pause Functionality: The scanner.nextLine() waits for user to press Enter before continuing
+
+✨ Smooth Transitions: Clear space and welcome back message after returning from instructions
+
+🎯 Consistent Styling: All classes now use emojis and consistent error messaging
+
+🛡️ Comprehensive Error Handling: All the previous error handling is maintained
+
+💫 Enhanced User Experience: Better visual feedback and more engaging interface

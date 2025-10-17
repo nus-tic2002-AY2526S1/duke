@@ -1,0 +1,37 @@
+Whisperwind Error Handling Consideration (will add more if I think more)
+
+1. Validation Input
+Empty Commands - to ensure code is not preocessing when user accidently press enter
+Whitespace - reject tasks with empty description
+Null checks - prevents null exception
+
+2. Number & Index Safety
+Invalid numbers: catched non numeric inputs
+out of bounds: prevent handling non existance task
+negative/zero: ensure task start number from 1
+
+3. Data Integrity
+Empty Description: to ensure the data have meaningful content
+Missing Component: validates all parts of deadlines/events exist
+Duplication operations: prevent not neccessary mark/unmark operation
+
+Specific Error Checks:
+
+Command Level
+Empty input → "Say something!"
+Invalid command → "I don't know that command!"
+Missing parameters → "Which task are we marking?"
+
+Task Creation
+Empty todo → "What's the todo?"
+Invalid deadline format → "Use: deadline DESCRIPTION /by TIME"
+Missing event times → "Need both start and end times"
+Whitespace-only inputs → "Give me the details!"
+
+Task Operations
+Invalid task numbers → "That number doesn't exist!"
+Already marked/unmarked → "Task is already done/undone!"
+Empty task list → "Your list is empty!"
+
+
+
