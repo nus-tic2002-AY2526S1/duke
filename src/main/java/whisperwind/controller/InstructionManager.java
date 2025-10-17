@@ -36,7 +36,12 @@ public class InstructionManager {
                 "mark 1,3,5             - Mark multiple tasks as completed",
                 "unmark 3                - Mark task 3 as not completed",
                 "unmark 2,4,6           - Mark multiple tasks as not completed",
-                "save                    - Manually save your tasks"
+                "save                    - Manually save your tasks",
+                "schedule today          - View today's schedule",
+                "schedule tomorrow       - View tomorrow's schedule",
+                "schedule upcoming       - View next 7 days",
+                "schedule 2024-12-25     - View schedule for specific date",
+                "schedule 2024-12-20 to 2024-12-25 - View date range schedule"
         };
         for (String cmd : basicCommands) {
             System.out.printf("║     %-70s ║%n", cmd);
@@ -79,7 +84,8 @@ public class InstructionManager {
                 "1. todo 'Your first task'",
                 "2. list (to see your tasks)",
                 "3. mark 1 (to complete task 1)",
-                "4. delete completed (to clean up)"
+                "4. delete completed (to clean up)",
+                "5. schedule today (to view today's schedule)"
         };
         for (String step : quickStart) {
             System.out.printf("║     %-70s ║%n", step);
@@ -90,6 +96,7 @@ public class InstructionManager {
         System.out.println();
         System.out.println("   💫 Ready to start? Try adding your first task with 'todo [description]'!");
         System.out.println("   🔍 Need advanced delete options? Type 'delete instruction'");
+        System.out.println("   📅 Want to see your schedule? Type 'schedule today'");
         System.out.println();
     }
 
@@ -210,6 +217,7 @@ public class InstructionManager {
         System.out.println("╠════════════════════════════════════════════════════════════════════════════════╣");
         System.out.println("║                    Type 'view instruction' for basic commands                 ║");
         System.out.println("║                    Type 'delete instruction' for delete guide                 ║");
+        System.out.println("║                    Type 'schedule today' to view today's schedule             ║");
         System.out.println("╚════════════════════════════════════════════════════════════════════════════════╝");
         System.out.println();
         System.out.println("What can I do for you today? 💫");

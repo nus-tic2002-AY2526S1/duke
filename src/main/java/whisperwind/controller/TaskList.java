@@ -94,7 +94,12 @@ public class TaskList {
             System.out.println("  " + newTask.toString());
             System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
         } catch (TaskException e) {
-            throw new TaskException("Couldn't add the deadline: " + e.getMessage(), e);
+            // Provide more user-friendly error messages
+            if (e.getMessage().contains("cannot be in the past")) {
+                throw new TaskException("❌ " + e.getMessage() + "\n💡 " + InputSanitizer.getFutureDateTimeFormatExamples());
+            } else {
+                throw new TaskException("Couldn't add the deadline: " + e.getMessage(), e);
+            }
         }
     }
 
@@ -146,7 +151,12 @@ public class TaskList {
             System.out.println("  " + newTask.toString());
             System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
         } catch (TaskException e) {
-            throw new TaskException("Couldn't add the event: " + e.getMessage(), e);
+            // Provide more user-friendly error messages
+            if (e.getMessage().contains("cannot be in the past")) {
+                throw new TaskException("❌ " + e.getMessage() + "\n💡 " + InputSanitizer.getFutureDateTimeFormatExamples());
+            } else {
+                throw new TaskException("Couldn't add the event: " + e.getMessage(), e);
+            }
         }
     }
 

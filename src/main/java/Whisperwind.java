@@ -23,6 +23,7 @@ public class Whisperwind {
     private TaskFileManager fileManager;
     private DeleteManager deleteManager;
     private TaskManager taskManager;
+    private ScheduleManager scheduleManager;
     private long lastCommandTime = 0;
     private static final long MIN_COMMAND_INTERVAL = 300;
 
@@ -36,6 +37,7 @@ public class Whisperwind {
         this.fileManager = new TaskFileManager();
         this.deleteManager = new DeleteManager(tasks, scanner);
         this.taskManager = new TaskManager(tasks, scanner);
+        this.scheduleManager = new ScheduleManager(tasks);
     }
 
     /**
@@ -147,6 +149,19 @@ public class Whisperwind {
                                 System.out.println("Example: find on 2024-12-25");
                             }
                             break;
+                        case "schedule":
+                            if (parts.length > 1) {
+                                handleScheduleCommand(parts[1]);
+                            } else {
+                                System.out.println("Usage: schedule [today|tomorrow|upcoming|YYYY-MM-DD|YYYY-MM-DD to YYYY-MM-DD]");
+                                System.out.println("Examples:");
+                                System.out.println("  schedule today");
+                                System.out.println("  schedule tomorrow");
+                                System.out.println("  schedule upcoming");
+                                System.out.println("  schedule 2024-12-25");
+                                System.out.println("  schedule 2024-12-20 to 2024-12-25");
+                            }
+                            break;
                         default:
                             System.out.println("I don't know that command! Type 'view instruction' to see what I can do.");
                             break;
@@ -233,6 +248,51 @@ public class Whisperwind {
             return;
         }
         fileManager.findTasksOnDate(tasks, dateString.trim());
+    }
+
+    /**
+     * Handles the schedule command to view tasks in schedule format.
+     *
+     * @param argument The schedule argument (date, range, or keyword)
+     */
+    private void handleScheduleCommand(String argument) {
+        if (argument == null || argument.trim().isEmpty()) {
+            System.out.println("Usage: schedule [today|tomorrow|upcoming|YYYY-MM-DD|YYYY-MM-DD to YYYY-MM-DD]");
+            return;
+        }
+
+        String scheduleArg = argument.trim().toLowerCase();
+
+        try {
+            switch (scheduleArg) {
+                case "today":
+                    scheduleManager.showScheduleForToday();
+                    break;
+                case "tomorrow":
+                    scheduleManager.showScheduleForTomorrow();
+                    break;
+                case "upcoming":
+                    scheduleManager.showUpcomingSchedule();
+                    break;
+                default:
+                    if (scheduleArg.contains(" to ")) {
+                        // Handle date range
+                        String[] dates = scheduleArg.split(" to ");
+                        if (dates.length == 2) {
+                            scheduleManager.showScheduleForDateRange(dates[0].trim(), dates[1].trim());
+                        } else {
+                            System.out.println("❌ Invalid date range format. Use: schedule YYYY-MM-DD to YYYY-MM-DD");
+                        }
+                    } else {
+                        // Handle single date
+                        scheduleManager.showScheduleForDate(scheduleArg);
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error displaying schedule: " + e.getMessage());
+            System.out.println("💡 Make sure to use the correct date format: YYYY-MM-DD");
+        }
     }
 
     /**

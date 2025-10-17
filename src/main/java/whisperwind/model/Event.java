@@ -21,7 +21,7 @@ public class Event extends Task {
      * @param description The event description
      * @param from The start time string
      * @param to The end time string
-     * @throws TaskException If any parameter is invalid
+     * @throws TaskException If any parameter is invalid or dates are in the past
      */
     public Event(String description, String from, String to) throws TaskException {
         super(description);
@@ -34,6 +34,10 @@ public class Event extends Task {
         this.from = parseDateTime(InputSanitizer.sanitizeTime(from));
         this.to = parseDateTime(InputSanitizer.sanitizeTime(to));
 
+        // Validate that event times are not in the past
+        validateFutureDate(this.from, "Event start time");
+        validateFutureDate(this.to, "Event end time");
+
         if (!hasLogicalTimeOrder()) {
             throw new TaskException("Event end time must be after or equal to start time!");
         }
@@ -45,12 +49,16 @@ public class Event extends Task {
      * @param description The event description
      * @param from The start time
      * @param to The end time
-     * @throws TaskException If description is invalid
+     * @throws TaskException If description is invalid or dates are in the past
      */
     public Event(String description, LocalDateTime from, LocalDateTime to) throws TaskException {
         super(description);
         this.from = from;
         this.to = to;
+
+        // Validate that event times are not in the past
+        validateFutureDate(this.from, "Event start time");
+        validateFutureDate(this.to, "Event end time");
 
         if (!hasLogicalTimeOrder()) {
             throw new TaskException("Event end time must be after or equal to start time!");
@@ -71,6 +79,19 @@ public class Event extends Task {
             } catch (DateTimeParseException e2) {
                 throw new TaskException("Invalid date format. Use either 'd/M/yyyy HHmm' (e.g., 2/12/2019 1800) or 'yyyy-MM-dd HHmm'");
             }
+        }
+    }
+
+    /**
+     * Validates that the given date is not in the past.
+     *
+     * @param dateTime The date to validate
+     * @param fieldName The name of the field for error messages
+     * @throws TaskException If the date is in the past
+     */
+    private void validateFutureDate(LocalDateTime dateTime, String fieldName) throws TaskException {
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new TaskException(fieldName + " cannot be in the past! Please choose a future date and time.");
         }
     }
 
@@ -113,13 +134,18 @@ public class Event extends Task {
      * Sets the start time from a string.
      *
      * @param from The start time string
-     * @throws TaskException If the time string is invalid
+     * @throws TaskException If the time string is invalid or in the past
      */
     public void setFrom(String from) throws TaskException {
         if (from == null || from.trim().isEmpty()) {
             throw new TaskException("Event start time cannot be empty!");
         }
-        this.from = parseDateTime(InputSanitizer.sanitizeTime(from));
+        LocalDateTime newFrom = parseDateTime(InputSanitizer.sanitizeTime(from));
+
+        // Validate that new start time is not in the past
+        validateFutureDate(newFrom, "Event start time");
+
+        this.from = newFrom;
 
         if (!hasLogicalTimeOrder()) {
             throw new TaskException("Event end time must be after or equal to start time!");
@@ -130,13 +156,18 @@ public class Event extends Task {
      * Sets the end time from a string.
      *
      * @param to The end time string
-     * @throws TaskException If the time string is invalid
+     * @throws TaskException If the time string is invalid or in the past
      */
     public void setTo(String to) throws TaskException {
         if (to == null || to.trim().isEmpty()) {
             throw new TaskException("Event end time cannot be empty!");
         }
-        this.to = parseDateTime(InputSanitizer.sanitizeTime(to));
+        LocalDateTime newTo = parseDateTime(InputSanitizer.sanitizeTime(to));
+
+        // Validate that new end time is not in the past
+        validateFutureDate(newTo, "Event end time");
+
+        this.to = newTo;
 
         if (!hasLogicalTimeOrder()) {
             throw new TaskException("Event end time must be after or equal to start time!");

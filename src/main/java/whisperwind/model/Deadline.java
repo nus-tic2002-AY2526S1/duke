@@ -22,7 +22,7 @@ public class Deadline extends Task {
      *
      * @param description The task description.
      * @param by The deadline string (e.g., "2/12/2019 1800" or "2025-10-10 2359").
-     * @throws TaskException If the {@code by} parameter is empty or has an invalid format.
+     * @throws TaskException If the {@code by} parameter is empty, has an invalid format, or is in the past.
      */
     public Deadline(String description, String by) throws TaskException {
         super(description);
@@ -30,6 +30,9 @@ public class Deadline extends Task {
             throw new TaskException("Deadline date cannot be empty!");
         }
         this.by = parseDateTime(InputSanitizer.sanitizeTime(by));
+
+        // Validate that deadline is not in the past
+        validateFutureDate(this.by, "Deadline");
     }
 
     /**
@@ -37,11 +40,14 @@ public class Deadline extends Task {
      *
      * @param description The task description.
      * @param by The {@link LocalDateTime} representing the deadline.
-     * @throws TaskException If description is invalid.
+     * @throws TaskException If description is invalid or date is in the past.
      */
     public Deadline(String description, LocalDateTime by) throws TaskException {
         super(description);
         this.by = by;
+
+        // Validate that deadline is not in the past
+        validateFutureDate(this.by, "Deadline");
     }
 
     /**
@@ -63,6 +69,19 @@ public class Deadline extends Task {
             } catch (DateTimeParseException e2) {
                 throw new TaskException("Invalid date format. Use either 'd/M/yyyy HHmm' (e.g., 2/12/2019 1800) or 'yyyy-MM-dd HHmm'");
             }
+        }
+    }
+
+    /**
+     * Validates that the given date is not in the past.
+     *
+     * @param dateTime The date to validate
+     * @param fieldName The name of the field for error messages
+     * @throws TaskException If the date is in the past
+     */
+    private void validateFutureDate(LocalDateTime dateTime, String fieldName) throws TaskException {
+        if (dateTime.isBefore(LocalDateTime.now())) {
+            throw new TaskException(fieldName + " cannot be in the past! Please choose a future date and time.");
         }
     }
 
@@ -113,6 +132,24 @@ public class Deadline extends Task {
     }
 
     /**
+     * Sets the deadline from a string.
+     *
+     * @param by The deadline string
+     * @throws TaskException If the time string is invalid or in the past
+     */
+    public void setBy(String by) throws TaskException {
+        if (by == null || by.trim().isEmpty()) {
+            throw new TaskException("Deadline date cannot be empty!");
+        }
+        LocalDateTime newBy = parseDateTime(InputSanitizer.sanitizeTime(by));
+
+        // Validate that new deadline is not in the past
+        validateFutureDate(newBy, "Deadline");
+
+        this.by = newBy;
+    }
+
+    /**
      * Checks whether this deadline task is valid.
      * A valid task has a non-empty description and a non-null deadline.
      *
@@ -129,7 +166,7 @@ public class Deadline extends Task {
      * @param description The task description.
      * @param by The deadline string.
      * @return A new {@code Deadline} object.
-     * @throws TaskException If description or date string is invalid.
+     * @throws TaskException If description or date string is invalid, or date is in the past.
      */
     public static Deadline createDeadline(String description, String by) throws TaskException {
         if (description == null || description.trim().isEmpty()) {
