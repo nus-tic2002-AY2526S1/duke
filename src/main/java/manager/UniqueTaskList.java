@@ -50,6 +50,13 @@ public class UniqueTaskList {
     }
 
     /**
+     * Removes all task from the list.
+     */
+    public void clear() {
+        taskList.clear();
+    }
+
+    /**
      * Returns the task at the specified position in this list.
      */
     public Task get(int index) {

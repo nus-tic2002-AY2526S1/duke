@@ -42,6 +42,13 @@ public class TaskManager {
     }
 
     /**
+     * Removes all task from the list
+     */
+    public void clear() {
+        tasks.clear();
+    }
+
+    /**
      * Marks a task as completed by index.
      * <p>
      * If the task is already marked as done, an exception is thrown to prevent redundant operations.
@@ -149,6 +156,8 @@ public class TaskManager {
             return false;
         });
     }
+
+    /* ==================== Getters ==================== */
 
     /**
      * Returns an unmodifiable view of all tasks as {@link ReadOnlyTask} instances.

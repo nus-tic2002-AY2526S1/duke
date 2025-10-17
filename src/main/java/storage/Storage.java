@@ -89,6 +89,7 @@ public class Storage {
             String content = Files.readString(dataFile.toPath()).trim();
             loadResult = TaskDeserializer.reconstructTask(content);
 
+            tm.clear();
             for (Task task : loadResult.tasks()) {
                 tm.addTask(task);
             }
