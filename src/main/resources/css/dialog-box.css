@@ -4,7 +4,7 @@
     -fx-font-family: "Roboto";
     -fx-font-size: 16px;
     -fx-wrap-text: true;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+    -fx-line-spacing: 2;
 }
 
 .user-bubble {
@@ -15,4 +15,10 @@
 .bot-bubble {
     -fx-background-color: white;
     -fx-text-fill: #333;
+}
+
+.timestamp-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+    -fx-padding: 2 0 0 5;
 }

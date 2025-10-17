@@ -18,7 +18,7 @@ public class TaskUnmarkedMessage implements Message {
     public String message() {
         String warning = """
                 
-                Mee-ssage: list may not be sorted now, sort again to put it in order.
+                ⚠️ List may not be sorted now, sort again to put it in order.
                 """;
 
         return String.format("""

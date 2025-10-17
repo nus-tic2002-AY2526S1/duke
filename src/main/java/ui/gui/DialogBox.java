@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * Represents a dialog box consisting of an ImageView to represent the speaker's face
@@ -23,6 +24,8 @@ public class DialogBox extends HBox {
     private Label dialog;
     @FXML
     private ImageView displayPicture;
+    @FXML
+    private Label timestamp;
 
     private DialogBox(String text, Image img) {
         try {
@@ -36,6 +39,13 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(img);
+
+        // Chat timestamp
+        String time = java.time.LocalTime.now()
+                .withSecond(0)
+                .withNano(0)
+                .format(java.time.format.DateTimeFormatter.ofPattern("h:mm a"));
+        timestamp.setText(time);
     }
 
     /**
@@ -46,6 +56,7 @@ public class DialogBox extends HBox {
         Collections.reverse(tmp);
         getChildren().setAll(tmp);
         setAlignment(Pos.TOP_LEFT);
+        ((VBox) tmp.get(1)).setAlignment(Pos.TOP_LEFT);
     }
 
     public static DialogBox getUserDialog(String text, Image img) {

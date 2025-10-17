@@ -9,6 +9,18 @@
     -fx-spacing: 20;
 }
 
+/* Shared style for all sidebar icons */
+.clickable-icon {
+    -fx-cursor: hand;
+    -fx-opacity: 0.85;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.clickable-icon:hover {
+    -fx-opacity: 1.0;
+    -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.2), 5, 0, 0, 0);
+}
+
 /* Chat List (Middle panel) */
 .chatlist-view {
     -fx-background-color: #636566;
@@ -43,7 +55,7 @@
 
 /* Scroll Pane */
 .scroll-pane, .scroll-pane .viewport {
-    -fx-background-color: #DADADA;
+    -fx-background-color: transparent;
 }
 
 /* Input Bar */
@@ -62,7 +74,7 @@
 }
 
 .send-button {
-    -fx-background-color: #46474A;
+    -fx-background-color: white;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 50%;

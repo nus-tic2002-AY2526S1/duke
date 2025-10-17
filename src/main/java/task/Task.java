@@ -30,7 +30,7 @@ public abstract class Task implements ReadOnlyTask {
      * @param recurrence  The recurrence pattern for this task
      * @see Recurrence
      */
-    public Task(String description, Recurrence recurrence) {
+    Task(String description, Recurrence recurrence) {
         this.description = description;
         this.recurrence = recurrence != null
                 ? recurrence
@@ -123,7 +123,7 @@ public abstract class Task implements ReadOnlyTask {
      * <p>
      * Delegates to the associated {@link Recurrence#occursOn} method, which performs
      * recurrence-aware calculations to determine whether an occurrence exists on
-     * {@code filterDate}.</p>
+     * {@code filterDate}.
      *
      * @param filterDate the date to check for occurrence (must not be null)
      * @return {@code true} if this task should be considered as occurring on
@@ -168,9 +168,11 @@ public abstract class Task implements ReadOnlyTask {
      *
      * @return empty string if no recurrence, otherwise a formatted string
      *         in the format: {@code (recurs {type} × {frequency})}
-     *         where type is recurrence pattern (e.g. "daily", "weekly").
+     *         where type is recurrence pattern (e.g. "daily", "weekly") and
+     *         frequency is a non-zero value.
      */
-    protected String formatRecurrence() {
+    @Override
+    public String formatRecurrence() {
         return recurrence.isNone()
                 ? ""
                 : String.format(" (repeats %s × %d)",

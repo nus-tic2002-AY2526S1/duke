@@ -75,19 +75,19 @@ public record CommandDocs() {
                     Or :    event birthday /from 1/11/2025 /to 1/11/2025 /repeat yearly 6
                     """;
             case DELETE -> """
-                    To delete a task, type 'list' to see your tasks, then use the number.
+                    🗑️ To delete a task, type 'list' to see your tasks, then use the number.
                     Format: delete <index>
                     Try:    delete 1
-                    ⚠️Note: Task cannot be recovered once deleted.
+                    ⚠️ Note: Task cannot be recovered once deleted.
                     """;
             case MARK -> """
-                    To mark a task as completed.
+                    ✅ To mark a task as completed.
                     Format: mark <index>
                     Try:    mark 1
                     Tip:    Use 'unmark' to undo action
                     """;
             case UNMARK -> """
-                    To mark a task as not completed.
+                    ⭕ To mark a task as not completed.
                     Format: unmark <index>
                     Try:    unmark 1
                     Tip:    Use 'mark' to undo action

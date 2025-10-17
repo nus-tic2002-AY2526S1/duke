@@ -22,7 +22,7 @@ public class TaskAddedMessage implements Message {
     public String message() {
         String warning = """
                 
-                ‼️ List may not be sorted now, sort again to put it in order.
+                ⚠️ List may not be sorted now, sort again to put it in order.
                 """;
 
         return String.format("""

@@ -23,4 +23,6 @@ public interface ReadOnlyTask {
     boolean occursOn(LocalDate filterDate);
 
     Optional<ReadOnlyTask> createInstance(LocalDate filterDate) throws InvalidDateTimeException;
+
+    String formatRecurrence();
 }

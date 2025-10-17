@@ -23,32 +23,28 @@
                 <VBox alignment="CENTER" prefHeight="700.0" prefWidth="63.0" styleClass="sidebar" stylesheets="@../css/main.css">
                     <children>
                         <Pane prefHeight="100.0" prefWidth="100.0" />
-                        <ImageView fitHeight="40.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="aboutIcon" fitHeight="40.0" fitWidth="32.0" onMouseClicked="#handleAboutClicked" pickOnBounds="true" preserveRatio="true" styleClass="clickable-icon">
                             <image>
-                                <Image url="@../images/icon_chat.png" />
+                                <Image url="@../images/icon_info.png" />
                             </image>
                             <VBox.margin>
                                 <Insets top="20.0" />
                             </VBox.margin>
                         </ImageView>
-                        <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="helpIcon" fitHeight="48.0" fitWidth="32.0" onMouseClicked="#handleHelpClicked" pickOnBounds="true" preserveRatio="true" styleClass="clickable-icon">
                             <image>
-                                <Image url="@../images/icon_settings.png" />
+                                <Image url="@../images/icon_help.png" />
                             </image>
                             <VBox.margin>
                                 <Insets top="20.0" />
                             </VBox.margin>
                         </ImageView>
                         <Pane prefHeight="328.0" prefWidth="73.0" VBox.vgrow="ALWAYS" />
-                        <ImageView fx:id="logoutButton"
-                                   fitHeight="48.0" fitWidth="38.0"
-                                   onMouseClicked="#handleExit"
-                                   pickOnBounds="true" preserveRatio="true"
-                                   style="-fx-cursor: hand;">
+                        <ImageView fx:id="logoutButton" fitHeight="48.0" fitWidth="38.0" onMouseClicked="#handleExit" pickOnBounds="true" preserveRatio="true" styleClass="clickable-icon">
                             <VBox.margin>
-                                <Insets bottom="30.0" top="20.0"/>
+                                <Insets bottom="30.0" top="20.0" />
                             </VBox.margin>
-                            <Image url="@../images/icon_logout.png"/>
+                            <Image url="@../images/icon_logout.png" />
                         </ImageView>
                     </children>
                 </VBox>
@@ -134,7 +130,7 @@
                                                 <Font name="Roboto Bold" size="20.0" />
                                             </font>
                                         </Label>
-                                        <Label prefHeight="23.0" prefWidth="264.0" styleClass="chatlist-preview" text="You: the quick brown cat jumps over the lazy dog" textFill="#9da7a7">
+                                        <Label prefHeight="23.0" prefWidth="212.0" styleClass="chatlist-preview" text="You: the quick black cat jumps over the lazy dog" textFill="#9da7a7">
                                             <font>
                                                 <Font name="Roboto" size="18.0" />
                                             </font>
@@ -166,7 +162,7 @@
                                                 <Font name="Roboto Bold" size="20.0" />
                                             </font>
                                         </Label>
-                                        <Label prefHeight="23.0" prefWidth="264.0" styleClass="chatlist-preview" text="I am the greatest of all time that you would have ever met" textFill="#9da7a7">
+                                        <Label prefHeight="23.0" prefWidth="209.0" styleClass="chatlist-preview" text="I am the greatest of all time that you would have ever met" textFill="#9da7a7">
                                             <font>
                                                 <Font name="Roboto" size="18.0" />
                                             </font>
@@ -204,7 +200,7 @@
                                                 <Font name="Roboto Bold" size="20.0" />
                                             </font>
                                         </Label>
-                                        <Label prefHeight="23.0" prefWidth="208.0" styleClass="chatlist-preview" text="You: the quick grey seal swims over the lazy dog" textFill="#9da7a7">
+                                        <Label prefHeight="23.0" prefWidth="210.0" styleClass="chatlist-preview" text="You: the quick grey seal swims over the lazy dog" textFill="#9da7a7">
                                             <font>
                                                 <Font name="Roboto" size="18.0" />
                                             </font>
@@ -254,7 +250,7 @@
         <AnchorPane fx:id="chatPane" prefHeight="706.0" prefWidth="947.0" BorderPane.alignment="CENTER">
 
             <!-- Chat Header -->
-            <HBox alignment="CENTER_LEFT" layoutX="1.0" prefHeight="79.0" prefWidth="708.0" style="-fx-background-color: white;">
+            <HBox alignment="CENTER_LEFT" layoutX="1.0" prefHeight="79.0" prefWidth="646.0" style="-fx-background-color: white;">
                 <children>
                     <Label prefHeight="29.0" prefWidth="117.0" text="MEEBOT" textFill="#333">
                         <font>
@@ -296,7 +292,17 @@
                <HBox.margin>
                   <Insets left="20.0" />
                </HBox.margin></TextField>
-                <Button fx:id="sendButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="29.0" onAction="#handleUserInput" prefHeight="28.0" prefWidth="29.0" styleClass="send-button" text="➤" />
+                <Button fx:id="sendButton" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="29.0" onAction="#handleUserInput" prefHeight="28.0" prefWidth="29.0" styleClass="send-button" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icon_sendarrow.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             </HBox>
 
         </AnchorPane>
