@@ -36,6 +36,8 @@ public class InstructionManager {
                 "mark 1,3,5             - Mark multiple tasks as completed",
                 "unmark 3                - Mark task 3 as not completed",
                 "unmark 2,4,6           - Mark multiple tasks as not completed",
+                "find book               - Search for tasks containing 'book'",
+                "find meeting            - Find all tasks about meetings",
                 "save                    - Manually save your tasks",
                 "schedule today          - View today's schedule",
                 "schedule tomorrow       - View tomorrow's schedule",
@@ -53,8 +55,8 @@ public class InstructionManager {
         System.out.println("║  ───────────────────────────────────────────────────────────────────────────  ║");
         String[] addCommands = {
                 "todo Buy groceries             - Simple task",
-                "deadline Return book /by Friday - model.Task with deadline",
-                "event Meeting /from 2pm /to 3pm - model.Event with times"
+                "deadline Return book /by Friday - Task with deadline",
+                "event Meeting /from 2pm /to 3pm - Event with times"
         };
         for (String cmd : addCommands) {
             System.out.printf("║     %-70s ║%n", cmd);
@@ -84,8 +86,9 @@ public class InstructionManager {
                 "1. todo 'Your first task'",
                 "2. list (to see your tasks)",
                 "3. mark 1 (to complete task 1)",
-                "4. delete completed (to clean up)",
-                "5. schedule today (to view today's schedule)"
+                "4. find book (to search for tasks)",
+                "5. schedule today (to view today's schedule)",
+                "6. delete completed (to clean up)"
         };
         for (String step : quickStart) {
             System.out.printf("║     %-70s ║%n", step);
@@ -95,8 +98,9 @@ public class InstructionManager {
         System.out.println("╚════════════════════════════════════════════════════════════════════════════════╝");
         System.out.println();
         System.out.println("   💫 Ready to start? Try adding your first task with 'todo [description]'!");
-        System.out.println("   🔍 Need advanced delete options? Type 'delete instruction'");
+        System.out.println("   🔍 Need to find something? Try 'find [keyword]'");
         System.out.println("   📅 Want to see your schedule? Type 'schedule today'");
+        System.out.println("   🗑️  Need advanced delete options? Type 'delete instruction'");
         System.out.println();
     }
 
@@ -213,10 +217,11 @@ public class InstructionManager {
     public static void showWelcomeMessage() {
         System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");
         System.out.println("║                              🌸 WHISPERWIND 🌸                                ║");
-        System.out.println("║                         Your Personal model.Task Manager                            ║");
+        System.out.println("║                         Your Personal Task Manager                            ║");
         System.out.println("╠════════════════════════════════════════════════════════════════════════════════╣");
         System.out.println("║                    Type 'view instruction' for basic commands                 ║");
         System.out.println("║                    Type 'delete instruction' for delete guide                 ║");
+        System.out.println("║                    Type 'find KEYWORD' to search for tasks                    ║");
         System.out.println("║                    Type 'schedule today' to view today's schedule             ║");
         System.out.println("╚════════════════════════════════════════════════════════════════════════════════╝");
         System.out.println();
@@ -233,7 +238,7 @@ public class InstructionManager {
         System.out.println();
         System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");
         System.out.println("║                                 👋 GOODBYE!                                   ║");
-        System.out.println("║                      Thanks for using main.Whisperwind! 🌸                         ║");
+        System.out.println("║                      Thanks for using Whisperwind! 🌸                         ║");
         System.out.println("║                   Your tasks are saved for next time! 💾                      ║");
         System.out.println("╚════════════════════════════════════════════════════════════════════════════════╝");
     }

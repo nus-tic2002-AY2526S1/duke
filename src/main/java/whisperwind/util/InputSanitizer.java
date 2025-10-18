@@ -82,7 +82,7 @@ public class InputSanitizer {
 
         String[] validCommands = {
                 "list", "mark", "unmark", "delete", "todo", "deadline",
-                "event", "view", "bye", "save", "find on", "schedule"  // Added schedule command
+                "event", "view", "bye", "save", "find on", "schedule", "find"
         };
 
         String normalizedInput = input.trim().toLowerCase();

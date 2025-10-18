@@ -517,6 +517,85 @@ public class TaskList {
     }
 
     /**
+     * Finds tasks that contain the given search term in their description.
+     *
+     * @param searchTerm The term to search for
+     * @return List of matching tasks
+     */
+    public ArrayList<Task> findTasks(String searchTerm) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return matchingTasks;
+        }
+
+        String lowerSearchTerm = searchTerm.trim().toLowerCase();
+
+        for (Task task : tasks) {
+            if (task != null && task.isValid() &&
+                    task.getDescription().toLowerCase().contains(lowerSearchTerm)) {
+                matchingTasks.add(task);
+            }
+        }
+        return matchingTasks;
+    }
+
+    /**
+     * Displays tasks that match the search term in a formatted way.
+     *
+     * @param searchTerm The term to search for in task descriptions
+     */
+    public void displayMatchingTasks(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            System.out.println("❌ Please provide a search term. Usage: find KEYWORD");
+            return;
+        }
+
+        ArrayList<Task> matchingTasks = findTasks(searchTerm);
+
+        if (matchingTasks.isEmpty()) {
+            System.out.println("🔍 No tasks found containing: '" + searchTerm + "'");
+            System.out.println("💡 Try searching with different keywords or check your spelling.");
+            return;
+        }
+
+        System.out.println("____________________________________________________________");
+        System.out.println(" Here are the matching tasks in your list:");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            Task task = matchingTasks.get(i);
+            TaskType type = TaskType.fromClass(task.getClass());
+            System.out.printf(" %d.%s %s%n", (i + 1), type.getPrefix(), task.toString().substring(3));
+        }
+        System.out.println("____________________________________________________________");
+
+        // Show search statistics
+        showFindStatistics(matchingTasks, searchTerm);
+    }
+
+    /**
+     * Shows statistics for the search results.
+     *
+     * @param matchingTasks The list of matching tasks
+     * @param searchTerm The search term used
+     */
+    private void showFindStatistics(ArrayList<Task> matchingTasks, String searchTerm) {
+        int todoCount = 0, deadlineCount = 0, eventCount = 0, completedCount = 0;
+
+        for (Task task : matchingTasks) {
+            TaskType type = TaskType.fromClass(task.getClass());
+            switch (type) {
+                case TODO: todoCount++; break;
+                case DEADLINE: deadlineCount++; break;
+                case EVENT: eventCount++; break;
+            }
+            if (task.isDone()) completedCount++;
+        }
+
+        System.out.printf("📊 Found %d tasks containing '%s': %d todos, %d deadlines, %d events, %d completed%n",
+                matchingTasks.size(), searchTerm, todoCount, deadlineCount, eventCount, completedCount);
+    }
+
+    /**
      * Checks if a task's description matches the given pattern.
      *
      * @param task The task to check
@@ -644,23 +723,5 @@ public class TaskList {
      */
     public Task[] getAllTasks() {
         return tasks.toArray(new Task[0]);
-    }
-
-    /**
-     * Finds tasks that contain the given search term in their description.
-     *
-     * @param searchTerm The term to search for
-     * @return List of matching tasks
-     */
-    public ArrayList<Task> findTasks(String searchTerm) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        String lowerSearchTerm = searchTerm.toLowerCase();
-
-        for (Task task : tasks) {
-            if (task.getDescription().toLowerCase().contains(lowerSearchTerm)) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
     }
 }

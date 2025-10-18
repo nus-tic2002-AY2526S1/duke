@@ -142,11 +142,15 @@ public class Whisperwind {
                             }
                             break;
                         case "find":
-                            if (parts.length > 1 && parts[1].startsWith("on ")) {
-                                handleFindOnDateCommand(parts[1].substring(3).trim());
+                            if (parts.length > 1) {
+                                if (parts[1].startsWith("on ")) {
+                                    handleFindOnDateCommand(parts[1].substring(3).trim());
+                                } else {
+                                    handleFindCommand(parts[1]);
+                                }
                             } else {
-                                System.out.println("Usage: find on YYYY-MM-DD");
-                                System.out.println("Example: find on 2024-12-25");
+                                System.out.println("Usage: find KEYWORD or find on YYYY-MM-DD");
+                                System.out.println("Examples: find book, find on 2024-12-25");
                             }
                             break;
                         case "schedule":
@@ -248,6 +252,21 @@ public class Whisperwind {
             return;
         }
         fileManager.findTasksOnDate(tasks, dateString.trim());
+    }
+
+    /**
+     * Handles the find command to search for tasks by keyword.
+     *
+     * @param searchTerm The keyword to search for in task descriptions
+     */
+    private void handleFindCommand(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            System.out.println("❌ Please provide a search term. Usage: find KEYWORD");
+            return;
+        }
+
+        String sanitizedSearchTerm = InputSanitizer.sanitizeInput(searchTerm);
+        tasks.displayMatchingTasks(sanitizedSearchTerm);
     }
 
     /**
