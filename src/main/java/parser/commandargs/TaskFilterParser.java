@@ -3,11 +3,13 @@ package parser.commandargs;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import exception.InvalidDateTimeException;
 import exception.InvalidFilterException;
+import exception.InvalidFilterException.ErrorType;
 import parser.datetime.DateTimeParser;
 import parser.datetime.ParsedDateTime;
 import task.ReadOnlyTask;
@@ -44,17 +46,18 @@ public final class TaskFilterParser {
      */
     public static Predicate<ReadOnlyTask> chainPredicate(String args)
             throws InvalidFilterException, InvalidDateTimeException {
-
         // "task:deadline & done:true & date:2024-01-15" → ["task:deadline", "done:true", "date:2024-01-15"]
         String[] tokens = args.trim().split("\\s*&\\s*");
         if (tokens.length > 3) {
-            throw new InvalidFilterException(InvalidFilterException.ErrorType.TOO_MANY_FILTERS);
+            throw new InvalidFilterException(ErrorType.TOO_MANY_FILTERS);
         }
 
         List<Predicate<ReadOnlyTask>> predicates = new ArrayList<>();
         for (String token : tokens) {
             predicates.add(parseFilterToken(token));
         }
+        assert predicates.stream().allMatch(Objects::nonNull) : "Predicates must not contain null entries";
+
         // Chain all predicates with AND logic
         Predicate<ReadOnlyTask> chained = task -> true;
         for (Predicate<ReadOnlyTask> p : predicates) {
@@ -80,7 +83,7 @@ public final class TaskFilterParser {
         String value = parts.length > 1 ? parts[1].trim() : "";
 
         if (parts.length != 2 || key.isEmpty() || value.isEmpty()) {
-            throw new InvalidFilterException(InvalidFilterException.ErrorType.INVALID_FILTER_FORMAT);
+            throw new InvalidFilterException(ErrorType.INVALID_FILTER_FORMAT);
         }
         return createPredicate(key, value);
     }
@@ -100,6 +103,7 @@ public final class TaskFilterParser {
      */
     public static Predicate<ReadOnlyTask> createPredicate(String key, String value)
             throws InvalidFilterException, InvalidDateTimeException {
+        assert value != null && !value.isEmpty() : "Task filter value must not be null/empty";
 
         switch (key) {
         case "task":
@@ -115,7 +119,7 @@ public final class TaskFilterParser {
             LocalDate filterDate = parsed.dateTime().toLocalDate(); // ignore time
             return task -> task.occursOn(filterDate);
         default:
-            throw new InvalidFilterException(InvalidFilterException.ErrorType.UNKNOWN_FILTER_KEY);
+            throw new InvalidFilterException(ErrorType.UNKNOWN_FILTER_KEY);
         }
     }
 
@@ -130,7 +134,6 @@ public final class TaskFilterParser {
      */
     public static Optional<LocalDate> extractFilterDate(String args)
             throws InvalidDateTimeException {
-
         String[] tokens = args.trim().split("\\s*&\\s*");
         for (String token : tokens) {
             String[] parts = token.split(":");

@@ -40,7 +40,7 @@ public class UpdateTaskStatusCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskOperationException {
-        int taskNumber = TaskIndexParser.parseTaskIndex(args, taskManager);
+        int taskNumber = TaskIndexParser.parseTaskIndex(args);
         boolean wasSorted = taskManager.isSorted();
 
         if (markDone) {

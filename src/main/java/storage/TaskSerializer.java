@@ -18,6 +18,7 @@ public class TaskSerializer {
      * @see Storage#saveTasks()
      */
     public static String tasksToJson(List<ReadOnlyTask> taskList) {
+        assert taskList != null : "Task list must not be null";
         if (taskList.isEmpty()) return "[]";
 
         StringBuilder sb = new StringBuilder("[\n");

@@ -61,6 +61,7 @@ public class TaskDeserializer {
         for (SimpleJsonObject obj : objects) {
             try {
                 tasks.add(deserialize(obj));
+                assert tasks.get(tasks.size() - 1) != null : "Deserialized task must not be null";
             } catch (MeeBotException e) {
                 errorLog.add(formatError(e, obj));
             }
@@ -96,6 +97,7 @@ public class TaskDeserializer {
         if (Boolean.parseBoolean(obj.requireNonEmpty("done"))) {
             task.markAsDone();
         }
+        assert task != null : "Task must not be null after deserialization";
         return task;
     }
 
@@ -125,7 +127,6 @@ public class TaskDeserializer {
      */
     private static void writeErrorLog(List<String> errors) {
         if (errors.isEmpty()) return;
-
         try {
             Path dir = ERROR_LOG_PATH.getParent();
             if (dir != null && Files.notExists(dir)) {

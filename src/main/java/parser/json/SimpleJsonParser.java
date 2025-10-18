@@ -2,6 +2,7 @@ package parser.json;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import exception.FileContentException;
 import exception.FileContentException.ErrorType;
@@ -34,6 +35,7 @@ public final class SimpleJsonParser {
     public SimpleJsonParser(JsonTokenizer tokenizer) throws FileContentException {
         this.tokenizer = tokenizer;
         this.current = tokenizer.nextToken();
+        assert current != null : "Tokenizer must not return null as first token";
     }
 
     /**
@@ -48,6 +50,7 @@ public final class SimpleJsonParser {
             throw new FileContentException(ErrorType.INVALID_JSON_FORMAT);
         }
         current = tokenizer.nextToken();
+        assert current != null : "Tokenizer must not return null as first token";
     }
 
     /**
@@ -70,6 +73,7 @@ public final class SimpleJsonParser {
                 break;
             }
         }
+        assert result.stream().allMatch(Objects::nonNull) : "Parsed objects must never be null";
         consume(JsonTokenType.SQUARE_CLOSE);
         return result;
     }
@@ -85,11 +89,13 @@ public final class SimpleJsonParser {
     private SimpleJsonObject parseObject() throws FileContentException {
         SimpleJsonObject obj = new SimpleJsonObject();
         consume(JsonTokenType.CURLY_OPEN);
+
         while (current.type() != JsonTokenType.CURLY_CLOSE) {
-            // key must be a string
             String key = current.value();
+            assert key != null && !key.isEmpty() : "JSON object key must be non-null and non-empty";
             consume(JsonTokenType.STRING);
             consume(JsonTokenType.COLON);
+
             Object value = parseValue();
             obj.put(key, value);
             if (current.type() == JsonTokenType.COMMA) {

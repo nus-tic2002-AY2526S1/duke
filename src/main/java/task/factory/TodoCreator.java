@@ -33,6 +33,8 @@ public class TodoCreator implements TaskCreator {
         if (!"none".equalsIgnoreCase(tokens[tokens.length - 1])) {
             throw ErrorType.TODO.createException();
         }
+
+        assert tokens[0] != null && !tokens[0].isBlank() : "Description must not be null or empty";
         return new TodoTask(tokens[0], Recurrence.none(null));
     }
 
@@ -46,6 +48,7 @@ public class TodoCreator implements TaskCreator {
     @Override
     public Task createFromJson(SimpleJsonObject obj) throws FileContentException {
         String desc = obj.requireNonEmpty("description");
+        assert desc != null && !desc.isEmpty() : "Description must not be null or empty";
         return new TodoTask(desc, Recurrence.none(null));
     }
 }

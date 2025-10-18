@@ -62,6 +62,8 @@ public class EventCreator implements TaskCreator {
                 end.dateTime().toLocalDate(),
                 ErrorType.RECURRENCE
         );
+
+        assert tokens[0] != null && !tokens[0].isBlank() : "Description must not be null or empty";
         return new EventTask(tokens[0], start, end, recurrence);
     }
 
@@ -79,6 +81,8 @@ public class EventCreator implements TaskCreator {
         ParsedDateTime start = DateTimeParser.parse(obj.requireNonEmpty("start"));
         ParsedDateTime end = DateTimeParser.parse(obj.requireNonEmpty("end"));
         Recurrence rec = RecurrenceParser.parse(obj, end.dateTime().toLocalDate());
+
+        assert desc != null && !desc.isEmpty() : "Description must not be null or empty";
         return new EventTask(desc, start, end, rec);
     }
 }

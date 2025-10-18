@@ -48,8 +48,10 @@ public class RecurrenceParser {
         if (tokens.length != 2) {
             throw errorType.createException();
         }
+
         try {
             int freq = Integer.parseInt((tokens[1]));
+            assert freq > 0 : "Recurrence frequency must be positive";
             RecurrenceType type = RecurrenceType.valueOf(tokens[0].toUpperCase());
             return new Recurrence(type, freq, anchorDate, null);
         } catch (NumberFormatException e) {
@@ -94,6 +96,7 @@ public class RecurrenceParser {
         }
         String recType = recJson.requireNonEmpty("type").toUpperCase();
         int freq = Integer.parseInt(recJson.requireNonEmpty("count"));
+        assert freq > 0 : "Recurrence count must be positive"; // if that’s a domain invariant
         return Recurrence.of(RecurrenceType.valueOf(recType), freq, anchorDate);
     }
 }

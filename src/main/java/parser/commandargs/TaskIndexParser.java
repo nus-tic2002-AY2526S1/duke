@@ -7,7 +7,7 @@ import manager.TaskManager;
 public final class TaskIndexParser {
     private TaskIndexParser() {}
 
-    public static int parseTaskIndex(String args, TaskManager taskManager)
+    public static int parseTaskIndex(String args)
             throws InvalidTaskOperationException {
         int taskNumber;
         try {
