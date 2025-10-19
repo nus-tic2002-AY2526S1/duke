@@ -57,15 +57,15 @@ public enum ConfirmationLevel {
      */
     public static ConfirmationLevel forOperation(DeleteOperation operation) {
         switch (operation) {
-            case DeleteOperation.ALL:
+            case ALL:
                 return DESTRUCTIVE;
-            case DeleteOperation.COMPLETED:
-            case DeleteOperation.PATTERN:
-            case DeleteOperation.BULK:
+            case COMPLETED:
+            case PATTERN:
+            case BULK:
                 return STRONG;
-            case DeleteOperation.BY_TYPE:
+            case BY_TYPE:
                 return SIMPLE;
-            case DeleteOperation.SINGLE:
+            case SINGLE:
             default:
                 return NONE;
         }

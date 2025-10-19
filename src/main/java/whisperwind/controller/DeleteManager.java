@@ -39,31 +39,31 @@ public class DeleteManager {
 
         try {
             switch (operation) {
-                case DeleteOperation.SINGLE:
+                case SINGLE:
                     handleSingleDelete(argument);
                     break;
-                case DeleteOperation.BULK:
+                case BULK:
                     handleBulkDelete(argument);
                     break;
-                case DeleteOperation.COMPLETED:
+                case COMPLETED:
                     handleCompletedDelete();
                     break;
-                case DeleteOperation.ALL:
+                case ALL:
                     handleAllDelete();
                     break;
-                case DeleteOperation.PATTERN:
+                case PATTERN:
                     handlePatternDelete(argument);
                     break;
-                case DeleteOperation.BY_TYPE:
+                case BY_TYPE:
                     handleTypeDelete(argument);
                     break;
-                case DeleteOperation.UNKNOWN:
+                case UNKNOWN:
                 default:
                     System.out.println("❌ Invalid delete command: " + argument);
                     showDeleteHelp();
                     break;
             }
-        } catch (Exception e) {
+        }catch (Exception e) {
             System.out.println("❌ Error processing delete command: " + e.getMessage());
         }
     }
@@ -173,13 +173,13 @@ public class DeleteManager {
      */
     private boolean requiresConfirmation(ConfirmationLevel level, String action) {
         switch (level) {
-            case ConfirmationLevel.NONE:
+            case NONE:
                 return true;
-            case ConfirmationLevel.SIMPLE:
+            case SIMPLE:
                 return confirmSimple(action);
-            case ConfirmationLevel.STRONG:
+            case STRONG:
                 return confirmStrong(action);
-            case ConfirmationLevel.DESTRUCTIVE:
+            case DESTRUCTIVE:
                 return confirmDestructive(action);
             default:
                 return false;
