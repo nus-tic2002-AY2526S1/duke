@@ -194,10 +194,13 @@ public class TaskManager {
      * @return An array of unique, valid task numbers.
      */
     private int[] parseBulkNumbers(String argument) {
+        assert argument != null : "Argument should not be null";
+
         String[] numberStrings = argument.split(",");
         ArrayList<Integer> validNumbers = new ArrayList<>();
 
         for (String numStr : numberStrings) {
+            assert numStr != null : "Number string should not be null";
             try {
                 int num = Integer.parseInt(numStr.trim());
                 if (num > 0) {
@@ -215,10 +218,11 @@ public class TaskManager {
             }
         }
 
-        int[] result = new int[uniqueNumbers.size()];
+        int[] result = new int[validNumbers.size()];
         for (int i = 0; i < uniqueNumbers.size(); i++) {
             result[i] = uniqueNumbers.get(i);
         }
+        assert result.length == validNumbers.size() : "Array size should match list size";
         return result;
     }
 }

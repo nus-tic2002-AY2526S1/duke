@@ -53,6 +53,10 @@ public class Event extends Task {
      */
     public Event(String description, LocalDateTime from, LocalDateTime to) throws TaskException {
         super(description);
+        // Assert constructor assumptions
+        assert from != null : "Start time should not be null";
+        assert to != null : "End time should not be null";
+
         this.from = from;
         this.to = to;
 
@@ -63,6 +67,10 @@ public class Event extends Task {
         if (!hasLogicalTimeOrder()) {
             throw new TaskException("Event end time must be after or equal to start time!");
         }
+
+        // Post-constructor state assertions
+        assert hasLogicalTimeOrder() : "Event should have logical time order after construction";
+
     }
 
     /**
@@ -191,12 +199,18 @@ public class Event extends Task {
     }
 
     public boolean hasLogicalTimeOrder() {
-        if (from == null || to == null) return false;
+        // Assert state before operation
+        assert from != null : "Start time should be initialized";
+        assert to != null : "End time should be initialized";
+
         return from.isBefore(to) || from.isEqual(to);
     }
 
     @Override
     public boolean isValid() {
+        // Assert base class validity
+        assert super.isValid() : "Base task should be valid";
+
         return super.isValid() && from != null && to != null && hasLogicalTimeOrder();
     }
 

@@ -77,6 +77,9 @@ public enum CommandType {
      * @return the matching CommandType, or UNKNOWN if no match
      */
     public static CommandType fromString(String input) {
+        // Assert input assumptions
+        assert input != null : "Input should not be null in fromString";
+
         if (input == null || input.trim().isEmpty()) {
             return UNKNOWN;
         }
@@ -85,9 +88,13 @@ public enum CommandType {
         for (CommandType cmd : values()) {
             if (cmd.command.equals(normalized) ||
                     (cmd == VIEW_INSTRUCTION && normalized.equals("view instruction"))) {
+                // Assert valid result
+                assert cmd != UNKNOWN : "Should not return UNKNOWN for valid command";
                 return cmd;
             }
         }
+        // This should only happen for truly unknown commands
+        assert !normalized.isEmpty() : "Normalized input should not be empty";
         return UNKNOWN;
     }
 
@@ -97,6 +104,21 @@ public enum CommandType {
      * @return true if the command is valid, false otherwise
      */
     public static boolean isValidCommand(String input) {
+        // Assert input assumptions
+        assert input != null : "Input should not be null in isValidCommand";
+
+        CommandType result = fromString(input);
+
+        // Assert method contract
+        assert (result == UNKNOWN) == !isValidCommandInternal(input) :
+                "isValidCommand should match fromString result";
+
+        return result != UNKNOWN;
+    }
+
+    private static boolean isValidCommandInternal(String input) {
+        // Internal implementation assertions
+        assert input != null : "Input should not be null";
         return fromString(input) != UNKNOWN;
     }
 }

@@ -25,6 +25,7 @@ public class TaskList {
      */
     public TaskList() {
         this.tasks = new ArrayList<>();
+        assert isEmpty() : "New task list should be empty";
     }
 
     /**
@@ -35,11 +36,16 @@ public class TaskList {
      * @throws CommandException If task limit is reached
      */
     public void addTodo(String description) throws TaskException, CommandException {
+        // Assert class state is valid
+        assert tasks != null : "Task list should be initialized";
+        assert description != null : "Description should be validated before this point";
+
         if (tasks.size() >= MAX_TASKS) {
             throw new CommandException("Task limit reached (" + MAX_TASKS + ")! Complete or delete some tasks first.");
         }
 
         String sanitizedDesc = InputSanitizer.sanitizeDescription(description);
+        assert sanitizedDesc != null : "Sanitized description should not be null";
         if (sanitizedDesc.isEmpty()) {
             throw new CommandException("Wait, what's the todo? Give me the details!");
         }
@@ -167,28 +173,14 @@ public class TaskList {
      * @throws CommandException If task number is invalid
      */
     public void deleteTask(int taskNumber) throws CommandException {
-        if (taskNumber <= 0) {
-            throw new CommandException("Task numbers start from 1.");
-        }
+        assert taskNumber > 0 : "Task numbers start from 1";
+        assert tasks != null : "Task list should be initialized";
 
         int index = taskNumber - 1;
         if (index >= 0 && index < tasks.size()) {
-            try {
-                Task taskToDelete = tasks.get(index);
-                System.out.println("🗑️  Noted. I've removed this task:");
-                System.out.println("  " + taskToDelete.toString());
-
-                tasks.remove(index);
-
-                System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-
-                if (tasks.isEmpty()) {
-                    System.out.println("🎉 Your task list is now empty! Time to relax or add new goals?");
-                }
-
-            } catch (Exception e) {
-                throw new CommandException("Something went wrong deleting the task: " + e.getMessage());
-            }
+            Task taskToDelete = tasks.get(index);
+            assert taskToDelete != null : "Task should not be null";
+            assert taskToDelete.isValid() : "Task should be valid";
         } else {
             throw new CommandException("That task number doesn't exist.");
         }
@@ -360,14 +352,20 @@ public class TaskList {
      * @throws TaskException If task cannot be marked
      */
     public void markTask(int taskNumber) throws CommandException, TaskException {
+        // Use assertions for programmer errors (should never happen in correct code)
+        assert tasks != null : "Task list should be initialized";
+        assert taskNumber > 0 : "Task number should be positive before validation";
+
+        // Use exceptions for expected error conditions
         if (taskNumber <= 0) {
             throw new CommandException("Task numbers start from 1.");
         }
 
         int index = taskNumber - 1;
         if (index >= 0 && index < tasks.size()) {
+            Task task = tasks.get(index);
+            assert task != null : "Retrieved task should not be null";
             try {
-                Task task = tasks.get(index);
                 if (task.isDone()) {
                     throw new TaskException("This task is already marked as done!");
                 } else {
@@ -743,4 +741,6 @@ public class TaskList {
 
         return description.contains(pattern);
     }
+
+
 }

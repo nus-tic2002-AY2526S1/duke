@@ -24,7 +24,12 @@ public class ScheduleManager {
      * @param taskList The list of tasks to manage schedules for
      */
     public ScheduleManager(TaskList taskList) {
+        assert taskList != null : "TaskList should not be null";
         this.taskList = taskList;
+
+        // Verify formatters are properly initialized
+        assert DATE_FORMATTER != null : "Date formatter should be initialized";
+        assert DISPLAY_FORMATTER != null : "Display formatter should be initialized";
     }
 
     /**

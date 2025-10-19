@@ -1,41 +1,33 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'  // Add this line
 }
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.0'
+javafx {
+    version = '17.0.2'
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.base' ]
 }
 
-test {
-    useJUnitPlatform()
+mainClassName = 'whisperwind.Launcher'
 
-    testLogging {
-        events "passed", "skipped", "failed"
-
-        showExceptions true
-        exceptionFormat "full"
-        showCauses true
-        showStackTraces true
-        showStandardStreams = false
-    }
-}
-
-application {
-    mainClass.set("whisperwind.Whisperwind")
-}
-
+// Shadow jar configuration
 shadowJar {
-    archiveBaseName = "duke"
-    archiveClassifier = null
+    archiveBaseName.set('whisperwind')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+
+    // If you need to merge service files
+    mergeServiceFiles()
+
+    // Exclude unnecessary files to reduce size
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
-run{
-    standardInput = System.in
-}
+// Ensure shadowJar runs during build
+assemble.dependsOn shadowJar

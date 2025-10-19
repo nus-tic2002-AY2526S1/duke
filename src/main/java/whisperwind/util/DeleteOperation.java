@@ -29,26 +29,61 @@ public enum DeleteOperation {
     public boolean requiresConfirmation() { return requiresConfirmation; }
 
     public static DeleteOperation fromString(String input) {
+        // Assert input assumptions
+        assert input != null : "Input should not be null in fromString";
         if (input == null || input.trim().isEmpty()) return UNKNOWN;
 
         String normalized = input.trim().toLowerCase();
+        assert !normalized.isEmpty() : "Normalized input should not be empty";
 
         for (DeleteOperation op : values()) {
-            if (op.operation.equals(normalized)) return op;
+            if (op.operation.equals(normalized)) {
+                // Assert valid operation found
+                assert op != UNKNOWN : "Should not return UNKNOWN for exact match";
+                return op;
+            }
         }
 
-        if (normalized.equals("done") || normalized.equals("finished")) return COMPLETED;
-        if (normalized.endsWith("*")) return PATTERN;
-        if (normalized.contains(",")) return BULK;
+        // Pattern-based detection assertions
+        if (normalized.equals("done") || normalized.equals("finished")) {
+            assert COMPLETED.requiresConfirmation : "COMPLETED should require confirmation";
+            return COMPLETED;
+        }
+        if (normalized.endsWith("*")) {
+            assert !normalized.equals("*") : "Single asterisk should be handled by validation";
+            return PATTERN;
+        }
+        if (normalized.contains(",")) {
+            assert normalized.split(",").length >= 2 : "Bulk delete should have multiple numbers";
+            return BULK;
+        }
 
-        if (TaskType.fromString(normalized) != TaskType.UNKNOWN) return BY_TYPE;
+        if (TaskType.fromString(normalized) != TaskType.UNKNOWN) {
+            assert BY_TYPE != UNKNOWN : "BY_TYPE should be valid for known task types";
+            return BY_TYPE;
+        }
 
-        if (InputSanitizer.isValidTaskNumber(normalized, Integer.MAX_VALUE)) return SINGLE;
+        if (InputSanitizer.isValidTaskNumber(normalized, Integer.MAX_VALUE)) {
+            assert !SINGLE.requiresConfirmation : "SINGLE should not require confirmation";
+            return SINGLE;
+        }
 
+        // Final fallback - this should only happen for truly unknown inputs
+        assert true : "No matching operation found for: " + normalized;
         return UNKNOWN;
     }
 
     public static boolean isDestructiveOperation(String input) {
-        return fromString(input).requiresConfirmation;
+        // Assert input assumptions
+        assert input != null : "Input should not be null";
+
+        DeleteOperation operation = fromString(input);
+        boolean result = operation.requiresConfirmation;
+
+        // Assert consistency with operation properties
+        assert (operation == ALL || operation == COMPLETED) == result :
+                "Destructive flag should match operation type";
+
+        return result;
     }
 }

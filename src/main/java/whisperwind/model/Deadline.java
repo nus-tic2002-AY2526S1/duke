@@ -26,13 +26,16 @@ public class Deadline extends Task {
      */
     public Deadline(String description, String by) throws TaskException {
         super(description);
-        if (by == null || by.trim().isEmpty()) {
-            throw new TaskException("Deadline date cannot be empty!");
-        }
+
+        // Assertions for parameter validation
+        assert by != null : "Deadline time should not be null";
+        assert !by.trim().isEmpty() : "Deadline time should not be empty";
+
         this.by = parseDateTime(InputSanitizer.sanitizeTime(by));
 
-        // Validate that deadline is not in the past
-        validateFutureDate(this.by, "Deadline");
+        // Post-constructor state assertion
+        assert this.by != null : "Deadline time should be initialized";
+        assert this.by.isAfter(LocalDateTime.now()) : "Deadline should be in the future";
     }
 
     /**
@@ -59,6 +62,10 @@ public class Deadline extends Task {
      * @throws TaskException If the format is invalid or unsupported.
      */
     private LocalDateTime parseDateTime(String dateTimeStr) throws TaskException {
+        // Assert input assumptions
+        assert dateTimeStr != null : "DateTime string should not be null";
+        assert !dateTimeStr.trim().isEmpty() : "DateTime string should not be empty";
+
         try {
             // Try format like "2/12/2019 1800"
             return LocalDateTime.parse(dateTimeStr, INPUT_FORMATTER);
@@ -80,9 +87,14 @@ public class Deadline extends Task {
      * @throws TaskException If the date is in the past
      */
     private void validateFutureDate(LocalDateTime dateTime, String fieldName) throws TaskException {
+        assert dateTime != null : "DateTime to validate should not be null";
+        assert fieldName != null && !fieldName.isEmpty() : "Field name should be provided";
+
         if (dateTime.isBefore(LocalDateTime.now())) {
             throw new TaskException(fieldName + " cannot be in the past! Please choose a future date and time.");
         }
+        // Post-condition assertion
+        assert !dateTime.isBefore(LocalDateTime.now()) : "Validated date should not be in the past";
     }
 
     /**
@@ -198,10 +210,17 @@ public class Deadline extends Task {
      */
     @Override
     public boolean equals(Object obj) {
+        // Assert equals method contract
+        assert this.isValid() : "This deadline should be valid for equality comparison";
+
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         if (!super.equals(obj)) return false;
         Deadline deadline = (Deadline) obj;
+
+        // Assert compared object state
+        assert deadline.isValid() : "Compared deadline should be valid";
+
         return by.equals(deadline.by);
     }
 
@@ -212,8 +231,15 @@ public class Deadline extends Task {
      */
     @Override
     public int hashCode() {
+        // Assert state before hash calculation
+        assert super.isValid() : "Base task should be valid for hashCode";
+        assert by != null : "Deadline time should not be null for hashCode";
+
         int result = super.hashCode();
         result = 31 * result + by.hashCode();
+
+        // Assert consistent with equals
+        assert result == hashCode() : "HashCode should be consistent";
         return result;
     }
 }

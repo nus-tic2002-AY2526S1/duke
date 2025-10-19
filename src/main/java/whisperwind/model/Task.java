@@ -22,11 +22,18 @@ public abstract class Task {
      * @throws TaskException if the description is null, empty, or contains only whitespace
      */
     public Task(String description) throws TaskException {
+        // Assertions for constructor assumptions
+        assert description != null : "Description parameter should not be null";
+
         if (description == null || description.trim().isEmpty()) {
             throw new TaskException("Task description cannot be empty!");
         }
         this.description = description.trim();
         this.isDone = false;
+
+        // Post-constructor state assertions
+        assert this.description != null && !this.description.isEmpty() : "Description should be initialized";
+        assert !this.isDone : "New task should not be done";
     }
 
     /**
@@ -52,11 +59,16 @@ public abstract class Task {
      * @throws TaskException if the task is already marked as done
      */
     public void markAsDone() throws TaskException {
+        // Assert current state before operation
+        assert this.description != null : "Task should be valid before marking";
+
         if (this.isDone) {
             throw new TaskException("This task is already marked as done!");
         } else {
             this.isDone = true;
         }
+        // Post-operation state assertion
+        assert this.isDone : "Task should be marked as done after operation";
     }
 
     /**

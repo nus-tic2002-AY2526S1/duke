@@ -35,6 +35,7 @@ public class ArchiveManager {
      * @throws RuntimeException if an I/O error occurs during archiving
      */
     public String archiveAllTasks(whisperwind.controller.TaskList taskList) {
+        assert taskList != null : "TaskList should not be null";
         if (taskList.isEmpty()) {
             throw new IllegalStateException("No tasks to archive - task list is empty");
         }
@@ -46,6 +47,10 @@ public class ArchiveManager {
 
             List<Task> tasksToArchive = getAllTasks(taskList);
             writeTasksToArchive(tasksToArchive, archivePath);
+
+            // Post-condition assertion
+            assert new File(archivePath).exists() : "Archive file should be created";
+            assert new File(archivePath).length() > 0 : "Archive file should not be empty";
 
             System.out.println("📦 Successfully archived " + tasksToArchive.size() +
                     " tasks to: " + archiveFileName);
@@ -213,10 +218,16 @@ public class ArchiveManager {
      * @throws IOException if the directory cannot be created
      */
     private void ensureArchiveDirectoryExists() throws IOException {
+
+        assert ARCHIVE_DIR != null : "Archive directory path should be set";
+
         File dir = new File(ARCHIVE_DIR);
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Failed to create archive directory: " + ARCHIVE_DIR);
         }
+
+        assert dir.exists() : "Archive directory should exist after creation";
+        assert dir.isDirectory() : "Archive path should be a directory";
     }
 
     /**

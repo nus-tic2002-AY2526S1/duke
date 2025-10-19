@@ -18,6 +18,14 @@ public class InputSanitizer {
     private static final int MAX_DESCRIPTION_LENGTH = 1000;
     private static final int MAX_TIME_LENGTH = 100;
 
+    // Assert constant validity
+    static {
+        assert MAX_INPUT_LENGTH > 0 : "MAX_INPUT_LENGTH should be positive";
+        assert MAX_DESCRIPTION_LENGTH > 0 : "MAX_DESCRIPTION_LENGTH should be positive";
+        assert MAX_TIME_LENGTH > 0 : "MAX_TIME_LENGTH should be positive";
+        assert MAX_DESCRIPTION_LENGTH <= MAX_INPUT_LENGTH : "Description limit should not exceed input limit";
+    }
+
     /**
      * Sanitizes general user input by removing control characters and enforcing length limits.
      *
@@ -25,18 +33,26 @@ public class InputSanitizer {
      * @return the sanitized input string
      */
     public static String sanitizeInput(String input) {
+        // Assert preconditions
+        assert MAX_INPUT_LENGTH > 0 : "MAX_INPUT_LENGTH should be initialized";
+
         if (input == null) {
             return "";
         }
 
         String sanitized = input.replaceAll("[\\x00-\\x1F\\x7F]", "");
+        assert !containsControlCharacters(sanitized) : "Sanitized string should not contain control characters";
 
         if (sanitized.length() > MAX_INPUT_LENGTH) {
+            String original = sanitized;
             sanitized = sanitized.substring(0, MAX_INPUT_LENGTH);
-            System.out.println("⚠️  Input truncated to " + MAX_INPUT_LENGTH + " characters");
+            assert sanitized.length() == MAX_INPUT_LENGTH : "Truncated string should be exactly MAX_INPUT_LENGTH";
+            assert original.startsWith(sanitized) : "Truncated string should be prefix of original";
         }
 
-        return sanitized.trim();
+        String result = sanitized.trim();
+        assert result.length() <= MAX_INPUT_LENGTH : "Result should not exceed MAX_INPUT_LENGTH";
+        return result;
     }
 
     /**
@@ -46,11 +62,18 @@ public class InputSanitizer {
      * @return the sanitized description
      */
     public static String sanitizeDescription(String description) {
+        // Assert preconditions
+        assert MAX_DESCRIPTION_LENGTH > 0 : "MAX_DESCRIPTION_LENGTH should be initialized";
+
         String sanitized = sanitizeInput(description);
         if (sanitized.length() > MAX_DESCRIPTION_LENGTH) {
+            String original = sanitized;
             sanitized = sanitized.substring(0, MAX_DESCRIPTION_LENGTH);
-            System.out.println("⚠️  Description truncated to " + MAX_DESCRIPTION_LENGTH + " characters");
+            assert sanitized.length() == MAX_DESCRIPTION_LENGTH : "Description should be truncated to exact limit";
+            assert original.startsWith(sanitized) : "Truncated description should be prefix of original";
         }
+
+        assert sanitized.length() <= MAX_DESCRIPTION_LENGTH : "Sanitized description should respect length limit";
         return sanitized;
     }
 
@@ -165,13 +188,23 @@ public class InputSanitizer {
      * @return true if the input is a valid task number, false otherwise
      */
     public static boolean isValidTaskNumber(String input, int maxTasks) {
+        // Assert preconditions
+        assert input != null : "Input should not be null";
+        assert maxTasks > 0 : "maxTasks should be positive";
+
         if (input == null || input.trim().isEmpty()) {
             return false;
         }
 
         try {
             int taskNumber = Integer.parseInt(input.trim());
-            return taskNumber > 0 && taskNumber <= maxTasks;
+            boolean result = taskNumber > 0 && taskNumber <= maxTasks;
+
+            // Assert method contract
+            assert !result || taskNumber >= 1 : "Valid task number should be at least 1";
+            assert !result || taskNumber <= maxTasks : "Valid task number should not exceed maxTasks";
+
+            return result;
         } catch (NumberFormatException e) {
             return false;
         }
@@ -198,6 +231,9 @@ public class InputSanitizer {
      * @return true if the format is valid, false otherwise
      */
     public static boolean isValidDateTimeFormat(String dateTimeStr) {
+        // Assert preconditions
+        assert dateTimeStr != null : "DateTime string should not be null";
+
         if (dateTimeStr == null || dateTimeStr.trim().isEmpty()) {
             return false;
         }
@@ -244,13 +280,19 @@ public class InputSanitizer {
      * @return true if the date-time is in the future, false otherwise
      */
     public static boolean isFutureDateTime(String dateTimeStr) {
-        if (!isValidDateTimeFormat(dateTimeStr)) {
-            return false;
-        }
+        // Assert preconditions and call chain
+        assert dateTimeStr != null : "DateTime string should not be null";
+        assert isValidDateTimeFormat(dateTimeStr) : "Should only be called with valid date format";
 
         try {
             LocalDateTime inputDateTime = parseDateTime(dateTimeStr);
-            return inputDateTime.isAfter(LocalDateTime.now());
+            boolean result = inputDateTime.isAfter(LocalDateTime.now());
+
+            // Assert method contract
+            assert !result || inputDateTime.isAfter(LocalDateTime.now()) :
+                    "Future date should be after current time";
+
+            return result;
         } catch (Exception e) {
             return false;
         }
@@ -314,13 +356,24 @@ public class InputSanitizer {
     }
 
     private static LocalDateTime parseDateTime(String dateTimeStr) {
+        // Assert internal method assumptions
+        assert dateTimeStr != null : "DateTime string should not be null";
+        assert isValidDateTimeFormat(dateTimeStr) : "Should only parse valid date formats";
+
         try {
             // Try format like "2/12/2019 1800"
             return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("d/M/yyyy HHmm"));
         } catch (DateTimeParseException e1) {
             // Try format "yyyy-MM-dd HHmm"
-            return LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+            LocalDateTime result = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+            assert result != null : "Parsed DateTime should not be null";
+            return result;
         }
+    }
+
+    private static boolean containsControlCharacters(String str) {
+        // Helper method for assertion
+        return str != null && str.chars().anyMatch(ch -> ch <= 0x1F || ch == 0x7F);
     }
 
     /**

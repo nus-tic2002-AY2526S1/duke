@@ -91,9 +91,13 @@ public enum TaskType {
      * @see #UNKNOWN
      */
     public static TaskType fromCode(String code) {
-        if (code == null) return UNKNOWN;
+        // Assert input assumptions
+        assert code != null : "Code should not be null in fromCode";
+
         for (TaskType type : values()) {
             if (type.code.equals(code.toUpperCase())) {
+                // Assert valid result
+                assert type != UNKNOWN : "Should not return UNKNOWN for valid code";
                 return type;
             }
         }
@@ -109,9 +113,15 @@ public enum TaskType {
      * @see #UNKNOWN
      */
     public static TaskType fromClass(Class<? extends Task> taskClass) {
+        // Assert input assumptions
+        assert taskClass != null : "Task class should not be null";
+
         if (taskClass == Todo.class) return TODO;
         if (taskClass == Deadline.class) return DEADLINE;
         if (taskClass == Event.class) return EVENT;
+
+        // This should only happen for unknown task classes
+        assert false : "Unknown task class: " + taskClass.getName();
         return UNKNOWN;
     }
 
@@ -125,7 +135,9 @@ public enum TaskType {
      * @see #UNKNOWN
      */
     public static TaskType fromString(String input) {
-        if (input == null) return UNKNOWN;
+        // Assert input assumptions
+        assert input != null : "Input should not be null";
+
         String normalized = input.trim().toLowerCase();
         for (TaskType type : values()) {
             if (type.displayName.toLowerCase().equals(normalized) ||

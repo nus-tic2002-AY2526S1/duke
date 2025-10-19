@@ -50,11 +50,17 @@ public class Todo extends Task {
 
     @Override
     public String toString() {
+        // Assert state before string conversion
+        assert getTaskType() == TaskType.TODO : "Todo should have TODO task type";
+
         try {
             if (!isValid()) {
                 return TaskType.TODO.getPrefix() + "[INVALID] Invalid Todo Task";
             }
-            return TaskType.TODO.getPrefix() + super.toString();
+            String result = TaskType.TODO.getPrefix() + super.toString();
+            assert result != null : "toString should not return null";
+            assert result.startsWith("[T]") : "Todo string should start with [T] prefix";
+            return result;
         } catch (Exception e) {
             return TaskType.TODO.getPrefix() + "[ERROR] Could not display task";
         }
@@ -71,10 +77,18 @@ public class Todo extends Task {
      */
 
     public static Todo createTodo(String description) throws TaskException {
+        // Assert factory method preconditions
+        assert description != null : "Description should not be null in factory method";
+
         if (description == null || description.trim().isEmpty()) {
             throw new TaskException("Todo description cannot be empty!");
         }
-        return new Todo(description.trim());
+        Todo todo = new Todo(description.trim());
+
+        // Assert factory method postconditions
+        assert todo != null : "Factory should return non-null Todo";
+        assert todo.isValid() : "Factory should return valid Todo";
+        return todo;
     }
 
     /**
@@ -90,6 +104,9 @@ public class Todo extends Task {
      */
 
     public boolean meetsTodoRequirements() {
+        // Assert state before validation
+        assert getDescription() != null : "Description should not be null";
+
         String desc = getDescription();
         return desc != null &&
                 !desc.trim().isEmpty() &&

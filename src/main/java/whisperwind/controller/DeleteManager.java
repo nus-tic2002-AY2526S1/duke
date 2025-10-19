@@ -34,6 +34,9 @@ public class DeleteManager {
      * @param parts an array containing the command and its arguments
      */
     public void handleDeleteCommand(String[] parts) {
+        assert parts != null : "Command parts should not be null";
+        assert parts.length >= 2 : "Delete command should have arguments";
+
         String argument = parts[1].trim();
         DeleteOperation operation = DeleteOperation.fromString(argument);
 
@@ -59,6 +62,8 @@ public class DeleteManager {
                     break;
                 case UNKNOWN:
                 default:
+                    // This should never happen if fromString works correctly
+                    assert false : "Unhandled operation type: " + operation;
                     System.out.println("❌ Invalid delete command: " + argument);
                     showDeleteHelp();
                     break;
@@ -74,8 +79,12 @@ public class DeleteManager {
      * @param argument the string containing the task number
      */
     private void handleSingleDelete(String argument) {
+        assert argument != null : "Argument should not be null";
+        assert !argument.trim().isEmpty() : "Argument should not be empty";
+
         try {
             int taskNumber = Integer.parseInt(argument);
+            assert taskNumber > 0 : "Task number should be positive";
             taskList.deleteTask(taskNumber);
         } catch (NumberFormatException e) {
             System.out.println("❌ Invalid task number: " + argument);
@@ -172,6 +181,9 @@ public class DeleteManager {
      * @return {@code true} if the user confirmed the operation, otherwise {@code false}
      */
     private boolean requiresConfirmation(ConfirmationLevel level, String action) {
+        assert level != null : "Confirmation level should not be null";
+        assert action != null && !action.isEmpty() : "Action description required";
+
         switch (level) {
             case NONE:
                 return true;
@@ -182,6 +194,7 @@ public class DeleteManager {
             case DESTRUCTIVE:
                 return confirmDestructive(action);
             default:
+                assert false : "Unhandled confirmation level: " + level;
                 return false;
         }
     }
@@ -247,10 +260,14 @@ public class DeleteManager {
      * @return an array of valid task numbers
      */
     private int[] parseBulkDeleteNumbers(String argument) {
+        // Assertions for internal method contracts
+        assert argument != null : "Argument should not be null in private method";
+
         String[] numberStrings = argument.split(",");
         ArrayList<Integer> validNumbers = new ArrayList<>();
 
         for (String numStr : numberStrings) {
+            assert numStr != null : "Split result should not contain null";
             try {
                 int num = Integer.parseInt(numStr.trim());
                 if (num > 0) {
@@ -265,6 +282,8 @@ public class DeleteManager {
         for (int i = 0; i < validNumbers.size(); i++) {
             result[i] = validNumbers.get(i);
         }
+
+        assert result != null : "Result array should be initialized";
         return result;
     }
 }
