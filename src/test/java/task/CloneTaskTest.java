@@ -1,5 +1,6 @@
 package task;
 
+import exception.InvalidDateTimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import parser.datetime.ParsedDateTime;
@@ -20,7 +21,7 @@ class CloneTaskTest {
 
     @Test
     @DisplayName("Cloned events should preserve description and date/time, but no recurrence")
-    void eventTaskClone() {
+    void eventTaskClone() throws InvalidDateTimeException {
         ParsedDateTime start = new ParsedDateTime(
                 LocalDateTime.of(2025, 9, 28, 10, 10), true);
         ParsedDateTime end = new ParsedDateTime(
@@ -42,12 +43,12 @@ class CloneTaskTest {
 
         // Test: recurrence reset
         assertNotNull(clone.getRecurrence());
-        assertEquals(clone.getRecurrence().type(), Recurrence.RecurrenceType.NONE);
+        assertEquals(Recurrence.RecurrenceType.NONE, clone.getRecurrence().type());
     }
 
     @Test
     @DisplayName("Todo clones should preserve description only and no recurrence")
-    void todoTaskClone() {
+    void todoTaskClone() throws InvalidDateTimeException {
         Task original = new TodoTask("pay bills", null);
         // Any start/end passed in should be irrelevant
         LocalDateTime dummyStart = LocalDateTime.of(2025, 9, 28, 10, 0);
@@ -64,6 +65,6 @@ class CloneTaskTest {
         assertNotSame(original.getRecurrence(), clone.getRecurrence());
 
         assertNotNull(clone.getRecurrence());
-        assertEquals(clone.getRecurrence().type(), Recurrence.RecurrenceType.NONE);
+        assertEquals(Recurrence.RecurrenceType.NONE, clone.getRecurrence().type());
     }
 }

@@ -52,7 +52,7 @@ public class TaskDeserializer {
      * @return a list of successfully deserialized Task objects (may be empty if all tasks failed)
      * @throws FileContentException if the JSON array format itself is invalid (not individual tasks)
      */
-    static TaskLoadResult reconstructTask(String jsonArray) throws FileContentException {
+    public static TaskLoadResult reconstructTask(String jsonArray) throws FileContentException {
         List<Task> tasks = new ArrayList<>();
         List<String> errorLog = new ArrayList<>();
         SimpleJsonParser parser = new SimpleJsonParser(new JsonTokenizer(jsonArray));
