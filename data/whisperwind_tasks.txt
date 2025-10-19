@@ -1,6 +1,0 @@
-D | 1 | Past deadline | 2025-10-20T12:00:00
-T | 1 | read book
-T | 1 | buy groceries
-D | 0 | return book | 2025-12-25T14:00:00
-E | 0 | book club meeting | 2025-12-20T18:00:00 | 2025-12-20T20:00:00
-T | 0 | book return

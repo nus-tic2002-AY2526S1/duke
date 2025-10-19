@@ -242,4 +242,65 @@ public class InstructionManager {
         System.out.println("║                   Your tasks are saved for next time! 💾                      ║");
         System.out.println("╚════════════════════════════════════════════════════════════════════════════════╝");
     }
+
+    /**
+     * Displays comprehensive archive instructions and usage guide for Whisperwind.
+     * <p>
+     * This method presents a formatted visual guide showing all available archive commands,
+     * their purposes, and usage examples. The guide is displayed within a bordered box
+     * for better readability and user experience.
+     * </p>
+     *
+     * <p><b>Archive Features Covered:</b></p>
+     * <ul>
+     *   <li>Archiving all tasks to start fresh</li>
+     *   <li>Archiving only completed tasks</li>
+     *   <li>Archiving by task type (todo, deadline, event)</li>
+     *   <li>Listing and viewing archive files</li>
+     *   <li>Archive file location and format information</li>
+     * </ul>
+     *
+     * <p><b>Example Usage:</b></p>
+     * <pre>
+     * {@code
+     * // Display archive instructions to user
+     * InstructionManager.showArchiveInstructions();
+     * }
+     * </pre>
+     * <p><b>Visual Format:</b></p>
+     * The instructions are displayed in a bordered box with:
+     * - Header title "WHISPERWIND ARCHIVE GUIDE"
+     * - Descriptive introduction
+     * - Command list with descriptions
+     * - Helpful tips and file location information
+     */
+    public static void showArchiveInstructions() {
+        System.out.println();
+        System.out.println("╔════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                            📦 WHISPERWIND ARCHIVE GUIDE 📦                    ║");
+        System.out.println("╠════════════════════════════════════════════════════════════════════════════════╣");
+        System.out.println("║                                                                                ║");
+        System.out.println("║  Archive commands help you keep records while maintaining a clean task list!   ║");
+        System.out.println("║                                                                                ║");
+
+        String[] archiveCommands = {
+                "archive all       - Backup ALL tasks and clear your list",
+                "archive completed - Archive only checked-off tasks",
+                "archive todo      - Archive all simple todo tasks",
+                "archive deadline  - Archive all deadline tasks",
+                "archive event     - Archive all event tasks",
+                "archive list      - View all available archive files",
+                "archive view 1    - See contents of archive file #1",
+                "",
+                "💡 Archives are saved in ./data/archive/ as readable text files",
+                "💾 Perfect for starting fresh while keeping records!"
+        };
+
+        for (String cmd : archiveCommands) {
+            System.out.printf("║   %-70s ║%n", cmd);
+        }
+        System.out.println("║                                                                                ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════════════════════╝");
+        System.out.println();
+    }
 }

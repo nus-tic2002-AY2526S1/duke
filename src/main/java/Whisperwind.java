@@ -24,6 +24,7 @@ public class Whisperwind {
     private DeleteManager deleteManager;
     private TaskManager taskManager;
     private ScheduleManager scheduleManager;
+    private ArchiveManager archiveManager; // NEW: Archive manager
     private long lastCommandTime = 0;
     private static final long MIN_COMMAND_INTERVAL = 300;
 
@@ -38,6 +39,7 @@ public class Whisperwind {
         this.deleteManager = new DeleteManager(tasks, scanner);
         this.taskManager = new TaskManager(tasks, scanner);
         this.scheduleManager = new ScheduleManager(tasks);
+        this.archiveManager = new ArchiveManager(); // NEW: Initialize archive manager
     }
 
     /**
@@ -166,6 +168,15 @@ public class Whisperwind {
                                 System.out.println("  schedule 2024-12-20 to 2024-12-25");
                             }
                             break;
+                        // NEW: Archive command
+                        case "archive":
+                            if (parts.length > 1) {
+                                handleArchiveCommand(parts[1]);
+                            } else {
+                                System.out.println("❓ What would you like to archive?");
+                                showArchiveHelp();
+                            }
+                            break;
                         default:
                             System.out.println("I don't know that command! Type 'view instruction' to see what I can do.");
                             break;
@@ -185,6 +196,126 @@ public class Whisperwind {
                 scanner.close();
             }
         }
+    }
+
+    // NEW: Archive command handling methods
+
+    /**
+     * Handles archive commands
+     */
+    private void handleArchiveCommand(String argument) {
+        try {
+            ArchiveCommand command = ArchiveCommand.fromString(argument);
+
+            switch (command) {
+                case ARCHIVE_ALL:
+                    handleArchiveAll();
+                    break;
+                case ARCHIVE_COMPLETED:
+                    handleArchiveCompleted();
+                    break;
+                case ARCHIVE_TODO:
+                    handleArchiveByType(TaskType.TODO);
+                    break;
+                case ARCHIVE_DEADLINE:
+                    handleArchiveByType(TaskType.DEADLINE);
+                    break;
+                case ARCHIVE_EVENT:
+                    handleArchiveByType(TaskType.EVENT);
+                    break;
+                case LIST_ARCHIVES:
+                    archiveManager.listArchiveFiles();
+                    break;
+                case VIEW_ARCHIVE:
+                    handleViewArchive(argument);
+                    break;
+                case UNKNOWN:
+                default:
+                    System.out.println("❌ Invalid archive command: " + argument);
+                    showArchiveHelp();
+                    break;
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error processing archive command: " + e.getMessage());
+        }
+    }
+
+    private void handleArchiveAll() {
+        if (tasks.isEmpty()) {
+            System.out.println("📭 No tasks to archive!");
+            return;
+        }
+
+        System.out.println("🚨 You're about to archive ALL " + tasks.getTaskCount() + " tasks!");
+        System.out.print("❓ This will create a backup and clear your current list. Continue? (yes/no): ");
+
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+        if (confirmation.equals("yes") || confirmation.equals("y")) {
+            try {
+                String archivePath = archiveManager.archiveAllTasks(tasks);
+                tasks.clearAllTasks();
+                autoSaveTasks();
+                System.out.println("✨ Archive complete! Your task list is now fresh and empty.");
+                System.out.println("💾 Archive saved to: " + archivePath);
+            } catch (Exception e) {
+                System.out.println("❌ Failed to archive tasks: " + e.getMessage());
+            }
+        } else {
+            System.out.println("😅 Archive operation cancelled.");
+        }
+    }
+
+    private void handleArchiveCompleted() {
+        try {
+            String archivePath = archiveManager.archiveCompletedTasks(tasks);
+            // Remove completed tasks from main list after archiving
+            tasks.deleteCompletedTasks();
+            autoSaveTasks();
+            System.out.println("✨ Removed completed tasks from main list.");
+        } catch (Exception e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+    private void handleArchiveByType(TaskType taskType) {
+        try {
+            String archivePath = archiveManager.archiveTasksByType(tasks, taskType);
+            // Remove tasks of this type after archiving
+            tasks.deleteTasksByType(taskType);
+            autoSaveTasks();
+            System.out.println("✨ Removed archived " + taskType.getDisplayName().toLowerCase() + " tasks from main list.");
+        } catch (Exception e) {
+            System.out.println("❌ " + e.getMessage());
+        }
+    }
+
+    private void handleViewArchive(String argument) {
+        try {
+            String[] parts = argument.split(" ");
+            if (parts.length > 1) {
+                int archiveIndex = Integer.parseInt(parts[1]);
+                archiveManager.viewArchive(archiveIndex);
+            } else {
+                System.out.println("❌ Please specify which archive to view: archive view [number]");
+                archiveManager.listArchiveFiles();
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Please provide a valid archive number.");
+            archiveManager.listArchiveFiles();
+        }
+    }
+
+    private void showArchiveHelp() {
+        System.out.println("💡 Archive commands:");
+        System.out.println("   archive all       - Archive all tasks and clear list");
+        System.out.println("   archive completed - Archive only completed tasks");
+        System.out.println("   archive todo      - Archive all todo tasks");
+        System.out.println("   archive deadline  - Archive all deadline tasks");
+        System.out.println("   archive event     - Archive all event tasks");
+        System.out.println("   archive list      - List all archive files");
+        System.out.println("   archive view 1    - View contents of archive file 1");
+        System.out.println();
+        System.out.println("💾 Archives are saved in: ./data/archive/");
     }
 
     /**

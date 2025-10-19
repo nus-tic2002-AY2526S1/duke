@@ -294,78 +294,6 @@ public class TaskList {
     }
 
     /**
-     * Deletes all tasks from the list after confirmation.
-     * @throws CommandException If task list is already empty
-     */
-    public void clearAllTasks() throws CommandException {
-        if (tasks.isEmpty()) {
-            throw new CommandException("Your task list is already empty!");
-        }
-
-        System.out.println("🚨 You're about to delete ALL " + tasks.size() + " tasks!");
-        System.out.println("🔍 This action cannot be undone!");
-        System.out.print("❓ Are you absolutely sure? (type 'DELETE ALL' to confirm): ");
-
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        String confirmation = scanner.nextLine().trim();
-
-        if (confirmation.equals("DELETE ALL")) {
-            int previousCount = tasks.size();
-            tasks.clear();
-            System.out.println("🗑️  Cleared all " + previousCount + " tasks. Fresh start! 🌟");
-            System.out.println("💫 Your task list is now empty and ready for new adventures!");
-        } else {
-            System.out.println("😅 Phew! Operation cancelled. Your " + tasks.size() + " tasks are safe.");
-        }
-    }
-
-    /**
-     * Deletes tasks that match a specified pattern in their description.
-     * @param pattern The pattern to match against task descriptions
-     * @throws CommandException If pattern is invalid or no matches found
-     */
-    public void deleteTasksByPattern(String pattern) throws CommandException {
-        if (pattern == null || pattern.trim().isEmpty()) {
-            throw new CommandException("Please provide a search pattern (e.g., 'book*', '*meeting', '*urgent*')");
-        }
-
-        String searchPattern = pattern.trim().toLowerCase();
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        ArrayList<Integer> matchingIndexes = new ArrayList<>();
-
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task != null && task.isValid() && matchesPattern(task, searchPattern)) {
-                matchingTasks.add(task);
-                matchingIndexes.add(i);
-            }
-        }
-
-        if (matchingTasks.isEmpty()) {
-            throw new CommandException("No tasks found matching pattern: " + pattern);
-        }
-
-        System.out.println("🔍 Found " + matchingTasks.size() + " tasks matching '" + pattern + "':");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            System.out.println("  " + (i + 1) + ". " + matchingTasks.get(i).toString());
-        }
-
-        System.out.print("🗑️  Delete these " + matchingTasks.size() + " tasks? (yes/no): ");
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        String confirmation = scanner.nextLine().trim().toLowerCase();
-
-        if (confirmation.equals("yes") || confirmation.equals("y")) {
-            for (int i = matchingIndexes.size() - 1; i >= 0; i--) {
-                tasks.remove(matchingIndexes.get(i).intValue());
-            }
-            System.out.println("✅ Removed " + matchingTasks.size() + " tasks matching pattern: " + pattern);
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } else {
-            System.out.println("😅 Deletion cancelled.");
-        }
-    }
-
-    /**
      * Deletes all tasks of a specific type.
      * @param taskType The type of tasks to delete
      * @throws CommandException If invalid task type or no tasks of that type found
@@ -391,6 +319,36 @@ public class TaskList {
             System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
         } else {
             throw new CommandException("No " + taskType.getDisplayName().toLowerCase() + " tasks found to delete.");
+        }
+    }
+
+    /**
+     * Clears all tasks from the list and provides a fresh start.
+     * <p>
+     * This method removes all tasks from the current task list, effectively resetting
+     * the application to an empty state. It is particularly useful after archiving
+     * tasks or when the user wants to start over with a clean slate.
+     * </p>
+     *
+     * @throws CommandException if the task list is already empty when attempting to clear
+     */
+    public void clearAllTasks() throws CommandException {
+        if (tasks.isEmpty()) {
+            throw new CommandException("Task list is already empty! Nothing to clear.");
+        }
+
+        int count = tasks.size();
+        tasks.clear();
+        System.out.println("🗑️  Cleared all " + count + " tasks.");
+        System.out.println("✨ Your task list is now fresh and empty!");
+
+        // Show encouragement message based on task count
+        if (count > 10) {
+            System.out.println("🎉 Wow! You cleared " + count + " tasks! That's amazing!");
+        } else if (count > 5) {
+            System.out.println("🌟 Great job clearing " + count + " tasks!");
+        } else {
+            System.out.println("💫 Ready for new adventures!");
         }
     }
 
@@ -596,38 +554,6 @@ public class TaskList {
     }
 
     /**
-     * Checks if a task's description matches the given pattern.
-     *
-     * @param task The task to check
-     * @param pattern The pattern to match against
-     * @return true if the task matches the pattern, false otherwise
-     */
-    private boolean matchesPattern(Task task, String pattern) {
-        String description = task.getDescription().toLowerCase();
-
-        if (pattern.equals(description)) {
-            return true;
-        }
-
-        if (!pattern.startsWith("*") && pattern.endsWith("*")) {
-            String prefix = pattern.substring(0, pattern.length() - 1);
-            return description.startsWith(prefix);
-        }
-
-        if (pattern.startsWith("*") && !pattern.endsWith("*")) {
-            String suffix = pattern.substring(1);
-            return description.endsWith(suffix);
-        }
-
-        if (pattern.startsWith("*") && pattern.endsWith("*")) {
-            String contains = pattern.substring(1, pattern.length() - 1);
-            return description.contains(contains);
-        }
-
-        return description.contains(pattern);
-    }
-
-    /**
      * Validates the integrity of all tasks in the list.
      *
      * @return true if all tasks are valid, false if any corrupted tasks were found and removed
@@ -723,5 +649,98 @@ public class TaskList {
      */
     public Task[] getAllTasks() {
         return tasks.toArray(new Task[0]);
+    }
+
+    /**
+     * Deletes tasks that match a specified pattern in their description.
+     * <p>
+     * This method allows users to delete tasks using pattern matching with wildcards:
+     * - "book*" matches tasks starting with "book"
+     * - "*meeting" matches tasks ending with "meeting"
+     * - "*urgent*" matches tasks containing "urgent"
+     * - "report" matches tasks exactly matching "report"
+     * </p>
+     *
+     * @param pattern The pattern to match against task descriptions
+     * @throws CommandException If pattern is invalid or no matches found
+     */
+    public void deleteTasksByPattern(String pattern) throws CommandException {
+        if (pattern == null || pattern.trim().isEmpty()) {
+            throw new CommandException("Please provide a search pattern (e.g., 'book*', '*meeting', '*urgent*')");
+        }
+
+        String searchPattern = pattern.trim().toLowerCase();
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        ArrayList<Integer> matchingIndexes = new ArrayList<>();
+
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task != null && task.isValid() && matchesPattern(task, searchPattern)) {
+                matchingTasks.add(task);
+                matchingIndexes.add(i);
+            }
+        }
+
+        if (matchingTasks.isEmpty()) {
+            throw new CommandException("No tasks found matching pattern: " + pattern);
+        }
+
+        System.out.println("🔍 Found " + matchingTasks.size() + " tasks matching '" + pattern + "':");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + matchingTasks.get(i).toString());
+        }
+
+        System.out.print("🗑️  Delete these " + matchingTasks.size() + " tasks? (yes/no): ");
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+
+        if (confirmation.equals("yes") || confirmation.equals("y")) {
+            for (int i = matchingIndexes.size() - 1; i >= 0; i--) {
+                tasks.remove(matchingIndexes.get(i).intValue());
+            }
+            System.out.println("✅ Removed " + matchingTasks.size() + " tasks matching pattern: " + pattern);
+            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
+        } else {
+            System.out.println("😅 Deletion cancelled.");
+        }
+    }
+
+    /**
+     * Checks if a task's description matches the given pattern.
+     * <p>
+     * Supports the following pattern types:
+     * - "book*" - tasks starting with "book"
+     * - "*meeting" - tasks ending with "meeting"
+     * - "*urgent*" - tasks containing "urgent"
+     * - "report" - tasks exactly matching "report"
+     * </p>
+     *
+     * @param task The task to check
+     * @param pattern The pattern to match against
+     * @return true if the task matches the pattern, false otherwise
+     */
+    private boolean matchesPattern(Task task, String pattern) {
+        String description = task.getDescription().toLowerCase();
+
+        if (pattern.equals(description)) {
+            return true;
+        }
+
+        if (!pattern.startsWith("*") && pattern.endsWith("*")) {
+            String prefix = pattern.substring(0, pattern.length() - 1);
+            return description.startsWith(prefix);
+        }
+
+        if (pattern.startsWith("*") && !pattern.endsWith("*")) {
+            String suffix = pattern.substring(1);
+            return description.endsWith(suffix);
+        }
+
+        if (pattern.startsWith("*") && pattern.endsWith("*")) {
+            String contains = pattern.substring(1, pattern.length() - 1);
+            return description.contains(contains);
+        }
+
+        return description.contains(pattern);
     }
 }
