@@ -16,7 +16,7 @@ public class ExitCmd implements Command {
     /**
      * Signals that the application should terminate after this command.
      *
-     * @return true to indicate application exit
+     * @return true to indicate application isExit
      */
     @Override
     public boolean isExit() {

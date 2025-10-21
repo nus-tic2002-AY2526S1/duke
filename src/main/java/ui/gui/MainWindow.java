@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+
 import meebot.MeeBot;
 import message.WelcomeMessage;
 
@@ -70,14 +71,18 @@ public class MainWindow extends BorderPane {
     private void handleUserInput() {
         String input = userInput.getText();
         if (input.isBlank()) return;
-
-        String response = meebot.getResponse(input);
+        MeeBot.ExecutionResult result = meebot.getExecutionResult(input);
+        String response = result.output().message();
 
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getMeebotDialog(response, meebotImage)
         );
         userInput.clear();
+
+        if (result.isExit()) {
+            handleExit();
+        }
     }
 
     /**

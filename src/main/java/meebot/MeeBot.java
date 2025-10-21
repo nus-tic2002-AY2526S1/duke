@@ -42,6 +42,10 @@ public class MeeBot {
         }
     }
 
-    public record ExecutionResult(Message output, boolean exit) {
+    public record ExecutionResult(Message output, boolean isExit) {
+    }
+
+    public ExecutionResult getExecutionResult(String input) {
+        return execute(input);
     }
 }

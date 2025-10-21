@@ -20,7 +20,7 @@ public class CliRunner {
             String input = ui.readUserInput();
             MeeBot.ExecutionResult result = meebot.execute(input);
             ui.displayMessage(result.output());
-            if (result.exit()) {
+            if (result.isExit()) {
                 break;
             }
         }
