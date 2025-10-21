@@ -13,21 +13,8 @@ import common.ErrorMessage;
  */
 public class InvalidTaskOperationException extends MeeBotException {
 
-    /**
-     * Enumeration of possible task operation error types.
-     * Each error type represents a different category of task operation failure,
-     * allowing for specific error handling and appropriate user feedback.
-     */
-    public enum ErrorType {
-        DUPLICATE_TASK,
-        INVALID_NUMBER_FORMAT,
-        TASK_NOT_FOUND,
-        TASK_STATE
-    }
-
     private final ErrorType type;
     private final Object[] inputs;
-
     public InvalidTaskOperationException(ErrorType type, Object... inputs) {
         super(inputs != null && inputs.length > 0 ? inputs[0].toString() : null);
         this.type = type;
@@ -50,5 +37,17 @@ public class InvalidTaskOperationException extends MeeBotException {
             case TASK_NOT_FOUND -> new ErrorMessage(String.format(ErrorMessage.TASK_NOT_FOUND, inputs));
             case TASK_STATE -> new ErrorMessage(String.format(ErrorMessage.TASK_STATE, inputs));
         };
+    }
+
+    /**
+     * Enumeration of possible task operation error types.
+     * Each error type represents a different category of task operation failure,
+     * allowing for specific error handling and appropriate user feedback.
+     */
+    public enum ErrorType {
+        DUPLICATE_TASK,
+        INVALID_NUMBER_FORMAT,
+        TASK_NOT_FOUND,
+        TASK_STATE
     }
 }

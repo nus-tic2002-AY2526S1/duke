@@ -35,7 +35,7 @@ public final class SimpleJsonParser {
     public SimpleJsonParser(JsonTokenizer tokenizer) throws FileContentException {
         this.tokenizer = tokenizer;
         this.current = tokenizer.nextToken();
-        assert current != null : "Tokenizer must not return null as first token";
+        assert current.type() != null : "Token type must not be null";
     }
 
     /**
@@ -50,7 +50,7 @@ public final class SimpleJsonParser {
             throw new FileContentException(ErrorType.INVALID_JSON_FORMAT);
         }
         current = tokenizer.nextToken();
-        assert current != null : "Tokenizer must not return null as first token";
+        assert current != null : "Tokenizer must not return null";
     }
 
     /**

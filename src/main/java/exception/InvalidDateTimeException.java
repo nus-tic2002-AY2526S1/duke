@@ -13,18 +13,8 @@ import common.ErrorMessage;
  */
 public class InvalidDateTimeException extends MeeBotException {
 
-    /**
-     * Enumeration of specific date/time parsing error types.
-     */
-    public enum ErrorType {
-        UNSUPPORTED_FORMAT,
-        INVALID_DATETIME_VALUE,
-        END_BEFORE_START
-    }
-
     private final ErrorType type;
     private final String input;
-
     public InvalidDateTimeException(ErrorType type, String input, Throwable cause) {
         super(input, cause);
         this.type = type;
@@ -50,5 +40,14 @@ public class InvalidDateTimeException extends MeeBotException {
             case UNSUPPORTED_FORMAT -> new ErrorMessage(ErrorMessage.INVALID_DATETIME_FORMAT);
             case END_BEFORE_START -> new ErrorMessage(ErrorMessage.END_BEFORE_START);
         };
+    }
+
+    /**
+     * Enumeration of specific date/time parsing error types.
+     */
+    public enum ErrorType {
+        UNSUPPORTED_FORMAT,
+        INVALID_DATETIME_VALUE,
+        END_BEFORE_START
     }
 }

@@ -12,25 +12,6 @@ import common.ErrorMessage;
  */
 public class InvalidFilterException extends MeeBotException {
 
-    /**
-     * Enumeration of possible filter error types with associated context messages.
-     */
-    public enum ErrorType {
-        TOO_MANY_FILTERS("Too many criteria, maximum 3 - you think this is buffet?"),
-        INVALID_FILTER_FORMAT("Wrong filter format."),
-        UNKNOWN_FILTER_KEY("Unknown filter key.");
-
-        private final String context;
-
-        ErrorType(String context) {
-            this.context = context;
-        }
-
-        public String getContext() {
-            return context;
-        }
-    }
-
     private final ErrorType type;
 
     public InvalidFilterException(ErrorType type) {
@@ -54,5 +35,24 @@ public class InvalidFilterException extends MeeBotException {
                 ErrorMessage.FILTER_FORMAT,
                 type.getContext()
         ));
+    }
+
+    /**
+     * Enumeration of possible filter error types with associated context messages.
+     */
+    public enum ErrorType {
+        TOO_MANY_FILTERS("Too many criteria, maximum 3 - you think this is buffet?"),
+        INVALID_FILTER_FORMAT("Wrong filter format."),
+        UNKNOWN_FILTER_KEY("Unknown filter key.");
+
+        private final String context;
+
+        ErrorType(String context) {
+            this.context = context;
+        }
+
+        public String getContext() {
+            return context;
+        }
     }
 }

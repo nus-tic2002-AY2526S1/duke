@@ -2,10 +2,10 @@ package parser.commandargs;
 
 import exception.InvalidTaskOperationException;
 import exception.InvalidTaskOperationException.ErrorType;
-import manager.TaskManager;
 
 public final class TaskIndexParser {
-    private TaskIndexParser() {}
+    private TaskIndexParser() {
+    }
 
     public static int parseTaskIndex(String args)
             throws InvalidTaskOperationException {

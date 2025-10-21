@@ -39,9 +39,6 @@ import exception.FileContentException.ErrorType;
  * @see SimpleJsonParser
  */
 public final class JsonTokenizer {
-    private final String input;
-    private int pos = 0;
-
     /**
      * Lookup table for single-character JSON tokens.
      * Maps characters to functions that create the appropriate token and advance position.
@@ -74,7 +71,6 @@ public final class JsonTokenizer {
                         return new JsonToken(JsonTokenType.COMMA, ",");
                     }
             );
-
     /**
      * Lookup table for JSON literal tokens (true, false, null). Maps the first character
      * to functions that check for complete literals, create tokens and advance position.
@@ -104,6 +100,9 @@ public final class JsonTokenizer {
                         return null;
                     }
             );
+
+    private final String input;
+    private int pos = 0;
 
     public JsonTokenizer(String input) {
         this.input = input.trim();

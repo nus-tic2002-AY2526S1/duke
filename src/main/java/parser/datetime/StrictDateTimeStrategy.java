@@ -23,41 +23,17 @@ import exception.InvalidDateTimeException.ErrorType;
 public final class StrictDateTimeStrategy implements DateTimeStrategy {
 
     /**
-     * Enum representing supported date/time input patterns. Each pattern specifies a
-     * {@link DateTimeFormatter} and whether it includes time information.
-     * Patterns are tried in enum declaration order during parsing.
+     * Determines if a {@link DateTimeParseException} was caused by invalid date-time values
+     * rather than format mismatch.
      * <p>
-     * Reference: <em><a href="https://www.tutorialspoint.com/can-we-define-an-enum-inside-a-class-in-java">
-     * Tutorials Points: Can we define an enum inside a class in Java</a></em>
+     * Invalid values include out-of-range months, days, hours, or minutes
+     * (e.g., month 13, day 32, hour 25, minute 60).
      */
-    private enum DateTimePattern {
-        // Date with 24-hour time patterns
-        SLASH_DMYHM("d/M/yyyy HHmm", true),     // 9/9/2025 2210
-        DASH_DMYHM("d-M-yyyy HHmm", true),      // 9-9-2025 2210
-        LONG_DMYHM("d MMM yyyy HHmm", true),    // 9 Sep 2025 2210
-        ISO_8601("yyyy-MM-dd'T'HH:mm", true),   // 2025-09-09T22:10
-
-        // Date only patterns
-        SLASH_DMY("d/M/yyyy", false),           // 9/9/2025
-        DASH_DMY("d-M-yyyy", false),            // 9-9-2025
-        LONG_DMY("d MMM yyyy", false),          // 9 Sep 2025
-        ISO_DATE("yyyy-MM-dd", false);          // 2025-09-09
-
-        private final DateTimeFormatter formatter;
-        private final boolean hasTime;
-
-        DateTimePattern(String pattern, boolean hasTime) {
-            this.formatter = DateTimeFormatter.ofPattern(pattern);
-            this.hasTime = hasTime;
-        }
-
-        public DateTimeFormatter getFormatter() {
-            return formatter;
-        }
-
-        public boolean hasTime() {
-            return hasTime;
-        }
+    private static boolean isInvalidDateTimeValue(DateTimeParseException e) {
+        if (e.getMessage() == null) return false;
+        String msg = e.getMessage();
+        return msg.contains("MonthOfYear") || msg.contains("DayOfMonth") ||
+                msg.contains("HourOfDay") || msg.contains("MinuteOfHour");
     }
 
     /**
@@ -105,16 +81,40 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
     }
 
     /**
-     * Determines if a {@link DateTimeParseException} was caused by invalid date-time values
-     * rather than format mismatch.
+     * Enum representing supported date/time input patterns. Each pattern specifies a
+     * {@link DateTimeFormatter} and whether it includes time information.
+     * Patterns are tried in enum declaration order during parsing.
      * <p>
-     * Invalid values include out-of-range months, days, hours, or minutes
-     * (e.g., month 13, day 32, hour 25, minute 60).
+     * Reference: <em><a href="https://www.tutorialspoint.com/can-we-define-an-enum-inside-a-class-in-java">
+     * Tutorials Points: Can we define an enum inside a class in Java</a></em>
      */
-    private static boolean isInvalidDateTimeValue(DateTimeParseException e) {
-        if (e.getMessage() == null) return false;
-        String msg = e.getMessage();
-        return msg.contains("MonthOfYear") || msg.contains("DayOfMonth") ||
-                msg.contains("HourOfDay") || msg.contains("MinuteOfHour");
+    private enum DateTimePattern {
+        // Date with 24-hour time patterns
+        SLASH_DMYHM("d/M/yyyy HHmm", true),     // 9/9/2025 2210
+        DASH_DMYHM("d-M-yyyy HHmm", true),      // 9-9-2025 2210
+        LONG_DMYHM("d MMM yyyy HHmm", true),    // 9 Sep 2025 2210
+        ISO_8601("yyyy-MM-dd'T'HH:mm", true),   // 2025-09-09T22:10
+
+        // Date only patterns
+        SLASH_DMY("d/M/yyyy", false),           // 9/9/2025
+        DASH_DMY("d-M-yyyy", false),            // 9-9-2025
+        LONG_DMY("d MMM yyyy", false),          // 9 Sep 2025
+        ISO_DATE("yyyy-MM-dd", false);          // 2025-09-09
+
+        private final DateTimeFormatter formatter;
+        private final boolean hasTime;
+
+        DateTimePattern(String pattern, boolean hasTime) {
+            this.formatter = DateTimeFormatter.ofPattern(pattern);
+            this.hasTime = hasTime;
+        }
+
+        public DateTimeFormatter getFormatter() {
+            return formatter;
+        }
+
+        public boolean hasTime() {
+            return hasTime;
+        }
     }
 }

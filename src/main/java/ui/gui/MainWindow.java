@@ -18,18 +18,17 @@ import message.WelcomeMessage;
  * Controller for the main GUI.
  */
 public class MainWindow extends BorderPane {
+    private final Image userImage = new Image(Objects.requireNonNull(
+            this.getClass().getResourceAsStream("/images/user.png")));
+    private final Image meebotImage = new Image(Objects.requireNonNull(
+            this.getClass().getResourceAsStream("/images/meebot.png")));
     @FXML
     private ScrollPane scrollPane;
     @FXML
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
-
     private MeeBot meebot;
-    private final Image userImage = new Image(Objects.requireNonNull(
-            this.getClass().getResourceAsStream("/images/user.png")));
-    private final Image meebotImage = new Image(Objects.requireNonNull(
-            this.getClass().getResourceAsStream("/images/meebot.png")));
 
     @FXML
     public void initialize() {
@@ -38,7 +37,9 @@ public class MainWindow extends BorderPane {
     }
 
 
-    /** Injects the MeeBot instance */
+    /**
+     * Injects the MeeBot instance
+     */
     public void setMeeBot(MeeBot mb) {
         meebot = mb;
         WelcomeMessage welcome = new WelcomeMessage();

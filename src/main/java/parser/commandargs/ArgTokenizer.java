@@ -10,8 +10,9 @@ import exception.InvalidTaskFormatException.ErrorType;
  * Utility class providing static utility methods for tokenizing and parsing
  * command-line arguments using regex patterns.
  */
-public final class StringTokenizer {
-    private StringTokenizer() {}
+public final class ArgTokenizer {
+    private ArgTokenizer() {
+    }
 
     /**
      * Tokenizes a string into an array of tokens using the specified regex pattern.

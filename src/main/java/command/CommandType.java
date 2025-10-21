@@ -39,10 +39,6 @@ public enum CommandType {
         this.cmdFactory = cmdFactory;
     }
 
-    public String getKeyword() {
-        return keyword;
-    }
-
     /**
      * Looks up a CommandType by keyword and perform case-insensitive matching.
      *
@@ -58,6 +54,10 @@ public enum CommandType {
             }
         }
         return null;
+    }
+
+    public String getKeyword() {
+        return keyword;
     }
 
     /**

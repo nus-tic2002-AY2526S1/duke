@@ -7,7 +7,7 @@ import exception.InvalidTaskFormatException.ErrorType;
 import manager.TaskManager;
 import message.ListTaskMessage;
 import message.Message;
-import parser.commandargs.StringTokenizer;
+import parser.commandargs.ArgTokenizer;
 
 /**
  * Command to sort the task list by a specified criterion.
@@ -43,7 +43,7 @@ public class SortCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskFormatException {
-        String[] tokens = StringTokenizer.tokenize(
+        String[] tokens = ArgTokenizer.tokenize(
                 args, SORT_PATTERN, 1, ErrorType.SORT
         );
         String sortMode = tokens[0].toLowerCase();

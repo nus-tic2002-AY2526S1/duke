@@ -8,7 +8,7 @@ import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;
 import exception.InvalidTaskOperationException;
 import parser.RecurrenceParser;
-import parser.commandargs.StringTokenizer;
+import parser.commandargs.ArgTokenizer;
 import parser.datetime.DateTimeParser;
 import parser.datetime.ParsedDateTime;
 import parser.json.SimpleJsonObject;
@@ -25,8 +25,7 @@ import task.Task;
  * @see TaskCreator
  * @see DeadlineTask
  */
-public class DeadlineCreator implements TaskCreator {
-
+public final class DeadlineCreator implements TaskCreator {
     /**
      * Regular expression pattern to parse deadline command input.
      * <p>
@@ -53,7 +52,7 @@ public class DeadlineCreator implements TaskCreator {
     public Task createFromArgs(String args)
             throws InvalidTaskFormatException, InvalidDateTimeException, InvalidTaskOperationException {
 
-        String[] tokens = StringTokenizer.tokenize(
+        String[] tokens = ArgTokenizer.tokenize(
                 args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE);
         ParsedDateTime parsed = DateTimeParser.parse(tokens[1]);
         Recurrence recurrence = RecurrenceParser.parse(

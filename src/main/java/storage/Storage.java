@@ -23,7 +23,6 @@ public class Storage {
     private static final String DEFAULT_FILE = "tasks.json";
     private final File dataFile;
     private final TaskManager tm;
-    private TaskLoadResult loadResult = TaskLoadResult.empty();
 
     public Storage(TaskManager tm) {
         this.tm = tm;
@@ -70,6 +69,7 @@ public class Storage {
             List<ReadOnlyTask> taskList = tm.getReadOnlyList();
             String json = TaskSerializer.tasksToJson(taskList);
             Files.writeString(dataFile.toPath(), json);
+            assert Files.size(dataFile.toPath()) > 0 : "Task file must not be empty after save";
         } catch (IOException e) {
             throw new RuntimeException("Failed to save tasks", e);
         }
@@ -87,7 +87,7 @@ public class Storage {
     public void loadTasks() {
         try {
             String content = Files.readString(dataFile.toPath()).trim();
-            loadResult = TaskDeserializer.reconstructTask(content);
+            TaskLoadResult loadResult = TaskDeserializer.reconstructTask(content);
 
             tm.clear();
             for (Task task : loadResult.tasks()) {
@@ -100,9 +100,5 @@ public class Storage {
         } catch (MeeBotException e) {
             System.err.println(e.toErrorMessage());
         }
-    }
-
-    public TaskLoadResult getLoadResult() {
-        return loadResult;
     }
 }

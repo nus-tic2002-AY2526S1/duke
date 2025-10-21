@@ -48,17 +48,6 @@ public class DialogBox extends HBox {
         timestamp.setText(time);
     }
 
-    /**
-     * Flips the dialog box such that the ImageView is on the left and text on the right.
-     */
-    private void flip() {
-        ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
-        Collections.reverse(tmp);
-        getChildren().setAll(tmp);
-        setAlignment(Pos.TOP_LEFT);
-        ((VBox) tmp.get(1)).setAlignment(Pos.TOP_LEFT);
-    }
-
     public static DialogBox getUserDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.dialog.getStyleClass().add("user-bubble");
@@ -70,5 +59,16 @@ public class DialogBox extends HBox {
         db.dialog.getStyleClass().add("bot-bubble");
         db.flip();
         return db;
+    }
+
+    /**
+     * Flips the dialog box such that the ImageView is on the left and text on the right.
+     */
+    private void flip() {
+        ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
+        Collections.reverse(tmp);
+        getChildren().setAll(tmp);
+        setAlignment(Pos.TOP_LEFT);
+        ((VBox) tmp.get(1)).setAlignment(Pos.TOP_LEFT);
     }
 }

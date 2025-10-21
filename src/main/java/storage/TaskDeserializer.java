@@ -39,7 +39,8 @@ import task.factory.TodoCreator;
 public class TaskDeserializer {
     private static final Path ERROR_LOG_PATH = Paths.get("logs").resolve("task_load_errors.log");
 
-    private TaskDeserializer() {}
+    private TaskDeserializer() {
+    }
 
     /**
      * Reconstructs a list of Task objects from a JSON array string.

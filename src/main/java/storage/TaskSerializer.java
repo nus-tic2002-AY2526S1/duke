@@ -7,7 +7,8 @@ import task.Recurrence;
 
 public class TaskSerializer {
 
-    private TaskSerializer() {}
+    private TaskSerializer() {
+    }
 
     /**
      * Utility class to serialize Task objects into JSON string representations.
@@ -55,7 +56,7 @@ public class TaskSerializer {
                 """.formatted(
                 task.getTaskType().getKeyword(),
                 task.isDone(),
-                task.getDescription().replace("\"", "\\\""),   //"description": "Read \"Java\" book"
+                task.getDescription().replace("\"", "\\\""),   //"description": "Read \"TIC\" textbook"
                 task.toJsonFields(),
                 r.type(),
                 r.frequency(),

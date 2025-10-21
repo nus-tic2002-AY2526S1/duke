@@ -5,14 +5,13 @@ import java.util.regex.Pattern;
 import exception.FileContentException;
 import exception.InvalidTaskFormatException;
 import exception.InvalidTaskFormatException.ErrorType;
-import parser.commandargs.StringTokenizer;
+import parser.commandargs.ArgTokenizer;
 import parser.json.SimpleJsonObject;
 import task.Recurrence;
 import task.Task;
 import task.TodoTask;
 
-public class TodoCreator implements TaskCreator {
-
+public final class TodoCreator implements TaskCreator {
     /**
      * Simple capture-all regular expression pattern since todo tasks have minimal parsing
      * requirements. Unlike other task commands, todo tasks have no special syntax or delimiters.
@@ -28,7 +27,7 @@ public class TodoCreator implements TaskCreator {
      */
     @Override
     public Task createFromArgs(String args) throws InvalidTaskFormatException {
-        String[] tokens = StringTokenizer.tokenize(
+        String[] tokens = ArgTokenizer.tokenize(
                 args, TODO_PATTERN, 1, null);
         if (!"none".equalsIgnoreCase(tokens[tokens.length - 1])) {
             throw ErrorType.TODO.createException();

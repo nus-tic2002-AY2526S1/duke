@@ -5,12 +5,11 @@ import java.util.List;
 import task.Task;
 
 public record TaskLoadResult(List<Task> tasks, int failedTaskCount, String errorLogFile) {
+    private static TaskLoadResult current = TaskLoadResult.empty();
 
     public static TaskLoadResult empty() {
         return new TaskLoadResult(List.of(), 0, null);
     }
-
-    private static TaskLoadResult current = TaskLoadResult.empty();
 
     public static void setCurrent(TaskLoadResult result) {
         current = java.util.Objects.requireNonNull(result);

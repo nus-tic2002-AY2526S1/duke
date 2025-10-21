@@ -16,7 +16,8 @@ import task.Recurrence.RecurrenceType;
  * JSON objects into {@link Recurrence} objects.
  */
 public class RecurrenceParser {
-    private RecurrenceParser() {}
+    private RecurrenceParser() {
+    }
 
     /**
      * Parses a string representation of recurrence from user command input.

@@ -28,7 +28,8 @@ import task.ReadOnlyTask;
  * and maintains no mutable state.
  */
 public final class TaskFilterParser {
-    private TaskFilterParser() {}
+    private TaskFilterParser() {
+    }
 
     /**
      * Parses filter argument string into a combined predicate. All predicates are combined

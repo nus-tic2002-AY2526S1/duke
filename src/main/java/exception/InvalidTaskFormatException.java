@@ -12,6 +12,27 @@ import common.ErrorMessage;
  */
 public class InvalidTaskFormatException extends MeeBotException {
 
+    private final ErrorType type;
+
+    public InvalidTaskFormatException(ErrorType type) {
+        super(type.getContext());
+        this.type = type;
+    }
+
+    /**
+     * Converts exception to a user-friendly error message. The returned message is mapped
+     * from the error type to an appropriate standardized error message.
+     *
+     * @return an {@link ErrorMessage} containing a formatted error for display to end users
+     */
+    @Override
+    public ErrorMessage toErrorMessage() {
+        return new ErrorMessage(String.format(
+                ErrorMessage.TASK_FORMAT,
+                type.getContext()
+        ));
+    }
+
     /**
      * Enumeration of task format parsing error types.
      * Each type represents a distinct category of parsing failure.
@@ -64,26 +85,5 @@ public class InvalidTaskFormatException extends MeeBotException {
         public InvalidTaskFormatException createException() {
             return new InvalidTaskFormatException(this);
         }
-    }
-
-    private final ErrorType type;
-
-    public InvalidTaskFormatException(ErrorType type) {
-        super(type.getContext());
-        this.type = type;
-    }
-
-    /**
-     * Converts exception to a user-friendly error message. The returned message is mapped
-     * from the error type to an appropriate standardized error message.
-     *
-     * @return an {@link ErrorMessage} containing a formatted error for display to end users
-     */
-    @Override
-    public ErrorMessage toErrorMessage() {
-        return new ErrorMessage(String.format(
-                ErrorMessage.TASK_FORMAT,
-                type.getContext()
-        ));
     }
 }

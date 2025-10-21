@@ -8,7 +8,7 @@ import exception.InvalidTaskFormatException;
 import manager.TaskManager;
 import message.Message;
 import message.SearchResultMessage;
-import parser.commandargs.StringTokenizer;
+import parser.commandargs.ArgTokenizer;
 import task.ReadOnlyTask;
 
 /**
@@ -44,7 +44,7 @@ public class SearchCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskFormatException {
-        String[] tokens = StringTokenizer.tokenize(
+        String[] tokens = ArgTokenizer.tokenize(
                 args, SEARCH_PATTERN, 1, null
         );
         String[] keywords = tokens[0].toLowerCase().split("\\s+");

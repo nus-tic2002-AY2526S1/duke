@@ -1,7 +1,6 @@
 package ui.cli;
 
 import meebot.MeeBot;
-import message.GoodbyeMessage;
 
 /**
  * Presentation logic for CLI
@@ -22,7 +21,6 @@ public class CliRunner {
             MeeBot.ExecutionResult result = meebot.execute(input);
             ui.displayMessage(result.output());
             if (result.exit()) {
-                ui.displayMessage(new GoodbyeMessage());
                 break;
             }
         }

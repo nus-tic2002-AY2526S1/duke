@@ -18,12 +18,13 @@ import exception.InvalidDateTimeException.ErrorType;
  * strategies are not invoked.
  */
 public final class DateTimeParser {
-    private DateTimeParser() {}
-
     private static final List<DateTimeStrategy> STRATEGIES = List.of(
             new StrictDateTimeStrategy(),
             new NlpDateTimeStrategy()
     );
+
+    private DateTimeParser() {
+    }
 
     /**
      * Parses a date-time string using all available strategies.

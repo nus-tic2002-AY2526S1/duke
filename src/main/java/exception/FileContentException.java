@@ -10,22 +10,6 @@ import common.ErrorMessage;
  * <li>Input contains unknown task types or invalid content</li>
  */
 public class FileContentException extends MeeBotException {
-
-    public enum ErrorType {
-        INVALID_JSON_FORMAT("File structure is invalid, loading failed."),
-        INVALID_INPUT("Unknown task type or invalid content.");
-
-        private final String context;
-
-        ErrorType(String context) {
-            this.context = context;
-        }
-
-        public String getContext() {
-            return context;
-        }
-    }
-
     private final ErrorType type;
 
     public FileContentException(ErrorType type) {
@@ -40,5 +24,20 @@ public class FileContentException extends MeeBotException {
     @Override
     public ErrorMessage toErrorMessage() {
         return new ErrorMessage(ErrorMessage.INVALID_JSON_FORMAT);
+    }
+
+    public enum ErrorType {
+        INVALID_JSON_FORMAT("File structure is invalid, loading failed."),
+        INVALID_INPUT("Unknown task type or invalid content.");
+
+        private final String context;
+
+        ErrorType(String context) {
+            this.context = context;
+        }
+
+        public String getContext() {
+            return context;
+        }
     }
 }
