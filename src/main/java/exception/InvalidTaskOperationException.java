@@ -12,9 +12,9 @@ import common.ErrorMessage;
  * @see ErrorMessage
  */
 public class InvalidTaskOperationException extends MeeBotException {
-
     private final ErrorType type;
     private final Object[] inputs;
+
     public InvalidTaskOperationException(ErrorType type, Object... inputs) {
         super(inputs != null && inputs.length > 0 ? inputs[0].toString() : null);
         this.type = type;
@@ -23,7 +23,8 @@ public class InvalidTaskOperationException extends MeeBotException {
 
     /**
      * Converts this exception to an appropriate ErrorMessage for user display.
-     * <p>This method maps the error type to a formatted error message using the
+     * <p>
+     * This method maps the error type to a formatted error message using the
      * provided inputs. The specific message format depends on the error type
      * and is defined in the {@link ErrorMessage} class constants.
      *

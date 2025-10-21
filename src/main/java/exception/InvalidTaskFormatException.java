@@ -4,14 +4,13 @@ import common.ErrorMessage;
 
 /**
  * Custom exception for task format validation failures in MeeBot.
- * Provides detailed categorization of task formatting errors to enable
- * precise error reporting and user guidance.
+ * Provides detailed categorization of task formatting errors by
+ * converting itself to appropriate {@link ErrorMessage} objects.
  *
  * @see MeeBotException
  * @see ErrorMessage
  */
 public class InvalidTaskFormatException extends MeeBotException {
-
     private final ErrorType type;
 
     public InvalidTaskFormatException(ErrorType type) {

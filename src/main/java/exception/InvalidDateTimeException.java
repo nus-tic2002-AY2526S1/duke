@@ -4,17 +4,17 @@ import common.ErrorMessage;
 
 /**
  * Custom exception for date/time parsing failures with detailed error classification.
- * <p>This exception categorizes date/time parsing errors into specific types to enable
- * more targeted error handling and user feedback. It extends {@link MeeBotException}
- * to maintain consistency with the application's exception hierarchy.</p>
+ * <p>
+ * This exception categorizes date/time parsing errors into specific types by
+ * converting itself to appropriate {@link ErrorMessage} objects.
  *
  * @see MeeBotException
  * @see ErrorMessage
  */
 public class InvalidDateTimeException extends MeeBotException {
-
     private final ErrorType type;
     private final String input;
+
     public InvalidDateTimeException(ErrorType type, String input, Throwable cause) {
         super(input, cause);
         this.type = type;

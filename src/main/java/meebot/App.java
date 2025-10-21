@@ -10,6 +10,16 @@ import ui.cli.CliRunner;
 import ui.cli.UserInterface;
 import ui.gui.Main;
 
+/**
+ * Main application entry point for the MeeBot task management system.
+ * <p>
+ * This class initializes the core components and routes execution to either
+ * a CLI or GUI based on the provided command-line arguments.
+ * <p>
+ * The application sets up the task manager, storage layer, and bot controller
+ * before launching the appropriate user interface.
+ *
+ */
 public class App {
     public static void main(String[] args) {
         Logger.getLogger("com.zoho.hawking").setLevel(Level.OFF);
@@ -23,7 +33,7 @@ public class App {
 
         // CLI GUI routing
         if (args.length > 0 && args[0].equalsIgnoreCase("cli")) {
-            new CliRunner(meebot, new UserInterface(storage.getLoadResult())).run();
+            new CliRunner(meebot, new UserInterface()).run();
         } else {
             Main.setMeeBot(meebot);
             Application.launch(Main.class, args);

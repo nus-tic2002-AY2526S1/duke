@@ -4,14 +4,14 @@ import common.ErrorMessage;
 
 /**
  * Exception thrown when task filter operations encounter invalid input or configuration.
- * <p>This exception extends {@link MeeBotException} and categorizes filter parsing errors
- * into specific types by converting itself to appropriate {@link ErrorMessage} objects.</p>
+ * <p>
+ * This exception categorizes filter parsing errors into specific types by
+ * converting itself to appropriate {@link ErrorMessage} objects.
  *
  * @see MeeBotException
  * @see ErrorMessage
  */
 public class InvalidFilterException extends MeeBotException {
-
     private final ErrorType type;
 
     public InvalidFilterException(ErrorType type) {
@@ -39,6 +39,9 @@ public class InvalidFilterException extends MeeBotException {
 
     /**
      * Enumeration of possible filter error types with associated context messages.
+     * <p>
+     * Each error type provides a specific context message that describes the nature
+     * of the filter validation failure.
      */
     public enum ErrorType {
         TOO_MANY_FILTERS("Too many criteria, maximum 3 - you think this is buffet?"),

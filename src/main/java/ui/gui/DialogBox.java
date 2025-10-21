@@ -16,8 +16,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * Custom JavaFX component representing a chat dialog box in the MeeBot interface.
+ * <p>
+ * A DialogBox displays a message bubble with an associated avatar image and timestamp.
+ * Dialog boxes automatically include a timestamp showing the current time in 12-hour
+ * format (e.g., "3:45 PM") when created.
+ *
+ * @see MainWindow
  */
 public class DialogBox extends HBox {
     @FXML
@@ -48,12 +53,32 @@ public class DialogBox extends HBox {
         timestamp.setText(time);
     }
 
+    /**
+     * Creates a user-styled dialog box with right-aligned layout.
+     * <p>
+     * The dialog box is styled with the "user-bubble" CSS class and maintains
+     * the default layout with the avatar on the right side.
+     *
+     * @param text the user's message text
+     * @param img the user's avatar image
+     * @return a DialogBox configured for displaying user messages
+     */
     public static DialogBox getUserDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.dialog.getStyleClass().add("user-bubble");
         return db;
     }
 
+    /**
+     * Creates a bot-styled dialog box with left-aligned layout.
+     * <p>
+     * The dialog box is styled with the "bot-bubble" CSS class and has its
+     * layout flipped so the avatar appears on the left side.
+     *
+     * @param text MeeBot's response text
+     * @param img  MeeBot's avatar image
+     * @return a DialogBox configured for displaying bot messages
+     */
     public static DialogBox getMeebotDialog(String text, Image img) {
         DialogBox db = new DialogBox(text, img);
         db.dialog.getStyleClass().add("bot-bubble");
@@ -62,7 +87,10 @@ public class DialogBox extends HBox {
     }
 
     /**
-     * Flips the dialog box such that the ImageView is on the left and text on the right.
+     * Flips the dialog box layout so the avatar appears on the left and text on the right.
+     * <p>
+     * This method reverses the order of child nodes and adjusts the alignment to
+     * create a left-aligned dialog box appearance for bot messages.
      */
     private void flip() {
         ObservableList<Node> tmp = FXCollections.observableArrayList(this.getChildren());
