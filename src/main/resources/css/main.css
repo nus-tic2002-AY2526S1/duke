@@ -21,6 +21,24 @@
     -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.2), 5, 0, 0, 0);
 }
 
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+/* When focused (keyboard Tab), show a subtle highlight */
+.icon-button:focused {
+    -fx-border-color: #66afe9;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-color: transparent;
+}
+
 /* Chat List (Middle panel) */
 .chatlist-view {
     -fx-background-color: #636566;

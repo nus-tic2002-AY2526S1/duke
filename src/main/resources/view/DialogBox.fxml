@@ -5,14 +5,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<fx:root alignment="TOP_RIGHT"
+<fx:root xmlns:fx="http://javafx.com/fxml/1"
+         alignment="TOP_RIGHT"
          spacing="15"
          maxHeight="1.7976931348623157E308"
-         maxWidth="1.7976931348623157E308"
-         prefWidth="400.0" stylesheets="@../css/dialog-box.css"
+         maxWidth="1.7976931348623157E308" prefWidth="400.0"
+         stylesheets="@../css/dialog-box.css"
          type="javafx.scene.layout.HBox"
-         xmlns="http://javafx.com/javafx/25"
-         xmlns:fx="http://javafx.com/fxml/1">
+         xmlns="http://javafx.com/javafx/25">
     <children>
         <VBox alignment="TOP_RIGHT" spacing="3">
             <children>
