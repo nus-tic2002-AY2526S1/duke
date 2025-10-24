@@ -53,6 +53,8 @@ public class FilterCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidFilterException, InvalidDateTimeException {
+        assert args != null : "Arguments must not be null";
+
         Predicate<ReadOnlyTask> predicates = TaskFilterParser.chainPredicate(args);
         List<ReadOnlyTask> filteredList = taskManager.filter(predicates);
         List<ReadOnlyTask> finalFilteredList = expandRecurringTasks(filteredList, args);

@@ -34,6 +34,8 @@ public class AddTodoCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws MeeBotException {
+        assert args != null : "Arguments must not be null";
+
         Task todo = creator.createFromArgs(args);
         boolean wasSorted = taskManager.isSorted();
         taskManager.addTask(todo);

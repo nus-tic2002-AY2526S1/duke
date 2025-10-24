@@ -42,7 +42,7 @@ public class TaskManager {
     }
 
     /**
-     * Removes all task from the list
+     * Removes all tasks from the list.
      */
     public void clear() {
         tasks.clear();
@@ -78,6 +78,7 @@ public class TaskManager {
      * @see #validateTaskState(int, boolean)
      */
     public void unmarkTask(int userIndex) throws InvalidTaskOperationException {
+
         int actualIndex = toActualIndex(userIndex);
         validateTaskState(actualIndex, false);
         Task task = tasks.get(actualIndex);
@@ -146,6 +147,8 @@ public class TaskManager {
      *         at least one of the search terms, or an empty list if no matches are found
      */
     public List<ReadOnlyTask> search(String... terms) {
+        assert terms != null : "Search terms array should not be null";
+
         return filter(task -> {
             String desc = task.getDescription().toLowerCase();
             for (String term : terms) {

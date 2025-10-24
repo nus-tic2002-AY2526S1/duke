@@ -1,4 +1,4 @@
-package storage;
+package manager;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.util.List;
 
 import exception.MeeBotException;
-import manager.TaskManager;
+import storage.TaskDeserializer;
+import storage.TaskLoadResult;
+import storage.TaskSerializer;
 import task.ReadOnlyTask;
 import task.Task;
 
@@ -18,13 +20,13 @@ import task.Task;
  * This class manages the creation and maintenance of storage directories and files,
  * and provides methods to save and load tasks in JSON format.
  */
-public class Storage {
+public class StorageManager {
     private static final String DEFAULT_DIR = "data";
     private static final String DEFAULT_FILE = "tasks.json";
     private final File dataFile;
     private final TaskManager tm;
 
-    public Storage(TaskManager tm) {
+    public StorageManager(TaskManager tm) {
         this.tm = tm;
         this.dataFile = initStorage();
     }
@@ -51,6 +53,9 @@ public class Storage {
                 throw new RuntimeException("Unable to create storage file: " + file.getAbsolutePath());
             }
         }
+        assert file.exists() : "Storage file must exist after initialization";
+        assert file.canWrite() : "Storage file must be writable after initialization";
+
         return file;
     }
 
@@ -88,13 +93,13 @@ public class Storage {
         try {
             String content = Files.readString(dataFile.toPath()).trim();
             TaskLoadResult loadResult = TaskDeserializer.reconstructTask(content);
-
             tm.clear();
+
             for (Task task : loadResult.tasks()) {
+                assert task != null : "Task must not be null.";
                 tm.addTask(task);
             }
             TaskLoadResult.setCurrent(loadResult);
-
         } catch (IOException e) {
             throw new RuntimeException("Failed to load tasks: ", e);
         } catch (MeeBotException e) {

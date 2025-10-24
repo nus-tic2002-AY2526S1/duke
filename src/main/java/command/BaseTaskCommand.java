@@ -1,5 +1,7 @@
 package command;
 
+import java.util.Objects;
+
 import common.ErrorMessage;
 import exception.MeeBotException;
 import manager.TaskManager;
@@ -21,7 +23,7 @@ public abstract class BaseTaskCommand implements Command {
     protected final String args;
 
     public BaseTaskCommand(TaskManager taskManager, String args) {
-        this.taskManager = taskManager;
+        this.taskManager = Objects.requireNonNull(taskManager, "TaskManager must not be null");
         this.args = args;
     }
 

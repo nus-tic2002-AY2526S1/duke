@@ -44,6 +44,8 @@ public class SearchCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskFormatException {
+        assert args != null : "Arguments must not be null";
+
         String[] tokens = ArgTokenizer.tokenize(
                 args, SEARCH_PATTERN, 1, null
         );

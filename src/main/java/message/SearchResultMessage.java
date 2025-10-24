@@ -45,6 +45,9 @@ public class SearchResultMessage implements Message {
     }
 
     private String highlight(String text, String[] terms) {
+        assert text != null : "text to highlight should not be null";
+        assert terms != null : "terms should not be null";
+
         String result = text;
         for (String term : terms) {
             Pattern p = Pattern.compile("(?i)" + Pattern.quote(term));

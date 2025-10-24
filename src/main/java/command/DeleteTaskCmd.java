@@ -30,6 +30,8 @@ public class DeleteTaskCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskOperationException {
+        assert args != null : "Arguments must not be null";
+
         int taskNumber = TaskIndexParser.parseTaskIndex(args);
         ReadOnlyTask task = taskManager.getTask(taskNumber);
         taskManager.deleteTask(taskNumber);

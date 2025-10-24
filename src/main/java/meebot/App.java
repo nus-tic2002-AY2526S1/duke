@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import javafx.application.Application;
 import manager.TaskManager;
-import storage.Storage;
+import manager.StorageManager;
 import ui.cli.CliRunner;
 import ui.cli.UserInterface;
 import ui.gui.Main;
@@ -27,7 +27,7 @@ public class App {
 
         // Core wiring
         TaskManager tm = new TaskManager();
-        Storage storage = new Storage(tm);
+        StorageManager storage = new StorageManager(tm);
         MeeBot meebot = new MeeBot(tm, storage);
         storage.loadTasks();
 

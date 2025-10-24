@@ -4,17 +4,17 @@ import command.Command;
 import common.ErrorMessage;
 import manager.TaskManager;
 import message.Message;
-import parser.commandargs.CommandProcessor;
-import storage.Storage;
+import manager.CommandProcessor;
+import manager.StorageManager;
 
 /**
  * Provide a unified backend API for both CLI and GUI.
  */
 public class MeeBot {
     private final CommandProcessor processor;
-    private final Storage storage;
+    private final StorageManager storage;
 
-    public MeeBot(TaskManager tm, Storage storage) {
+    public MeeBot(TaskManager tm, StorageManager storage) {
         this.processor = new CommandProcessor(tm);
         this.storage = storage;
         storage.loadTasks();

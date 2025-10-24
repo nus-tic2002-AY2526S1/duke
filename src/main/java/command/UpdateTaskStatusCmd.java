@@ -40,14 +40,16 @@ public class UpdateTaskStatusCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskOperationException {
+        assert args != null : "Arguments must not be null";
+
         int taskNumber = TaskIndexParser.parseTaskIndex(args);
         boolean wasSorted = taskManager.isSorted();
-
         if (markDone) {
             taskManager.markTaskDone(taskNumber);
         } else {
             taskManager.unmarkTask(taskNumber);
         }
+
         ReadOnlyTask task = taskManager.getTask(taskNumber);
         return markDone
                 ? new TaskMarkedMessage(task, wasSorted)

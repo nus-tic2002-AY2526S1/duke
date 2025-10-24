@@ -1,5 +1,6 @@
 package parser.commandargs;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,9 @@ public final class ArgTokenizer {
     public static String[] tokenize(String args, Pattern pattern,
                                     int requiredToken, ErrorType errorType)
             throws InvalidTaskFormatException {
+        Objects.requireNonNull(args, "Arguments must not be null");
+        Objects.requireNonNull(pattern, "Pattern must not be null");
+        assert requiredToken > 0 : "requiredToken must be greater than 0";
 
         String[] split = args.trim().split("/repeat", 2);
         Matcher matcher = pattern.matcher(split[0].trim());

@@ -43,6 +43,8 @@ public class SortCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws InvalidTaskFormatException {
+        assert args != null : "Arguments must not be null";
+
         String[] tokens = ArgTokenizer.tokenize(
                 args, SORT_PATTERN, 1, ErrorType.SORT
         );

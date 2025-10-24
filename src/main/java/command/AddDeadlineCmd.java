@@ -40,6 +40,8 @@ public class AddDeadlineCmd extends BaseTaskCommand {
      */
     @Override
     public Message executes() throws MeeBotException {
+        assert args != null : "Arguments must not be null";
+
         Task deadline = creator.createFromArgs(args);
         boolean wasSorted = taskManager.isSorted();
         taskManager.addTask(deadline);

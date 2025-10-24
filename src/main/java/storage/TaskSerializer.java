@@ -2,6 +2,7 @@ package storage;
 
 import java.util.List;
 
+import manager.StorageManager;
 import task.ReadOnlyTask;
 import task.Recurrence;
 
@@ -16,7 +17,7 @@ public class TaskSerializer {
      * The JSON format includes common task fields (type, done status, description)
      * as well as task-specific fields for different task types.
      *
-     * @see Storage#saveTasks()
+     * @see StorageManager#saveTasks()
      */
     public static String tasksToJson(List<ReadOnlyTask> taskList) {
         assert taskList != null : "Task list must not be null";

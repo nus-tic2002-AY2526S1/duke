@@ -1,6 +1,7 @@
 package message;
 
 import java.util.List;
+import java.util.Optional;
 
 import task.ReadOnlyTask;
 
@@ -36,9 +37,10 @@ public class FilteredListMessage implements Message {
         }
 
         StringBuilder content = new StringBuilder();
-        if (filterCriteria != null && !filterCriteria.isBlank()) {
-            content.append("Filtered by ").append(filterCriteria).append("\n");
-        }
+        Optional.ofNullable(filterCriteria)
+                .filter(c -> !c.isBlank())
+                .ifPresent(c -> content.append("Filtered by ").append(c).append('\n'));
+
         for (int i = 0; i < tasks.size(); i++) {
             ReadOnlyTask task = tasks.get(i);
             content.append(String.format("%d. %s\n", i + 1, task.toString()));

@@ -51,17 +51,19 @@ public final class DeadlineCreator implements TaskCreator {
     @Override
     public Task createFromArgs(String args)
             throws InvalidTaskFormatException, InvalidDateTimeException, InvalidTaskOperationException {
-
         String[] tokens = ArgTokenizer.tokenize(
                 args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE);
+
+        assert tokens[0] != null && !tokens[0].isBlank() : "Description must not be null or empty";
+        assert tokens[1] != null && !tokens[1].isBlank() : "Date must not be null or empty";
+        assert tokens[2] != null && !tokens[2].isBlank() : "Recurrence must not be null or empty";
+
         ParsedDateTime parsed = DateTimeParser.parse(tokens[1]);
         Recurrence recurrence = RecurrenceParser.parse(
                 tokens[tokens.length - 1],
                 parsed.dateTime().toLocalDate(),
                 ErrorType.RECURRENCE
         );
-
-        assert tokens[0] != null && !tokens[0].isBlank() : "Description must not be null or empty";
         return new DeadlineTask(tokens[0], parsed, recurrence);
     }
 
@@ -78,8 +80,8 @@ public final class DeadlineCreator implements TaskCreator {
         String desc = obj.requireNonEmpty("description");
         ParsedDateTime dl = DateTimeParser.parse(obj.requireNonEmpty("deadline"));
         Recurrence rec = RecurrenceParser.parse(obj, dl.dateTime().toLocalDate());
-
         assert desc != null && !desc.isEmpty() : "Description must not be null or empty";
+
         return new DeadlineTask(desc, dl, rec);
     }
 }

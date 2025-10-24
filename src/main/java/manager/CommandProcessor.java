@@ -1,11 +1,10 @@
-package parser.commandargs;
+package manager;
 
 import java.util.Objects;
 
 import command.Command;
 import command.CommandType;
 import common.ErrorMessage;
-import manager.TaskManager;
 
 /**
  * Central processor for parsing and routing user commands into executable {@link Command} objects.
@@ -28,7 +27,7 @@ public final class CommandProcessor {
     private final TaskManager taskManager;
 
     public CommandProcessor(TaskManager taskManager) {
-        this.taskManager = Objects.requireNonNull(taskManager);
+        this.taskManager = Objects.requireNonNull(taskManager, "Task Manager must not be null");
     }
 
     /**
