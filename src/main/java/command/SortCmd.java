@@ -26,11 +26,6 @@ import parser.commandargs.ArgTokenizer;
  * @see TaskManager#sortByStatus()
  */
 public class SortCmd extends BaseTaskCommand {
-    private static final Pattern SORT_PATTERN = Pattern.compile(
-            "/by\\s+(date|status)",
-            Pattern.CASE_INSENSITIVE
-    );
-
     public SortCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
     }
@@ -45,11 +40,14 @@ public class SortCmd extends BaseTaskCommand {
     public Message executes() throws InvalidTaskFormatException {
         assert args != null : "Arguments must not be null";
 
-        String[] tokens = ArgTokenizer.tokenize(
-                args, SORT_PATTERN, 1, ErrorType.SORT
+        final Pattern SORT_PATTERN = Pattern.compile(
+                "/by\\s+(date|status)", Pattern.CASE_INSENSITIVE
         );
-        String sortMode = tokens[0].toLowerCase();
-        if (sortMode.equals("date")) {
+        String sortMode = ArgTokenizer.tokenize(
+                args, SORT_PATTERN, 1, ErrorType.SORT)[0]
+                .toLowerCase();
+
+        if ("date".equals(sortMode)) {
             taskManager.sortByDate();
         } else {
             taskManager.sortByStatus();

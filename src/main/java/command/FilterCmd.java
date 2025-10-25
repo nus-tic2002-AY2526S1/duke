@@ -35,6 +35,7 @@ import task.ReadOnlyTask;
  *     <li>filter by date - {@code date:YYYY-MM-DD}</li>
  */
 public class FilterCmd extends BaseTaskCommand {
+
     public FilterCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
     }
@@ -58,6 +59,7 @@ public class FilterCmd extends BaseTaskCommand {
         Predicate<ReadOnlyTask> predicates = TaskFilterParser.chainPredicate(args);
         List<ReadOnlyTask> filteredList = taskManager.filter(predicates);
         List<ReadOnlyTask> finalFilteredList = expandRecurringTasks(filteredList, args);
+
         return new FilteredListMessage(finalFilteredList, args);
     }
 
@@ -81,6 +83,7 @@ public class FilterCmd extends BaseTaskCommand {
      */
     private List<ReadOnlyTask> expandRecurringTasks(List<ReadOnlyTask> filteredList, String args)
             throws InvalidDateTimeException {
+
         return TaskFilterParser.extractFilterDate(args)
                 .map(date -> filteredList.stream()
                         .map(task -> {

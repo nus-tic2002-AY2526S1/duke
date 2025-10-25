@@ -124,11 +124,12 @@ public record Recurrence(
             LocalDate originalEnd
     ) {
         if (type == RecurrenceType.NONE) {
-            return !filterDate.isBefore(originalStart) && !filterDate.isAfter(originalEnd);
+            return isWithin(filterDate, originalStart, originalEnd);
         }
         if (recurrenceEnd().isBefore(filterDate)) {
             return false;
         }
+
         ChronoUnit unit = type.getChronoUnit();
         long timeUnitDiff = unit.between(originalStart, filterDate);
         if (timeUnitDiff < 0 || timeUnitDiff >= frequency) {
@@ -137,7 +138,11 @@ public record Recurrence(
         LocalDate instanceStart = originalStart.plus(timeUnitDiff, unit);
         LocalDate instanceEnd = originalEnd.plus(timeUnitDiff, unit);
 
-        return !filterDate.isBefore(instanceStart) && !filterDate.isAfter(instanceEnd);
+        return isWithin(filterDate, instanceStart, instanceEnd);
+    }
+
+    private boolean isWithin(LocalDate date, LocalDate start, LocalDate end) {
+        return !date.isBefore(start) && !date.isAfter(end);
     }
 
     /**

@@ -1,6 +1,5 @@
 package storage;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,23 +53,31 @@ public class TaskDeserializer {
      * @throws FileContentException if the JSON array format itself is invalid (not individual tasks)
      */
     public static TaskLoadResult reconstructTask(String jsonArray) throws FileContentException {
-        List<Task> tasks = new ArrayList<>();
-        List<String> errorLog = new ArrayList<>();
         SimpleJsonParser parser = new SimpleJsonParser(new JsonTokenizer(jsonArray));
         List<SimpleJsonObject> objects = parser.parseJson();
+        List<String> errors = new ArrayList<>();
+        List<Task> tasks = deserializeTasks(objects, errors);
 
-        for (SimpleJsonObject obj : objects) {
+        writeErrorLog(errors);
+        String errorLogFile = errors.isEmpty()
+                ? null
+                : ERROR_LOG_PATH.getFileName().toString();
+
+        return new TaskLoadResult(tasks, errors.size(), errorLogFile);
+    }
+
+    private static List<Task> deserializeTasks(List<SimpleJsonObject> jsonObjects, List<String> errors) {
+        List<Task> tasks = new ArrayList<>();
+        for (SimpleJsonObject jsonObj : jsonObjects) {
             try {
-                tasks.add(deserialize(obj));
-                assert tasks.get(tasks.size() - 1) != null : "Deserialized task must not be null";
+                Task task = deserialize(jsonObj);
+                assert task != null : "Deserialized task must not be null";
+                tasks.add(task);
             } catch (MeeBotException e) {
-                errorLog.add(formatError(e, obj));
+                errors.add(formatError(e, jsonObj));
             }
         }
-
-        writeErrorLog(errorLog);
-        String errorLogFile = errorLog.isEmpty() ? null : ERROR_LOG_PATH.getFileName().toString();
-        return new TaskLoadResult(tasks, errorLog.size(), errorLogFile);
+        return tasks;
     }
 
     /**
@@ -85,7 +92,7 @@ public class TaskDeserializer {
      * @see DeadlineCreator#createFromJson
      * @see EventCreator#createFromJson
      */
-    static Task deserialize(SimpleJsonObject obj) throws MeeBotException {
+    private static Task deserialize(SimpleJsonObject obj) throws MeeBotException {
         String type = obj.requireNonEmpty("type").toLowerCase();
 
         TaskCreator creator = switch (type) {
@@ -98,7 +105,7 @@ public class TaskDeserializer {
         if (Boolean.parseBoolean(obj.requireNonEmpty("done"))) {
             task.markAsDone();
         }
-        assert task != null : "Task must not be null after deserialization";
+
         return task;
     }
 
@@ -128,22 +135,20 @@ public class TaskDeserializer {
      */
     private static void writeErrorLog(List<String> errors) {
         if (errors.isEmpty()) return;
+
         try {
-            Path dir = ERROR_LOG_PATH.getParent();
-            if (dir != null && Files.notExists(dir)) {
-                Files.createDirectories(dir);
-            }
-            try (BufferedWriter writer = Files.newBufferedWriter(
-                    ERROR_LOG_PATH,
+            // Ensure the directory for the error log exists
+            Path logFile = ERROR_LOG_PATH;
+            Files.createDirectories(logFile.getParent());
+
+            List<String> errorContent = new ArrayList<>();
+            errorContent.add("=== TASK LOADING ERRORS ===\n");
+            errorContent.addAll(errors);
+
+            Files.write(logFile, errorContent,
                     StandardOpenOption.CREATE,
-                    StandardOpenOption.TRUNCATE_EXISTING
-            )) {
-                writer.write("=== TASK LOADING ERRORS ===\n");
-                for (String error : errors) {
-                    writer.write(error);
-                    writer.newLine();
-                }
-            }
+                    StandardOpenOption.TRUNCATE_EXISTING);
+
         } catch (IOException e) {
             System.err.println("Failed to write error log: " + e.getMessage());
         }

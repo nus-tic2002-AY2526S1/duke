@@ -47,8 +47,10 @@ public final class TaskFilterParser {
      */
     public static Predicate<ReadOnlyTask> chainPredicate(String args)
             throws InvalidFilterException, InvalidDateTimeException {
+
         // "task:deadline & done:true & date:2024-01-15" → ["task:deadline", "done:true", "date:2024-01-15"]
-        String[] tokens = args.trim().split("\\s*&\\s*");
+        String AMP_DELIMITER = "\\s*&\\s*";
+        String[] tokens = args.trim().split(AMP_DELIMITER);
         if (tokens.length > 3) {
             throw new InvalidFilterException(ErrorType.TOO_MANY_FILTERS);
         }
@@ -78,6 +80,7 @@ public final class TaskFilterParser {
      */
     public static Predicate<ReadOnlyTask> parseFilterToken(String token)
             throws InvalidFilterException, InvalidDateTimeException {
+
         // "task:deadline" → ["task", "deadline"]
         String[] parts = token.split(":");
         String key = parts[0].trim().toLowerCase();
@@ -104,17 +107,16 @@ public final class TaskFilterParser {
      */
     public static Predicate<ReadOnlyTask> createPredicate(String key, String value)
             throws InvalidFilterException, InvalidDateTimeException {
+
         assert value != null && !value.isEmpty() : "Task filter value must not be null/empty";
 
         switch (key) {
         case "task":
             return task -> task.getTaskType().getKeyword().equalsIgnoreCase(value);
-
         case "done":
             if (value.equalsIgnoreCase("true")) return ReadOnlyTask::isDone;
             if (value.equalsIgnoreCase("false")) return task -> !task.isDone();
             return task -> false;
-
         case "date":
             ParsedDateTime parsed = DateTimeParser.parse(value);
             LocalDate filterDate = parsed.dateTime().toLocalDate(); // ignore time
@@ -135,6 +137,7 @@ public final class TaskFilterParser {
      */
     public static Optional<LocalDate> extractFilterDate(String args)
             throws InvalidDateTimeException {
+
         String[] tokens = args.trim().split("\\s*&\\s*");
         for (String token : tokens) {
             String[] parts = token.split(":");

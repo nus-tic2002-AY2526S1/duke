@@ -43,14 +43,15 @@ public class UpdateTaskStatusCmd extends BaseTaskCommand {
         assert args != null : "Arguments must not be null";
 
         int taskNumber = TaskIndexParser.parseTaskIndex(args);
+        ReadOnlyTask task = taskManager.getTask(taskNumber);
         boolean wasSorted = taskManager.isSorted();
+
         if (markDone) {
             taskManager.markTaskDone(taskNumber);
         } else {
             taskManager.unmarkTask(taskNumber);
         }
 
-        ReadOnlyTask task = taskManager.getTask(taskNumber);
         return markDone
                 ? new TaskMarkedMessage(task, wasSorted)
                 : new TaskUnmarkedMessage(task, wasSorted);

@@ -33,22 +33,38 @@ public final class ArgTokenizer {
     public static String[] tokenize(String args, Pattern pattern,
                                     int requiredToken, ErrorType errorType)
             throws InvalidTaskFormatException {
+
         Objects.requireNonNull(args, "Arguments must not be null");
         Objects.requireNonNull(pattern, "Pattern must not be null");
         assert requiredToken > 0 : "requiredToken must be greater than 0";
 
-        String[] split = args.trim().split("/repeat", 2);
-        Matcher matcher = pattern.matcher(split[0].trim());
+        String REPEAT_DELIMITER = "/repeat";
+        String[] split = args.trim().split(REPEAT_DELIMITER, 2);
+        String cmdArg = split[0].trim();
+        String repeatArg = (split.length > 1) ? split[1].trim() : "none";
+
+        Matcher matcher = pattern.matcher(cmdArg);
         if (!matcher.matches()) {
             throw errorType.createException();
         }
+        String[] tokens = extractTokens(matcher, requiredToken, errorType);
+        tokens[requiredToken] = repeatArg;
+        return tokens;
+    }
+
+    private static String[] extractTokens(
+            Matcher matcher, int requiredToken, ErrorType errorType)
+            throws InvalidTaskFormatException {
+
         // add 1 for optional repeat field
         String[] tokens = new String[requiredToken + 1];
         for (int i = 0; i < requiredToken; i++) {
-            tokens[i] = matcher.group(i + 1).trim();
-            if (tokens[i].isEmpty()) throw errorType.createException();
+            String value = matcher.group(i + 1).trim();
+            if (value.isEmpty()) {
+                throw errorType.createException();
+            }
+            tokens[i] = value;
         }
-        tokens[requiredToken] = (split.length > 1 ? split[1].trim() : "none");
         return tokens;
     }
 }

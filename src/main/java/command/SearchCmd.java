@@ -27,8 +27,6 @@ import task.ReadOnlyTask;
  * </ul>
  */
 public class SearchCmd extends BaseTaskCommand {
-    private static final Pattern SEARCH_PATTERN = Pattern.compile("(.+)");
-
     public SearchCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
     }
@@ -46,9 +44,11 @@ public class SearchCmd extends BaseTaskCommand {
     public Message executes() throws InvalidTaskFormatException {
         assert args != null : "Arguments must not be null";
 
+        final Pattern SEARCH_PATTERN = Pattern.compile("(.+)");
         String[] tokens = ArgTokenizer.tokenize(
                 args, SEARCH_PATTERN, 1, null
         );
+
         String[] keywords = tokens[0].toLowerCase().split("\\s+");
         List<ReadOnlyTask> results = taskManager.search(keywords);
         return new SearchResultMessage(results, keywords);

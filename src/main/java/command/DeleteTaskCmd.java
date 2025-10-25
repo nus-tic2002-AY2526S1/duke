@@ -35,6 +35,7 @@ public class DeleteTaskCmd extends BaseTaskCommand {
         int taskNumber = TaskIndexParser.parseTaskIndex(args);
         ReadOnlyTask task = taskManager.getTask(taskNumber);
         taskManager.deleteTask(taskNumber);
+
         return new TaskDeletedMessage(task, taskManager);
     }
 

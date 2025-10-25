@@ -49,18 +49,23 @@ public final class NlpDateTimeStrategy implements DateTimeStrategy {
     public ParsedDateTime parse(String dateTimeString) {
         try {
             DatesFound found = HAWKING.parse(dateTimeString, new Date(), CONFIG, "eng");
-            if (found != null && !found.getParserOutputs().isEmpty()) {
-                var output = found.getParserOutputs().get(0);
-                if (output.getDateRange() != null && output.getDateRange().getEnd() != null) {
-                    LocalDateTime dt = LocalDateTime.ofInstant(
-                            output.getDateRange().getEnd().toDate().toInstant(),
-                            ZoneId.systemDefault()
-                    );
-                    return new ParsedDateTime(dt, Boolean.TRUE.equals(output.getIsExactTimePresent()));
-                }
+            if (found == null || found.getParserOutputs().isEmpty()) {
+                return null;
             }
+
+            var output = found.getParserOutputs().get(0);
+            if (output.getDateRange() == null || output.getDateRange().getEnd() == null) {
+                return null;
+            }
+
+            LocalDateTime dt = LocalDateTime.ofInstant(
+                    output.getDateRange().getEnd().toDate().toInstant(),
+                    ZoneId.systemDefault()
+            );
+            return new ParsedDateTime(dt, Boolean.TRUE.equals(output.getIsExactTimePresent()));
+
         } catch (Exception ignored) {
+            return null;
         }
-        return null;
     }
 }

@@ -42,9 +42,11 @@ public class RecurrenceParser {
                                    LocalDate anchorDate,
                                    ErrorType errorType)
             throws InvalidTaskFormatException, InvalidTaskOperationException {
+
         if (args.isBlank() || args.equalsIgnoreCase("none")) {
             return Recurrence.none(anchorDate);
         }
+
         String[] tokens = args.trim().split("\\s+");
         if (tokens.length != 2) {
             throw errorType.createException();
@@ -53,6 +55,7 @@ public class RecurrenceParser {
         try {
             int freq = Integer.parseInt((tokens[1]));
             assert freq > 0 : "Recurrence frequency must be positive";
+
             RecurrenceType type = RecurrenceType.valueOf(tokens[0].toUpperCase());
             return new Recurrence(type, freq, anchorDate, null);
         } catch (NumberFormatException e) {
@@ -97,7 +100,7 @@ public class RecurrenceParser {
         }
         String recType = recJson.requireNonEmpty("type").toUpperCase();
         int freq = Integer.parseInt(recJson.requireNonEmpty("count"));
-        assert freq > 0 : "Recurrence count must be positive"; // if that’s a domain invariant
+        assert freq >= 0 : "Recurrence count must be non-negative";
         return Recurrence.of(RecurrenceType.valueOf(recType), freq, anchorDate);
     }
 }
