@@ -26,18 +26,6 @@ import task.Task;
  * @see DeadlineTask
  */
 public final class DeadlineCreator implements TaskCreator {
-    /**
-     * Regular expression pattern to parse deadline command input.
-     * <p>
-     * Matches input in the format: {@code description /by dateTime}
-     * where the {@code /by} separator is case-insensitive.
-     *
-     * @apiNote Pattern generated with AI assistance for optimal matching
-     */
-    private static final Pattern DEADLINE_PATTERN = Pattern.compile(
-            "(.+?)\\s*/by\\s*(.+)",
-            Pattern.CASE_INSENSITIVE
-    );
 
     /**
      * Creates a deadline task from user command arguments.
@@ -51,6 +39,11 @@ public final class DeadlineCreator implements TaskCreator {
     @Override
     public Task createFromArgs(String args)
             throws InvalidTaskFormatException, InvalidDateTimeException, InvalidTaskOperationException {
+
+        /* Pattern generated with AI assistance for optimal matching */
+        final Pattern DEADLINE_PATTERN = Pattern.compile(
+                "(.+?)\\s*/by\\s*(.+)", Pattern.CASE_INSENSITIVE
+        );
         String[] tokens = ArgTokenizer.tokenize(
                 args, DEADLINE_PATTERN, 2, ErrorType.DEADLINE);
 
@@ -64,6 +57,7 @@ public final class DeadlineCreator implements TaskCreator {
                 parsed.dateTime().toLocalDate(),
                 ErrorType.RECURRENCE
         );
+
         return new DeadlineTask(tokens[0], parsed, recurrence);
     }
 
@@ -76,11 +70,15 @@ public final class DeadlineCreator implements TaskCreator {
      * @throws InvalidDateTimeException if the datetime string cannot be parsed
      */
     @Override
-    public Task createFromJson(SimpleJsonObject obj) throws FileContentException, InvalidDateTimeException {
+    public Task createFromJson(SimpleJsonObject obj)
+            throws FileContentException, InvalidDateTimeException {
+
         String desc = obj.requireNonEmpty("description");
         ParsedDateTime dl = DateTimeParser.parse(obj.requireNonEmpty("deadline"));
         Recurrence rec = RecurrenceParser.parse(obj, dl.dateTime().toLocalDate());
-        assert desc != null && !desc.isEmpty() : "Description must not be null or empty";
+
+        assert desc != null && !desc.isEmpty()
+                : "Description must not be null or empty";
 
         return new DeadlineTask(desc, dl, rec);
     }

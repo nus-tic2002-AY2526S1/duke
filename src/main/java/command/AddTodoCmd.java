@@ -1,45 +1,20 @@
 package command;
 
-import exception.InvalidTaskFormatException;
-import exception.MeeBotException;
 import manager.TaskManager;
-import message.Message;
-import message.TaskAddedMessage;
-import task.Task;
 import task.TodoTask;
-import task.factory.TaskCreator;
 import task.factory.TodoCreator;
 
 /**
- * Command to add a todo without any date constraints or recurrence.
+ * Command to add a {@link TodoTask} for activities that need to be completed but
+ * have no specific timing requirements. Delegates task creation to {@link TodoCreator}.
  *
- * @see TaskManager#addTask(Task)
+ * @see TodoTask
+ * @see TodoCreator
+ * @see AddTaskCmd
  */
-public class AddTodoCmd extends BaseTaskCommand {
-    private final TaskCreator creator = new TodoCreator();
-
+public class AddTodoCmd extends AddTaskCmd {
     public AddTodoCmd(TaskManager taskManager, String args) {
-        super(taskManager, args);
-    }
-
-    /**
-     * This command creates basic {@link TodoTask} instances for activities that need to be
-     * completed but have no specific timing requirements. Unlike deadline and event tasks,
-     * todo tasks cannot be configured with recurrence patterns.
-     *
-     * @return {@link TaskAddedMessage} on successful task creation
-     * @throws InvalidTaskFormatException if the input format is invalid or recurrence specified
-     * @apiNote Todos are designed for simple, timeless activities. Use {@code Deadline} or
-     *         {@code Event} for time-sensitive tasks.
-     */
-    @Override
-    public Message executes() throws MeeBotException {
-        assert args != null : "Arguments must not be null";
-
-        Task todo = creator.createFromArgs(args);
-        boolean wasSorted = taskManager.isSorted();
-        taskManager.addTask(todo);
-        return new TaskAddedMessage(todo, taskManager, wasSorted);
+        super(taskManager, args, new TodoCreator());
     }
 
     @Override

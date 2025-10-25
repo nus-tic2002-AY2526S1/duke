@@ -26,18 +26,6 @@ import task.Task;
  * @see EventTask
  */
 public final class EventCreator implements TaskCreator {
-    /**
-     * Regular expression pattern to parse event command input.
-     * <p>
-     * Matches input in the format: {@code description /from dateTime /to dateTime}
-     * where the {@code /from} and {@code /to} separators are case-insensitive.
-     *
-     * @apiNote Pattern generated with AI assistance for optimal matching
-     */
-    private static final Pattern EVENT_PATTERN = Pattern.compile(
-            "(.+?)\\s*/from\\s*(.+?)\\s*/to\\s*(.+)",
-            Pattern.CASE_INSENSITIVE
-    );
 
     /**
      * Creates an event task from user command arguments.
@@ -52,8 +40,17 @@ public final class EventCreator implements TaskCreator {
     public Task createFromArgs(String args)
             throws InvalidTaskFormatException, InvalidDateTimeException, InvalidTaskOperationException {
 
+        /* Pattern generated with AI assistance for optimal matching */
+        final Pattern EVENT_PATTERN = Pattern.compile(
+                "(.+?)\\s*/from\\s*(.+?)\\s*/to\\s*(.+)", Pattern.CASE_INSENSITIVE
+        );
         String[] tokens = ArgTokenizer.tokenize(
                 args, EVENT_PATTERN, 3, ErrorType.EVENT);
+
+        assert tokens[0] != null && !tokens[0].isBlank() : "Description must not be null or empty";
+        assert tokens[1] != null && !tokens[1].isBlank() : "Date must not be null or empty";
+        assert tokens[2] != null && !tokens[2].isBlank() : "Recurrence must not be null or empty";
+
         ParsedDateTime start = DateTimeParser.parse(tokens[1]);
         ParsedDateTime end = DateTimeParser.parse(tokens[2]);
         Recurrence recurrence = RecurrenceParser.parse(
@@ -62,7 +59,6 @@ public final class EventCreator implements TaskCreator {
                 ErrorType.RECURRENCE
         );
 
-        assert tokens[0] != null && !tokens[0].isBlank() : "Description must not be null or empty";
         return new EventTask(tokens[0], start, end, recurrence);
     }
 
@@ -75,13 +71,17 @@ public final class EventCreator implements TaskCreator {
      * @throws InvalidDateTimeException if the datetime string cannot be parsed
      */
     @Override
-    public Task createFromJson(SimpleJsonObject obj) throws FileContentException, InvalidDateTimeException {
+    public Task createFromJson(SimpleJsonObject obj)
+            throws FileContentException, InvalidDateTimeException {
+
         String desc = obj.requireNonEmpty("description");
         ParsedDateTime start = DateTimeParser.parse(obj.requireNonEmpty("start"));
         ParsedDateTime end = DateTimeParser.parse(obj.requireNonEmpty("end"));
         Recurrence rec = RecurrenceParser.parse(obj, end.dateTime().toLocalDate());
 
-        assert desc != null && !desc.isEmpty() : "Description must not be null or empty";
+        assert desc != null && !desc.isEmpty()
+                : "Description must not be null or empty";
+
         return new EventTask(desc, start, end, rec);
     }
 }
