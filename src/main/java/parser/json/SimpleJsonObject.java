@@ -44,6 +44,13 @@ public class SimpleJsonObject {
         return fields.get(key);
     }
 
+    /**
+     * Retrieves the value for the specified key and ensures it is non-empty.
+     *
+     * @param key the key whose value to retrieve
+     * @return the non-blank string value associated with the key
+     * @throws FileContentException if the key is missing or its value is blank
+     */
     public String requireNonEmpty(String key) throws FileContentException {
         return Optional.ofNullable(this.get(key))
                 .map(Object::toString)

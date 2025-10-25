@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Simple task without date/time constraints.
+ * Unlike deadline and event tasks, todos cannot be configured with recurrence patterns.
  */
 public class TodoTask extends Task {
     public TodoTask(String description, Recurrence recurrence) {

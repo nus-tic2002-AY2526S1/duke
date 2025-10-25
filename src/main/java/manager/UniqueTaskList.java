@@ -15,9 +15,9 @@ import task.Task;
  * Represents a list of tasks that enforces uniqueness among its elements.
  * The uniqueness constraint is determined by the {@link Task#equals(Object)} method.
  * <p>
- * <em>Solution adapted from:
+ * <em>Solution inspired by:
  * <a href="https://github.com/se-edu/addressbook-level2/tree/master">
- * se-edu addressbook-level2</a></em></p>
+ * se-edu addressbook-level2</a></em>
  */
 public class UniqueTaskList {
     private final List<Task> taskList = new ArrayList<>();
