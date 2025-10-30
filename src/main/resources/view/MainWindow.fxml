@@ -15,316 +15,266 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="704.0" prefWidth="1019.0" stylesheets="@../css/main.css"
-            xmlns="http://javafx.com/javafx/25" fx:controller="ui.gui.MainWindow">
+
+<BorderPane prefHeight="704.0" prefWidth="1019.0" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.gui.MainWindow">
     <left>
         <HBox prefHeight="691.0" prefWidth="430.0" BorderPane.alignment="CENTER">
-            <children>
-                <VBox alignment="CENTER" prefHeight="700.0" prefWidth="63.0" styleClass="sidebar"
-                      stylesheets="@../css/main.css">
-                    <children>
-                        <Pane prefHeight="100.0" prefWidth="100.0"/>
+            <VBox alignment="CENTER" prefHeight="700.0" prefWidth="63.0" styleClass="sidebar"
+                  stylesheets="@../css/main.css">
+                <Pane prefHeight="100.0" prefWidth="100.0"/>
 
-                        <!-- About button -->
-                        <Button fx:id="aboutButton" focusTraversable="true" onAction="#handleAboutClicked"
-                                styleClass="icon-button">
-                            <graphic>
-                                <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
-                                           styleClass="clickable-icon">
-                                    <image>
-                                        <Image url="@../images/icon_info.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
+                <!-- About button -->
+                <Button onAction="#handleAboutClicked" styleClass="icon-button">
+                    <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
+                                   styleClass="clickable-icon">
+                            <image>
+                                <Image url="@../images/icon_info.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
 
-                        <!-- Help button -->
-                        <Button fx:id="helpIcon" focusTraversable="true" onAction="#handleHelpClicked"
-                                styleClass="icon-button">
-                            <graphic>
-                                <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
-                                           styleClass="clickable-icon">
-                                    <image>
-                                        <Image url="@../images/icon_help.png"/>
-                                    </image>
-                                    <VBox.margin>
-                                        <Insets top="30.0"/>
-                                    </VBox.margin>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-
-                        <Pane prefHeight="328.0" prefWidth="73.0" VBox.vgrow="ALWAYS"/>
-
-                        <!-- Logout button -->
-                        <Button fx:id="logoutButton" focusTraversable="true" onAction="#handleExit"
-                                styleClass="icon-button">
-                            <graphic>
-                                <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
-                                           styleClass="clickable-icon">
-                                    <image>
-                                        <Image url="@../images/icon_logout.png"/>
-                                    </image>
-                                    <Image url="@../images/icon_logout.png"/>
-                                </ImageView>
-                            </graphic>
+                <!-- Help button -->
+                <Button onAction="#handleHelpClicked" styleClass="icon-button">
+                    <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
+                                   styleClass="clickable-icon">
+                            <image>
+                                <Image url="@../images/icon_help.png"/>
+                            </image>
                             <VBox.margin>
-                                <Insets bottom="30.0" top="20.0"/>
+                                <Insets top="30.0"/>
                             </VBox.margin>
-                        </Button>
-                    </children>
-                </VBox>
+                        </ImageView>
+                    </graphic>
+                </Button>
 
-                <VBox prefHeight="704.0" prefWidth="367.0" styleClass="chatlist-view">
+                <Pane prefHeight="328.0" prefWidth="73.0" VBox.vgrow="ALWAYS"/>
 
-                    <children>
-                        <HBox alignment="CENTER" prefHeight="16.0" prefWidth="286.0">
-                            <children>
-                                <ImageView fitHeight="26.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/icon_search.png"/>
-                                    </image>
-                                    <HBox.margin>
-                                        <Insets/>
-                                    </HBox.margin>
-                                </ImageView>
-                                <TextField prefHeight="40.0" prefWidth="212.0" promptText="Search"
-                                           styleClass="chatlist-cell" stylesheets="@../css/main.css">
-                                    <font>
-                                        <Font name="Roboto" size="15.0"/>
-                                    </font>
-                                    <opaqueInsets>
-                                        <Insets/>
-                                    </opaqueInsets>
-                                    <HBox.margin>
-                                        <Insets left="-10.0" right="10.0"/>
-                                    </HBox.margin>
-                                </TextField>
-                            </children>
-                            <VBox.margin>
-                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                            </VBox.margin>
-                            <styleClass>
-                                <String fx:value="radius"/>
-                                <String fx:value="sidebar"/>
-                            </styleClass>
-                        </HBox>
+                <!-- Logout button -->
+                <Button onAction="#handleExit" styleClass="icon-button">
+                    <graphic>
+                        <ImageView fitHeight="48.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true"
+                                   styleClass="clickable-icon">
+                            <image>
+                                <Image url="@../images/icon_logout.png"/>
+                            </image>
+                            <Image url="@../images/icon_logout.png"/>
+                        </ImageView>
+                    </graphic>
+                    <VBox.margin>
+                        <Insets bottom="30.0" top="20.0"/>
+                    </VBox.margin>
+                </Button>
+            </VBox>
 
-                        <Pane prefHeight="2.0" prefWidth="200.0" styleClass="sidebar"/>
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
-                            <children>
-                                <ImageView fitHeight="49.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/meebot.png"/>
-                                    </image>
-                                    <HBox.margin>
-                                        <Insets left="25.0" right="5.0"/>
-                                    </HBox.margin>
-                                </ImageView>
-                                <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="226.0">
-                                    <HBox.margin>
-                                        <Insets left="10.0"/>
-                                    </HBox.margin>
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name"
-                                               text="MEEBOT" textFill="WHITE">
-                                            <font>
-                                                <Font name="Roboto Bold" size="20.0"/>
-                                            </font>
-                                        </Label>
-                                        <Label prefHeight="23.0" prefWidth="264.0" styleClass="chatlist-preview"
-                                               text="typing..." textFill="#9da7a7">
-                                            <font>
-                                                <Font name="Roboto Italic" size="18.0"/>
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
+            <VBox prefHeight="704.0" prefWidth="367.0" styleClass="chatlist-view">
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
-                            <children>
-                                <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/icon_bot3.png"/>
-                                    </image>
-                                    <HBox.margin>
-                                        <Insets left="20.0"/>
-                                    </HBox.margin>
-                                </ImageView>
-                                <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="219.0">
-                                    <HBox.margin>
-                                        <Insets left="10.0"/>
-                                    </HBox.margin>
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name"
-                                               text="M.E.O.W" textFill="WHITE">
-                                            <font>
-                                                <Font name="Roboto Bold" size="20.0"/>
-                                            </font>
-                                        </Label>
-                                        <Label prefHeight="23.0" prefWidth="212.0" styleClass="chatlist-preview"
-                                               text="You: the quick black cat jumps over the lazy dog"
-                                               textFill="#9da7a7">
-                                            <font>
-                                                <Font name="Roboto" size="18.0"/>
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                            </children>
-                            <VBox.margin>
-                                <Insets/>
-                            </VBox.margin>
-                        </HBox>
+                <HBox alignment="CENTER" prefHeight="16.0" prefWidth="286.0">
+                    <VBox.margin>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                    </VBox.margin>
+                    <styleClass>
+                        <String fx:value="radius"/>
+                        <String fx:value="sidebar"/>
+                    </styleClass>
+                    <ImageView fitHeight="26.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets/>
+                        </HBox.margin>
+                        <Image url="@../images/icon_search.png"/>
+                    </ImageView>
+                    <TextField prefHeight="40.0" prefWidth="212.0" promptText="Search"
+                               styleClass="chatlist-cell" stylesheets="@../css/main.css">
+                        <font>
+                            <Font name="Roboto" size="15.0"/>
+                        </font>
+                        <opaqueInsets>
+                            <Insets/>
+                        </opaqueInsets>
+                        <HBox.margin>
+                            <Insets left="-10.0" right="10.0"/>
+                        </HBox.margin>
+                    </TextField>
+                </HBox>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
-                            <children>
-                                <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/icon_bot4.png"/>
-                                    </image>
-                                    <HBox.margin>
-                                        <Insets left="20.0"/>
-                                    </HBox.margin>
-                                </ImageView>
-                                <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="226.0">
-                                    <HBox.margin>
-                                        <Insets left="10.0"/>
-                                    </HBox.margin>
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name"
-                                               text="G.O.A.T" textFill="WHITE">
-                                            <font>
-                                                <Font name="Roboto Bold" size="20.0"/>
-                                            </font>
-                                        </Label>
-                                        <Label prefHeight="23.0" prefWidth="209.0" styleClass="chatlist-preview"
-                                               text="I am the greatest of all time that you would have ever met"
-                                               textFill="#9da7a7">
-                                            <font>
-                                                <Font name="Roboto" size="18.0"/>
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                                <Pane prefHeight="77.0" prefWidth="88.0">
-                                    <children>
-                                        <Circle fill="#50c984" layoutX="26.0" layoutY="47.0" radius="15.0"
-                                                stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0"/>
-                                        <Label layoutX="22.0" layoutY="39.0" styleClass="chatlist-notif" text="1"
-                                               textFill="WHITE"/>
-                                    </children>
-                                </Pane>
-                            </children>
-                            <VBox.margin>
-                                <Insets/>
-                            </VBox.margin>
-                        </HBox>
+                <Pane prefHeight="2.0" prefWidth="200.0" styleClass="sidebar"/>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
+                    <ImageView fitHeight="49.0" fitWidth="49.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets left="25.0" right="5.0"/>
+                        </HBox.margin>
+                        <Image url="@../images/meebot.png"/>
+                    </ImageView>
+                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="226.0">
+                        <HBox.margin>
+                            <Insets left="10.0"/>
+                        </HBox.margin>
+                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name" text="MEEBOT"
+                               textFill="WHITE">
+                            <font>
+                                <Font name="Roboto Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label prefHeight="23.0" prefWidth="264.0" styleClass="chatlist-preview"
+                               text="typing..." textFill="#9da7a7">
+                            <font>
+                                <Font name="Roboto Italic" size="18.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
-                            <children>
-                                <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/icon_bot2.png"/>
-                                    </image>
-                                    <HBox.margin>
-                                        <Insets left="20.0"/>
-                                    </HBox.margin>
-                                </ImageView>
-                                <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="251.0">
-                                    <HBox.margin>
-                                        <Insets left="10.0"/>
-                                    </HBox.margin>
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name"
-                                               text="S.E.A.L" textFill="WHITE">
-                                            <font>
-                                                <Font name="Roboto Bold" size="20.0"/>
-                                            </font>
-                                        </Label>
-                                        <Label prefHeight="23.0" prefWidth="210.0" styleClass="chatlist-preview"
-                                               text="You: the quick grey seal swims over the lazy dog"
-                                               textFill="#9da7a7">
-                                            <font>
-                                                <Font name="Roboto" size="18.0"/>
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                            </children>
-                            <VBox.margin>
-                                <Insets/>
-                            </VBox.margin>
-                        </HBox>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                    <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets left="20.0"/>
+                        </HBox.margin>
+                        <Image url="@../images/icon_bot3.png"/>
+                    </ImageView>
+                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="219.0">
+                        <HBox.margin>
+                            <Insets left="10.0"/>
+                        </HBox.margin>
+                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name" text="M.E.O.W"
+                               textFill="WHITE">
+                            <font>
+                                <Font name="Roboto Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label prefHeight="23.0" prefWidth="212.0" styleClass="chatlist-preview"
+                               text="You: the quick black cat jumps over the lazy dog" textFill="#9da7a7">
+                            <font>
+                                <Font name="Roboto" size="18.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
 
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
-                            <children>
-                                <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../images/icon_bot1.png"/>
-                                    </image>
-                                    <HBox.margin>
-                                        <Insets left="20.0"/>
-                                    </HBox.margin>
-                                </ImageView>
-                                <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="262.0">
-                                    <HBox.margin>
-                                        <Insets left="10.0"/>
-                                    </HBox.margin>
-                                    <children>
-                                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name"
-                                               text="D.A.W.G" textFill="WHITE">
-                                            <font>
-                                                <Font name="Roboto Bold" size="20.0"/>
-                                            </font>
-                                        </Label>
-                                        <Label prefHeight="23.0" prefWidth="218.0" styleClass="chatlist-preview"
-                                               text="You: the quick brown dog jumps over the lazy dog"
-                                               textFill="#9da7a7">
-                                            <font>
-                                                <Font name="Roboto" size="18.0"/>
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-            </children>
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                    <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets left="20.0"/>
+                        </HBox.margin>
+                        <Image url="@../images/icon_bot4.png"/>
+                    </ImageView>
+                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="226.0">
+                        <HBox.margin>
+                            <Insets left="10.0"/>
+                        </HBox.margin>
+                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name" text="G.O.A.T"
+                               textFill="WHITE">
+                            <font>
+                                <Font name="Roboto Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label prefHeight="23.0" prefWidth="209.0" styleClass="chatlist-preview"
+                               text="I am the greatest of all time that you would have ever met"
+                               textFill="#9da7a7">
+                            <font>
+                                <Font name="Roboto" size="18.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                    <Pane prefHeight="77.0" prefWidth="88.0">
+                        <Circle fill="#50c984" layoutX="26.0" layoutY="47.0" radius="15.0" stroke="BLACK"
+                                strokeType="INSIDE" strokeWidth="0.0"/>
+                        <Label layoutX="22.0" layoutY="39.0" styleClass="chatlist-notif" text="1"
+                               textFill="WHITE"/>
+                    </Pane>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                    <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets left="20.0"/>
+                        </HBox.margin>
+                        <Image url="@../images/icon_bot2.png"/>
+                    </ImageView>
+                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="251.0">
+                        <HBox.margin>
+                            <Insets left="10.0"/>
+                        </HBox.margin>
+                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name" text="S.E.A.L"
+                               textFill="WHITE">
+                            <font>
+                                <Font name="Roboto Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label prefHeight="23.0" prefWidth="210.0" styleClass="chatlist-preview"
+                               text="You: the quick grey seal swims over the lazy fish" textFill="#9da7a7">
+                            <font>
+                                <Font name="Roboto" size="18.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="336.0">
+                    <ImageView fitHeight="60.0" fitWidth="69.0" pickOnBounds="true" preserveRatio="true">
+                        <HBox.margin>
+                            <Insets left="20.0"/>
+                        </HBox.margin>
+                        <Image url="@../images/icon_bot1.png"/>
+                    </ImageView>
+                    <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="262.0">
+                        <HBox.margin>
+                            <Insets left="10.0"/>
+                        </HBox.margin>
+                        <Label prefHeight="22.0" prefWidth="134.0" styleClass="chatlist-name" text="D.A.W.G"
+                               textFill="WHITE">
+                            <font>
+                                <Font name="Roboto Bold" size="20.0"/>
+                            </font>
+                        </Label>
+                        <Label prefHeight="23.0" prefWidth="218.0" styleClass="chatlist-preview"
+                               text="You: the quick brown dog jumps over the lazy dog" textFill="#9da7a7">
+                            <font>
+                                <Font name="Roboto" size="18.0"/>
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
+            </VBox>
         </HBox>
     </left>
     <center>
-        <AnchorPane fx:id="chatPane" prefHeight="706.0" prefWidth="947.0" BorderPane.alignment="CENTER">
+        <AnchorPane prefHeight="706.0" prefWidth="947.0" BorderPane.alignment="CENTER">
 
             <!-- Chat Header -->
             <HBox alignment="CENTER_LEFT" layoutX="1.0" prefHeight="79.0" prefWidth="646.0"
                   style="-fx-background-color: white;">
-                <children>
-                    <Label prefHeight="29.0" prefWidth="117.0" text="MEEBOT" textFill="#333">
-                        <font>
-                            <Font name="Roboto Bold" size="24.0"/>
-                        </font>
-                        <HBox.margin>
-                            <Insets left="25.0"/>
-                        </HBox.margin>
-                    </Label>
-                    <Circle fill="#50c984" radius="4.0" strokeType="INSIDE">
-                        <HBox.margin>
-                            <Insets left="10.0"/>
-                        </HBox.margin>
-                    </Circle>
-                    <Label text="Online" textFill="#666">
-                        <font>
-                            <Font name="Roboto" size="14.0"/>
-                        </font>
-                        <HBox.margin>
-                            <Insets left="5.0"/>
-                        </HBox.margin>
-                    </Label>
-                </children>
+                <Label prefHeight="29.0" prefWidth="117.0" text="MEEBOT" textFill="#333">
+                    <font>
+                        <Font name="Roboto Bold" size="24.0"/>
+                    </font>
+                    <HBox.margin>
+                        <Insets left="25.0"/>
+                    </HBox.margin>
+                </Label>
+                <Circle fill="#50c984" radius="4.0" strokeType="INSIDE">
+                    <HBox.margin>
+                        <Insets left="10.0"/>
+                    </HBox.margin>
+                </Circle>
+                <Label text="Online" textFill="#666">
+                    <font>
+                        <Font name="Roboto" size="14.0"/>
+                    </font>
+                    <HBox.margin>
+                        <Insets left="5.0"/>
+                    </HBox.margin>
+                </Label>
             </HBox>
 
             <!-- Scrollable Chat Area -->
@@ -332,38 +282,50 @@
                         prefHeight="558.0" prefWidth="842.0" style="-fx-background: transparent;"
                         AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                         AnchorPane.topAnchor="81.0">
-                <content>
-                    <VBox fx:id="dialogContainer" spacing="10.0" style="-fx-padding: 10;"/>
-                </content>
+                <VBox fx:id="dialogContainer" spacing="10.0" style="-fx-padding: 10;"/>
             </ScrollPane>
 
             <!-- Input Bar -->
-            <HBox alignment="CENTER_LEFT" layoutX="6.0" prefHeight="45.0" prefWidth="818.0" spacing="10"
-                  AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0">
-                <TextField fx:id="userInput" onAction="#handleUserInput" prefHeight="45.0" prefWidth="758.0"
-                           promptText="Type anything..." styleClass="input-field" HBox.hgrow="ALWAYS">
-                    <font>
-                        <Font size="16.0"/>
-                    </font>
-                    <HBox.margin>
-                        <Insets left="20.0"/>
-                    </HBox.margin>
-                </TextField>
-                <Button fx:id="sendButton" contentDisplay="CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
-                        minHeight="-Infinity" minWidth="29.0" onAction="#handleUserInput" prefHeight="28.0"
-                        prefWidth="29.0" styleClass="send-button" textFill="WHITE">
-                    <font>
-                        <Font size="16.0"/>
-                    </font>
-                    <graphic>
-                        <ImageView fitHeight="31.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
+            <VBox spacing="3.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <TextField fx:id="userInput" onAction="#handleUserInput" prefHeight="45.0" prefWidth="758.0" promptText="Type anything..." styleClass="input-field" HBox.hgrow="ALWAYS">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                        <HBox.margin>
+                            <Insets left="20.0" />
+                        </HBox.margin>
+                    </TextField>
+
+                    <Button onAction="#handleUserInput"
+                            contentDisplay="CENTER"
+                            maxHeight="-Infinity" maxWidth="-Infinity"
+                            minHeight="-Infinity" minWidth="29.0"
+                            prefHeight="28.0" prefWidth="29.0"
+                            styleClass="send-button" textFill="WHITE">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                        <graphic>
+                            <ImageView fitHeight="31.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
                                 <Image url="@../images/icon_sendarrow.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </HBox>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Hint label for live command guidance -->
+                <Label fx:id="hintLabel"
+                       styleClass="hint-label"
+                       wrapText="true"
+                       VBox.vgrow="NEVER">
+               <VBox.margin>
+                  <Insets left="20.0" />
+               </VBox.margin>
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            </VBox>
 
         </AnchorPane>
     </center>

@@ -63,14 +63,14 @@ public record CommandDocs() {
                     Try:    todo water plants
                     """;
             case DEADLINE -> """
-                    ⏳ To add a task with due date, with [OPTION] to add time and repeat.
-                    Format: deadline <description> /by <date/time> [/repeat <interval> <count>]
+                    ⏳ To add a task with due date, with [OPTIONAL] time and repeat.
+                    Format: deadline <description> /by <date-time> [/repeat <interval> <count>]
                     Try:    deadline pay bills /by 1/11/2025 2359
                     Or :    deadline pay bills /by 1/11/2025 /repeat monthly 12
                     """;
             case EVENT -> """
-                    📅 To add an event with start and end date, with [OPTION] to add time and repeat.
-                    Format: event <description> /from <date/time> /to <date/time> [/repeat <interval> <count>]
+                    📅 To add an event with start and end date, with [OPTIONAL] time and repeat.
+                    Format: event <description> /from <date-time> /to <date-time> [/repeat <interval> <count>]
                     Try:    event yoga /from 1/11/2025 1000 /to 1/11/2025 1100
                     Or :    event birthday /from 1/11/2025 /to 1/11/2025 /repeat yearly 6
                     """;
@@ -106,6 +106,8 @@ public record CommandDocs() {
                     """;
             case FILTER -> """
                     🔎 To filter tasks — pick 1 to 3 conditions.
+                    Format: filter task:<type> & done:<t|f> & date:<DD/MM/YYYY>
+                    
                     Supported filters:
                     • task: todo|deadline|event
                     • done: true|false
@@ -116,5 +118,22 @@ public record CommandDocs() {
                     """;
             default -> "";
         };
+    }
+
+    /**
+     * Extracts only the "Format:" line from a command's detailed help.
+     * Used by GUI to display inline syntax hints in the chat bar.
+     *
+     * @param type the command type
+     * @return the format string (without the word "Format:"), or empty if none found
+     */
+    public static String getFormatHint(CommandType type) {
+        String details = getDetails(type);
+        for (String line : details.split("\n")) {
+            if (line.trim().toLowerCase().startsWith("format:")) {
+                return line.replaceFirst("(?i)format:\\s*", "").trim();
+            }
+        }
+        return "";
     }
 }

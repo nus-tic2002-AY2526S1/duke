@@ -1,17 +1,22 @@
 package ui.gui;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import command.CommandType;
+import common.CommandDocs;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-
 import meebot.MeeBot;
 import message.WelcomeMessage;
 
@@ -27,17 +32,28 @@ import message.WelcomeMessage;
  * @see MeeBot
  */
 public class MainWindow extends BorderPane {
+    private static final Map<String, String> COMMAND_HINTS = Arrays.stream(CommandType.values())
+            .collect(Collectors.toMap(
+                    type -> type.name().toLowerCase(),
+                    CommandDocs::getFormatHint
+            ));
+
     private final Image userImage = new Image(Objects.requireNonNull(
             this.getClass().getResourceAsStream("/images/user.png")));
     private final Image meebotImage = new Image(Objects.requireNonNull(
             this.getClass().getResourceAsStream("/images/meebot.png")));
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
     private VBox dialogContainer;
     @FXML
     private TextField userInput;
+    @FXML
+    private Label hintLabel;
+
     private MeeBot meebot;
+
 
     /**
      * Initializes the controller after FXML loading.
@@ -46,8 +62,8 @@ public class MainWindow extends BorderPane {
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
         Platform.runLater(() -> userInput.requestFocus());
+        setupHintListener();
     }
-
 
     /**
      * Injects the MeeBot instance and displays the welcome message.
@@ -58,6 +74,26 @@ public class MainWindow extends BorderPane {
         dialogContainer.getChildren().add(
                 DialogBox.getMeebotDialog(welcome.message(), meebotImage)
         );
+    }
+
+    private void setupHintListener() {
+        userInput.textProperty().addListener((obs, oldText, newText) -> {
+            String trimmed = newText.strip().toLowerCase();
+            if (trimmed.isEmpty()) {
+                userInput.setPromptText("");
+                return;
+            }
+
+            String[] parts = trimmed.split("\\s+", 2);
+            String command = parts[0];
+            String hint = COMMAND_HINTS.get(command);
+
+            if (hint != null && (trimmed.equals(command) || trimmed.equals(command + " "))) {
+                hintLabel.setText(hint);
+            } else {
+                userInput.setPromptText("");
+            }
+        });
     }
 
     /**
@@ -78,7 +114,9 @@ public class MainWindow extends BorderPane {
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getMeebotDialog(response, meebotImage)
         );
+
         userInput.clear();
+        hintLabel.setText("");
 
         if (result.isExit()) {
             handleExit();
@@ -97,7 +135,7 @@ public class MainWindow extends BorderPane {
         aboutAlert.setTitle("About MeeBot");
         aboutAlert.setHeaderText("MeeBot v1.0 — Your Task Management Helper");
         aboutAlert.setContentText("""
-                    Developed as part of TIC2002 Software Engineering Project
+                    Developed as part of TIC2002 Software Engineering project
                     Author: Tan Jia Huan
                     Repository: https://github.com/thebunnymama/duke
                 """);
