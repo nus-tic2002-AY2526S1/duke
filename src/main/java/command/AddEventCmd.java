@@ -23,9 +23,4 @@ public final class AddEventCmd extends AddTaskCmd {
     protected CommandType getCommandType() {
         return CommandType.EVENT;
     }
-
-    @Override
-    protected boolean requiresNonEmptyList() {
-        return false;
-    }
 }

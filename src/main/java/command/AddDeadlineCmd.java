@@ -14,7 +14,7 @@ import task.factory.DeadlineCreator;
  * @see DeadlineCreator
  * @see AddTaskCmd
  */
-public class AddDeadlineCmd extends AddTaskCmd {
+public final class AddDeadlineCmd extends AddTaskCmd {
     public AddDeadlineCmd(TaskManager taskManager, String args) {
         super(taskManager, args, new DeadlineCreator());
     }
@@ -22,10 +22,5 @@ public class AddDeadlineCmd extends AddTaskCmd {
     @Override
     protected CommandType getCommandType() {
         return CommandType.DEADLINE;
-    }
-
-    @Override
-    protected boolean requiresNonEmptyList() {
-        return false;
     }
 }

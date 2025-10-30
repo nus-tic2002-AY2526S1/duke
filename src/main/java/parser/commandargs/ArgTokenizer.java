@@ -38,7 +38,7 @@ public final class ArgTokenizer {
         Objects.requireNonNull(pattern, "Pattern must not be null");
         assert requiredToken > 0 : "requiredToken must be greater than 0";
 
-        String REPEAT_DELIMITER = "/repeat";
+        String REPEAT_DELIMITER = "(?i)/repeat";
         String[] split = args.trim().split(REPEAT_DELIMITER, 2);
         String cmdArg = split[0].trim();
         String repeatArg = (split.length > 1) ? split[1].trim() : "none";

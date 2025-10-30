@@ -55,4 +55,9 @@ public abstract class AddTaskCmd extends BaseTaskCommand {
 
         return new TaskAddedMessage(task, taskManager, wasSorted);
     }
+
+    @Override
+    protected boolean requiresNonEmptyList() {
+        return false;
+    }
 }

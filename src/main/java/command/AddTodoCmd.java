@@ -12,7 +12,7 @@ import task.factory.TodoCreator;
  * @see TodoCreator
  * @see AddTaskCmd
  */
-public class AddTodoCmd extends AddTaskCmd {
+public final class AddTodoCmd extends AddTaskCmd {
     public AddTodoCmd(TaskManager taskManager, String args) {
         super(taskManager, args, new TodoCreator());
     }
@@ -20,10 +20,5 @@ public class AddTodoCmd extends AddTaskCmd {
     @Override
     protected CommandType getCommandType() {
         return CommandType.TODO;
-    }
-
-    @Override
-    protected boolean requiresNonEmptyList() {
-        return false;
     }
 }
