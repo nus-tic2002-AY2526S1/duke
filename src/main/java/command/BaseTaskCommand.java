@@ -58,19 +58,6 @@ public abstract class BaseTaskCommand implements Command {
     }
 
     /**
-     * Implements the command-specific business logic.
-     * <p>
-     * This method is called by {@link #execute()} after all validation checks
-     * have passed. Subclasses should implement their core functionality here
-     * without worrying about common validation or error handling concerns.
-     *
-     * @return a {@link Message} representing the command's execution result
-     * @throws MeeBotException if command execution fails due to invalid input
-     *                         or business logic errors
-     */
-    protected abstract Message executes() throws MeeBotException;
-
-    /**
      * Determines whether this command requires a non-empty task list to execute.
      * <p>
      * The default implementation returns {@code true}, which is appropriate for
@@ -83,6 +70,19 @@ public abstract class BaseTaskCommand implements Command {
     protected boolean requiresNonEmptyList() {
         return true;
     }
+
+    /**
+     * Implements the command-specific business logic.
+     * <p>
+     * This method is called by {@link #execute()} after all validation checks
+     * have passed. Subclasses should implement their core functionality here
+     * without worrying about common validation or error handling concerns.
+     *
+     * @return a {@link Message} representing the command's execution result
+     * @throws MeeBotException if command execution fails due to invalid input
+     *                         or business logic errors
+     */
+    protected abstract Message executes() throws MeeBotException;
 
     /**
      * Returns the command type that this command represents.

@@ -28,7 +28,9 @@ public class SearchResultMessage implements Message {
                     Try searching for something else.
                     """;
         }
+
         StringBuilder sb = new StringBuilder("Mee found these tasks:\n");
+
         for (int i = 0; i < results.size(); i++) {
             ReadOnlyTask task = results.get(i);
             String desc = task.getDescription();
@@ -44,6 +46,7 @@ public class SearchResultMessage implements Message {
         return sb.toString().trim();
     }
 
+    /* Implementation generated with the help of AI assistance */
     private String highlight(String text, String[] terms) {
         assert text != null : "text to highlight should not be null";
         assert terms != null : "terms should not be null";

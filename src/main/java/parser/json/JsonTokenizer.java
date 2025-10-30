@@ -139,6 +139,7 @@ public final class JsonTokenizer {
         }
         // string
         if (c == '"') return stringToken();
+
         // number
         if (isDigit(c) || c == '-') return numberToken();
 
@@ -160,6 +161,7 @@ public final class JsonTokenizer {
     private JsonToken stringToken() {
         ++pos;  // skip opening quote
         StringBuilder sb = new StringBuilder();
+
         while (pos < input.length()) {
             char c = input.charAt(pos++);
             if (c == '"' && input.charAt(pos - 2) != '\\') {
@@ -167,6 +169,7 @@ public final class JsonTokenizer {
             }
             sb.append(c);
         }
+
         return new JsonToken(JsonTokenType.STRING, sb.toString());
     }
 
@@ -185,10 +188,7 @@ public final class JsonTokenizer {
      */
     private JsonToken numberToken() {
         int start = pos;
-        while (pos < input.length() && (
-                isDigit(input.charAt(pos))
-                        || input.charAt(pos) == '.'
-                        || input.charAt(pos) == '-')) {
+        while (pos < input.length() && isNumberChar(input.charAt(pos))) {
             pos++;
         }
         String numStr = input.substring(start, pos);
@@ -210,5 +210,9 @@ public final class JsonTokenizer {
 
     private boolean isDigit(char c) {
         return c >= '0' && c <= '9';
+    }
+
+    private boolean isNumberChar(char ch) {
+        return isDigit(ch) || ch == '.' || ch == '-';
     }
 }

@@ -53,7 +53,9 @@ public final class StrictDateTimeStrategy implements DateTimeStrategy {
     public ParsedDateTime parse(String dateTimeString) throws InvalidDateTimeException {
         for (DateTimePattern pattern : DateTimePattern.values()) {
             ParsedDateTime result = tryParse(dateTimeString, pattern);
-            if (result != null) return result;
+            if (result != null) {
+                return result;
+            }
         }
         return null; // let another strategy handle it
     }

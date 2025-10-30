@@ -11,12 +11,11 @@ import task.Recurrence;
 import task.Task;
 import task.TodoTask;
 
+/**
+ * Simple capture-all regular expression pattern since todo tasks have minimal parsing
+ * requirements. Unlike other task commands, todo tasks have no special syntax or delimiters.
+ */
 public final class TodoCreator implements TaskCreator {
-    /**
-     * Simple capture-all regular expression pattern since todo tasks have minimal parsing
-     * requirements. Unlike other task commands, todo tasks have no special syntax or delimiters.
-     */
-    private static final Pattern TODO_PATTERN = Pattern.compile("(.+)");
 
     /**
      * Creates a todo task from user command arguments.
@@ -27,8 +26,12 @@ public final class TodoCreator implements TaskCreator {
      */
     @Override
     public Task createFromArgs(String args) throws InvalidTaskFormatException {
+
+        /* Pattern generated with AI assistance for optimal matching */
+        final Pattern TODO_PATTERN = Pattern.compile("(.+)");
         String[] tokens = ArgTokenizer.tokenize(
                 args, TODO_PATTERN, 1, null);
+
         if (!"none".equalsIgnoreCase(tokens[tokens.length - 1])) {
             throw ErrorType.TODO.createException();
         }

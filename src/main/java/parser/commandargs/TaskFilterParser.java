@@ -78,7 +78,7 @@ public final class TaskFilterParser {
      * @throws InvalidFilterException   if token format is invalid (wrong format, empty key/value)
      * @throws InvalidDateTimeException if date filter contains invalid date format
      */
-    public static Predicate<ReadOnlyTask> parseFilterToken(String token)
+    private static Predicate<ReadOnlyTask> parseFilterToken(String token)
             throws InvalidFilterException, InvalidDateTimeException {
 
         // "task:deadline" → ["task", "deadline"]
@@ -107,7 +107,6 @@ public final class TaskFilterParser {
      */
     public static Predicate<ReadOnlyTask> createPredicate(String key, String value)
             throws InvalidFilterException, InvalidDateTimeException {
-
         assert value != null && !value.isEmpty() : "Task filter value must not be null/empty";
 
         switch (key) {
@@ -137,8 +136,8 @@ public final class TaskFilterParser {
      */
     public static Optional<LocalDate> extractFilterDate(String args)
             throws InvalidDateTimeException {
-
         String[] tokens = args.trim().split("\\s*&\\s*");
+
         for (String token : tokens) {
             String[] parts = token.split(":");
             if (parts.length == 2 && parts[0].trim().equalsIgnoreCase("date")) {

@@ -17,7 +17,6 @@ import task.ReadOnlyTask;
  * @see TaskManager#deleteTask(int)
  */
 public class DeleteTaskCmd extends BaseTaskCommand {
-
     public DeleteTaskCmd(TaskManager taskManager, String args) {
         super(taskManager, args);
     }

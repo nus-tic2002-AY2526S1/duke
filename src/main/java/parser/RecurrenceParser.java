@@ -98,9 +98,11 @@ public class RecurrenceParser {
         if (!(recurObj instanceof SimpleJsonObject recJson)) {
             throw new FileContentException(FileContentException.ErrorType.INVALID_INPUT);
         }
+
         String recType = recJson.requireNonEmpty("type").toUpperCase();
         int freq = Integer.parseInt(recJson.requireNonEmpty("count"));
         assert freq >= 0 : "Recurrence count must be non-negative";
+
         return Recurrence.of(RecurrenceType.valueOf(recType), freq, anchorDate);
     }
 }

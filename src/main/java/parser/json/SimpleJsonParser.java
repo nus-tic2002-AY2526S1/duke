@@ -39,21 +39,6 @@ public final class SimpleJsonParser {
     }
 
     /**
-     * Consumes the current token, verifying it matches the expected type.
-     * Advances to the next token from the tokenizer.
-     *
-     * @param expected the expected token type
-     * @throws FileContentException if the current token doesn't match the expected type
-     */
-    private void consume(JsonTokenType expected) throws FileContentException {
-        if (current.type() != expected) {
-            throw new FileContentException(ErrorType.INVALID_JSON_FORMAT);
-        }
-        current = tokenizer.nextToken();
-        assert current != null : "Tokenizer must not return null";
-    }
-
-    /**
      * Parses the complete JSON input, expecting an array the root element.
      * <p>
      * This method assumes the JSON structure follows the pattern:
@@ -65,6 +50,7 @@ public final class SimpleJsonParser {
     public List<SimpleJsonObject> parseJson() throws FileContentException {
         List<SimpleJsonObject> result = new ArrayList<>();
         consume(JsonTokenType.SQUARE_OPEN);
+
         while (current.type() != JsonTokenType.SQUARE_CLOSE) {
             result.add(parseObject());
             if (current.type() == JsonTokenType.COMMA) {
@@ -73,6 +59,7 @@ public final class SimpleJsonParser {
                 break;
             }
         }
+
         assert result.stream().allMatch(Objects::nonNull) : "Parsed objects must never be null";
         consume(JsonTokenType.SQUARE_CLOSE);
         return result;
@@ -104,6 +91,7 @@ public final class SimpleJsonParser {
                 break;
             }
         }
+
         consume(JsonTokenType.CURLY_CLOSE);
         return obj;
     }
@@ -149,5 +137,20 @@ public final class SimpleJsonParser {
         default:
             throw new FileContentException(FileContentException.ErrorType.INVALID_JSON_FORMAT);
         }
+    }
+
+    /**
+     * Consumes the current token, verifying it matches the expected type.
+     * Advances to the next token from the tokenizer.
+     *
+     * @param expected the expected token type
+     * @throws FileContentException if the current token doesn't match the expected type
+     */
+    private void consume(JsonTokenType expected) throws FileContentException {
+        if (current.type() != expected) {
+            throw new FileContentException(ErrorType.INVALID_JSON_FORMAT);
+        }
+        current = tokenizer.nextToken();
+        assert current != null : "Tokenizer must not return null";
     }
 }

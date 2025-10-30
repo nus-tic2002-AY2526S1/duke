@@ -21,7 +21,10 @@ public class TaskSerializer {
      */
     public static String tasksToJson(List<ReadOnlyTask> taskList) {
         assert taskList != null : "Task list must not be null";
-        if (taskList.isEmpty()) return "[]";
+
+        if (taskList.isEmpty()) {
+            return "[]";
+        }
 
         StringBuilder sb = new StringBuilder("[\n");
         for (int i = 0; i < taskList.size(); i++) {
@@ -42,6 +45,7 @@ public class TaskSerializer {
      */
     public static String taskToJson(ReadOnlyTask task) {
         Recurrence r = task.getRecurrence();
+
         return """
                 {
                   "type": "%s",

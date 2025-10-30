@@ -64,12 +64,16 @@ public class MessageRenderer {
                 line = new StringBuilder(word);
             } else {
                 // Case: word fits into current line, only add a space before appending word if line is not empty
-                if (!line.isEmpty()) line.append(" ");
+                if (!line.isEmpty()) {
+                    line.append(" ");
+                }
                 line.append(word);
             }
         }
         // Add the last line with content
-        if (!line.isEmpty()) lines.add(line.toString());
+        if (!line.isEmpty()) {
+            lines.add(line.toString());
+        }
 
         return lines;
     }

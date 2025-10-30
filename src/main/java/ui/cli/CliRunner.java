@@ -16,10 +16,12 @@ public class CliRunner {
 
     public void run() {
         ui.displayWelcome();
+
         while (true) {
             String input = ui.readUserInput();
             MeeBot.ExecutionResult result = meebot.execute(input);
             ui.displayMessage(result.output());
+
             if (result.isExit()) {
                 break;
             }
