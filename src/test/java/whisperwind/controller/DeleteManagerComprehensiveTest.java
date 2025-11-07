@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import whisperwind.exceptions.CommandException;
 import whisperwind.exceptions.TaskException;
 
-import java.io.ByteArrayInputStream;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,21 +35,23 @@ class DeleteManagerComprehensiveTest {
         // This tests requirement: Delete completed tasks
         // Note: Might require mocking user confirmation
         assertEquals(4, taskList.getTaskCount());
-        // deleteManager.handleDeleteCommand(new String[]{"delete", "completed"});
-        // Would need to simulate "yes" confirmation
+
+        // TODO: Add test for deleteManager.handleDeleteCommand once user confirmation can be simulated
     }
 
     @Test
     void testDeleteByPattern() throws CommandException {
-        // This tests requirement: Delete by pattern (book*, *meeting)
-        // deleteManager.handleDeleteCommand(new String[]{"delete", "book*"});
-        // Would need to simulate confirmation
+        // This tests requirement: Delete tasks matching a pattern (e.g., "book*")
+        assertEquals(4, taskList.getTaskCount());
+
+        // TODO: Implement when deleteManager supports pattern-based deletion
     }
 
     @Test
-    void testDeleteByType() throws CommandException {
-        // This tests requirement: Delete by task type
-        // deleteManager.handleDeleteCommand(new String[]{"delete", "todo"});
-        // Would need to simulate confirmation
+    void testDeleteSpecificType() throws CommandException {
+        // This tests requirement: Delete specific task types (e.g., "todo")
+        assertEquals(4, taskList.getTaskCount());
+
+        // TODO: Implement when deleteManager supports type-based deletion
     }
 }

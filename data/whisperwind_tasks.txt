@@ -1,4 +1,3 @@
-T | 1 | eating
-T | 0 | dkfjksl
-T | 0 | fjdlkfs
-T | 0 | kvfjdslkv
+E | 1 | birthday party | 2025-12-25T19:00:00 | 2025-12-25T23:00:00
+T | 0 | book
+T | 0 | 2

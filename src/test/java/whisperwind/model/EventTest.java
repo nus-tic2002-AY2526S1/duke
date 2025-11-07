@@ -1,12 +1,9 @@
 package whisperwind.model;
-
 import org.junit.jupiter.api.Test;
 import whisperwind.exceptions.TaskException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class EventTest {
-
     @Test
     void testCreateEvent_validTimeRange_success() throws TaskException {
         // Arrange

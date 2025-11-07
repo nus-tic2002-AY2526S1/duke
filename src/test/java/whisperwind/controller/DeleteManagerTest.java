@@ -9,6 +9,9 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Basic tests for DeleteManager functionality.
+ */
 class DeleteManagerTest {
     private TaskList taskList;
     private DeleteManager deleteManager;
@@ -25,17 +28,16 @@ class DeleteManagerTest {
         deleteManager = new DeleteManager(taskList, scanner);
     }
 
-    // Note: We'll test the parseBulkDeleteNumbers method since it's private
-    // We'll create a testable version or test through public methods
-
     @Test
     void testDeleteManagerCreation() {
-        assertNotNull(deleteManager);
+        assertNotNull(deleteManager, "DeleteManager should be initialized successfully");
     }
 
-    // We can test the public showDeleteHelp method
     @Test
     void testShowDeleteHelp_doesNotThrow() {
-        assertDoesNotThrow(() -> deleteManager.showDeleteHelp());
+        assertDoesNotThrow(() -> deleteManager.showDeleteHelp(),
+                "showDeleteHelp() should not throw any exceptions");
     }
+
+    // TODO: Add tests for deletion behavior through public methods once user confirmation logic is implemented
 }

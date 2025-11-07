@@ -1,18 +1,26 @@
 package whisperwind.storage;
 
+import whisperwind.controller.TaskList;
 import whisperwind.model.Task;
 import whisperwind.model.Todo;
 import whisperwind.model.Deadline;
 import whisperwind.model.Event;
-import whisperwind.controller.TaskList;
-
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Manages saving and loading tasks to/from files.
- * Handles file operations including backups and auto-saving.
+ * Manages saving, loading, and backing up tasks to and from files.
+ * <p>
+ * Provides functionality for:
+ * <ul>
+ *     <li>Saving tasks to a storage file</li>
+ *     <li>Loading tasks from a storage file</li>
+ *     <li>Auto-saving tasks periodically</li>
+ *     <li>Creating and restoring backups</li>
+ *     <li>Finding tasks by specific dates</li>
+ * </ul>
+ * </p>
  */
 public class TaskFileManager {
     private static final String DATA_DIR = "./data";
@@ -29,9 +37,10 @@ public class TaskFileManager {
      * @throws IOException if saving fails
      */
     public void saveTasks(TaskList tasks) throws IOException {
-        // Assert preconditions
-        assert tasks != null : "TaskList should not be null";
-        assert !tasks.isEmpty() : "Should not save empty task list without reason";
+        if (tasks == null || tasks.isEmpty()) {
+            System.out.println("💫 No tasks to save.");
+            return;
+        }
 
         ensureDataDirectoryExists();
         createBackup(tasks);
@@ -39,22 +48,12 @@ public class TaskFileManager {
         try (PrintWriter writer = new PrintWriter(new FileWriter(TASKS_FILE))) {
             for (int i = 0; i < tasks.getTaskCount(); i++) {
                 Task task = tasks.getTask(i + 1);
-                // Assert task retrieval assumptions
-                assert task != null : "Retrieved task should not be null";
-
                 if (task != null && task.isValid()) {
                     String serialized = serializeTask(task);
-                    assert serialized != null : "Serialized task should not be null";
-                    assert !serialized.trim().isEmpty() : "Serialized task should not be empty";
                     writer.println(serialized);
                 }
             }
             lastSaveTime = System.currentTimeMillis();
-
-            // Assert postconditions
-            assert new File(TASKS_FILE).exists() : "Task file should exist after save";
-            assert new File(TASKS_FILE).length() > 0 : "Task file should not be empty after save";
-
             System.out.println("💾 Tasks saved to: " + TASKS_FILE);
         } catch (IOException e) {
             throw new IOException("Failed to save tasks to file: " + e.getMessage(), e);
@@ -67,18 +66,10 @@ public class TaskFileManager {
      * @throws IOException if loading fails
      */
     public void loadTasks(TaskList tasks) throws IOException {
-        // Assert preconditions
-        assert tasks != null : "TaskList should not be null";
-        assert tasks.isEmpty() : "TaskList should be empty before loading";
-
         File file = new File(TASKS_FILE);
         if (!file.exists()) {
             throw new IOException("No saved tasks file found");
         }
-
-        // Assert file state
-        assert file.canRead() : "Task file should be readable";
-        assert file.length() > 0 : "Task file should not be empty";
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
@@ -86,30 +77,20 @@ public class TaskFileManager {
             int errorCount = 0;
 
             while ((line = reader.readLine()) != null) {
-                // Assert line reading assumptions
-                assert line != null : "Read line should not be null";
-                assert !line.trim().isEmpty() : "Should not process empty lines";
-
                 try {
                     Task task = deserializeTask(line);
                     if (task != null && task.isValid()) {
                         tasks.addTaskDirectly(task);
                         loadedCount++;
-
-                        // Assert task addition
-                        assert tasks.getTaskCount() == loadedCount : "Task count should match loaded count";
                     } else {
                         errorCount++;
                     }
                 } catch (Exception e) {
                     errorCount++;
-                    System.out.println("⚠️  Skipping invalid task data: " + line.substring(0, Math.min(50, line.length())));
+                    System.out.println("⚠️  Skipping invalid task data: " +
+                            line.substring(0, Math.min(50, line.length())));
                 }
             }
-
-            // Assert loading results
-            assert loadedCount + errorCount > 0 : "Should process at least one line";
-            assert tasks.getTaskCount() == loadedCount : "Final task count should match loaded count";
 
             if (errorCount > 0) {
                 System.out.println("⚠️  Skipped " + errorCount + " invalid tasks during load");
@@ -134,19 +115,9 @@ public class TaskFileManager {
      * @throws IOException if saving fails
      */
     public void autoSaveTasks(TaskList tasks) throws IOException {
-        // Assert preconditions
-        assert tasks != null : "TaskList should not be null for auto-save";
-
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastSaveTime > MAX_AUTO_SAVE_INTERVAL) {
-            // Assert auto-save conditions
-            assert currentTime > lastSaveTime : "Current time should be after last save time";
-            assert MAX_AUTO_SAVE_INTERVAL > 0 : "Auto-save interval should be positive";
-
             saveTasks(tasks);
-
-            // Assert auto-save completed
-            assert lastSaveTime > 0 : "Last save time should be updated";
         }
     }
 
@@ -156,37 +127,20 @@ public class TaskFileManager {
      * @throws IOException if backup fails
      */
     public void createBackup(TaskList tasks) throws IOException {
-        // Assert preconditions
-        assert tasks != null : "TaskList should not be null for backup";
-
         ensureDataDirectoryExists();
         try {
             File original = new File(TASKS_FILE);
             if (original.exists()) {
-                // Assert original file state
-                assert original.canRead() : "Original file should be readable for backup";
-                assert original.length() > 0 : "Original file should not be empty for backup";
-
                 try (InputStream in = new FileInputStream(original);
                      OutputStream out = new FileOutputStream(BACKUP_FILE)) {
                     byte[] buffer = new byte[1024];
                     int length;
                     while ((length = in.read(buffer)) > 0) {
-                        assert length > 0 : "Should read positive number of bytes";
-                        assert length <= buffer.length : "Read length should not exceed buffer size";
                         out.write(buffer, 0, length);
                     }
                 }
-
-                // Assert backup creation
-                File backup = new File(BACKUP_FILE);
-                assert backup.exists() : "Backup file should exist after creation";
-                assert backup.length() == original.length() : "Backup should be same size as original";
-                assert backup.canRead() : "Backup file should be readable";
-
                 System.out.println("💾 Backup created: " + BACKUP_FILE);
             } else {
-                // Assert no original file case
                 System.out.println("💡 No existing tasks file to backup");
             }
         } catch (IOException e) {
@@ -202,7 +156,8 @@ public class TaskFileManager {
     public void findTasksOnDate(TaskList tasks, String dateString) {
         try {
             java.time.LocalDate targetDate = java.time.LocalDate.parse(dateString);
-            System.out.println("📅 Tasks occurring on " + targetDate.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ":");
+            System.out.println("📅 Tasks occurring on " +
+                    targetDate.format(DateTimeFormatter.ofPattern("MMM dd yyyy")) + ":");
 
             boolean found = false;
             for (int i = 0; i < tasks.getTaskCount(); i++) {
@@ -233,32 +188,14 @@ public class TaskFileManager {
 
     private void ensureDataDirectoryExists() throws IOException {
         File dir = new File(DATA_DIR);
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                throw new IOException("Failed to create data directory at " + DATA_DIR);
-            }
-            // Assert directory creation
-            assert dir.exists() : "Data directory should exist after creation";
-            assert dir.isDirectory() : "Data path should be a directory";
+        if (!dir.exists() && !dir.mkdirs()) {
+            throw new IOException("Failed to create data directory: " + DATA_DIR);
         }
-
-        // Assert directory state
-        assert dir.exists() : "Data directory should exist";
-        assert dir.isDirectory() : "Data path should be a directory";
-        assert dir.canWrite() : "Data directory should be writable";
     }
 
     private void restoreBackup(TaskList tasks) throws IOException {
-        // Assert preconditions
-        assert tasks != null : "TaskList should not be null for restore";
-        assert tasks.isEmpty() : "TaskList should be empty before restore";
-
         File backup = new File(BACKUP_FILE);
         if (backup.exists()) {
-            // Assert backup file state
-            assert backup.canRead() : "Backup file should be readable";
-            assert backup.length() > 0 : "Backup file should not be empty";
-
             try (InputStream in = new FileInputStream(backup);
                  OutputStream out = new FileOutputStream(TASKS_FILE)) {
                 byte[] buffer = new byte[1024];
@@ -267,12 +204,6 @@ public class TaskFileManager {
                     out.write(buffer, 0, length);
                 }
             }
-
-            // Assert restore completion
-            File restored = new File(TASKS_FILE);
-            assert restored.exists() : "Restored file should exist";
-            assert restored.length() == backup.length() : "Restored file should be same size as backup";
-
             System.out.println("✅ Restored backup file.");
             loadTasks(tasks);
         } else {
@@ -281,97 +212,64 @@ public class TaskFileManager {
     }
 
     private String serializeTask(Task task) {
-        // Assert input assumptions
-        assert task != null : "Task to serialize should not be null";
-        assert task.isValid() : "Task to serialize should be valid";
-
         String doneFlag = task.isDone() ? "1" : "0";
         if (task instanceof Todo) {
-            String result = "T | " + doneFlag + " | " + task.getDescription();
-            assert result.startsWith("T | ") : "Todo serialization should start with 'T | '";
-            return result;
+            return "T | " + doneFlag + " | " + task.getDescription();
         } else if (task instanceof Deadline) {
             Deadline deadline = (Deadline) task;
-            assert deadline.getBy() != null : "Deadline time should not be null";
-
             String byString = deadline.getBy().format(STORAGE_FORMATTER);
-            String result = "D | " + doneFlag + " | " + task.getDescription() + " | " + byString;
-            assert result.startsWith("D | ") : "Deadline serialization should start with 'D | '";
-            assert result.split("\\|").length == 4 : "Deadline should have 4 parts";
-            return result;
+            return "D | " + doneFlag + " | " + task.getDescription() + " | " + byString;
         } else if (task instanceof Event) {
             Event event = (Event) task;
-            assert event.getFrom() != null : "Event start time should not be null";
-            assert event.getTo() != null : "Event end time should not be null";
-
             String fromString = event.getFrom().format(STORAGE_FORMATTER);
             String toString = event.getTo().format(STORAGE_FORMATTER);
-            String result = "E | " + doneFlag + " | " + task.getDescription() + " | " + fromString + " | " + toString;
-            assert result.startsWith("E | ") : "Event serialization should start with 'E | '";
-            assert result.split("\\|").length == 5 : "Event should have 5 parts";
-            return result;
+            return "E | " + doneFlag + " | " + task.getDescription() + " | " + fromString + " | " + toString;
         }
-
-        assert false : "Unknown task type for serialization: " + task.getClass().getSimpleName();
         return null;
     }
 
     private Task deserializeTask(String line) {
-        // Assert input assumptions
-        assert line != null : "Line to deserialize should not be null";
-        assert !line.trim().isEmpty() : "Line to deserialize should not be empty";
-
         try {
             String[] parts = line.split("\\|");
-            assert parts.length >= 3 : "Serialized line should have at least 3 parts: " + line;
+            if (parts.length < 3) {
+                return null;
+            }
 
             String type = parts[0].trim();
             String doneFlag = parts[1].trim();
             String description = parts[2].trim();
-
-            // Assert basic field validity
-            assert type != null && !type.isEmpty() : "Task type should not be empty";
-            assert doneFlag.equals("0") || doneFlag.equals("1") : "Done flag should be 0 or 1";
-            assert description != null && !description.isEmpty() : "Description should not be empty";
 
             boolean isDone = doneFlag.equals("1");
             Task task = null;
 
             switch (type) {
                 case "T":
-                    assert parts.length == 3 : "Todo should have exactly 3 parts";
-                    task = new Todo(description);
+                    if (parts.length == 3) {
+                        task = new Todo(description);
+                    }
                     break;
                 case "D":
-                    assert parts.length >= 4 : "Deadline should have at least 4 parts";
-                    String byString = parts[3].trim();
-                    assert !byString.isEmpty() : "Deadline time should not be empty";
-
-                    LocalDateTime by = LocalDateTime.parse(byString, STORAGE_FORMATTER);
-                    task = new Deadline(description, by);
+                    if (parts.length >= 4) {
+                        String byString = parts[3].trim();
+                        LocalDateTime by = LocalDateTime.parse(byString, STORAGE_FORMATTER);
+                        task = new Deadline(description, by);
+                    }
                     break;
                 case "E":
-                    assert parts.length >= 5 : "Event should have at least 5 parts";
-                    String fromString = parts[3].trim();
-                    String toString = parts[4].trim();
-                    assert !fromString.isEmpty() : "Event start time should not be empty";
-                    assert !toString.isEmpty() : "Event end time should not be empty";
-
-                    LocalDateTime from = LocalDateTime.parse(fromString, STORAGE_FORMATTER);
-                    LocalDateTime to = LocalDateTime.parse(toString, STORAGE_FORMATTER);
-                    task = new Event(description, from, to);
+                    if (parts.length >= 5) {
+                        String fromString = parts[3].trim();
+                        String toString = parts[4].trim();
+                        LocalDateTime from = LocalDateTime.parse(fromString, STORAGE_FORMATTER);
+                        LocalDateTime to = LocalDateTime.parse(toString, STORAGE_FORMATTER);
+                        task = new Event(description, from, to);
+                    }
                     break;
                 default:
-                    assert false : "Unknown task type in deserialization: " + type;
                     return null;
             }
 
-            assert task != null : "Deserialized task should not be null";
-            assert task.isValid() : "Deserialized task should be valid";
-
             if (task != null && isDone) {
                 task.markAsDone();
-                assert task.isDone() : "Task should be marked as done after deserialization";
             }
             return task;
         } catch (Exception e) {

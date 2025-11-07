@@ -2,17 +2,14 @@ package whisperwind.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import whisperwind.exceptions.CommandException;
 import whisperwind.exceptions.TaskException;
 import whisperwind.model.TaskType;
 
-import java.nio.file.Path;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for ArchiveManager functionality
+ * Tests for ArchiveManager functionality.
  */
 class ArchiveManagerTest {
     private TaskList taskList;
@@ -40,7 +37,7 @@ class ArchiveManagerTest {
 
     @Test
     void testArchiveAllTasks_withTasks_success() {
-        // This tests that archiveAllTasks doesn't throw exceptions with valid tasks
+        // Tests that archiveAllTasks doesn't throw exceptions with valid tasks
         assertDoesNotThrow(() -> {
             String archivePath = archiveManager.archiveAllTasks(taskList);
             assertNotNull(archivePath, "Archive path should not be null");
@@ -53,14 +50,15 @@ class ArchiveManagerTest {
         TaskList emptyTaskList = new TaskList();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> archiveManager.archiveAllTasks(emptyTaskList));
+                () -> archiveManager.archiveAllTasks(emptyTaskList),
+                "Should throw IllegalStateException when archiving an empty list");
 
         assertEquals("No tasks to archive - task list is empty", exception.getMessage());
     }
 
     @Test
     void testArchiveCompletedTasks_withCompletedTasks_success() {
-        // We have one completed task (task 1 is marked as done)
+        // One task is marked as done
         assertDoesNotThrow(() -> {
             String archivePath = archiveManager.archiveCompletedTasks(taskList);
             assertNotNull(archivePath, "Archive path should not be null");
@@ -73,10 +71,10 @@ class ArchiveManagerTest {
         TaskList freshTaskList = new TaskList();
         freshTaskList.addTodo("Task 1");
         freshTaskList.addTodo("Task 2");
-        // No tasks marked as completed
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> archiveManager.archiveCompletedTasks(freshTaskList));
+                () -> archiveManager.archiveCompletedTasks(freshTaskList),
+                "Should throw IllegalStateException when no completed tasks exist");
 
         assertEquals("No completed tasks to archive", exception.getMessage());
     }
@@ -104,14 +102,15 @@ class ArchiveManagerTest {
         TaskList emptyTaskList = new TaskList();
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> archiveManager.archiveTasksByType(emptyTaskList, TaskType.TODO));
+                () -> archiveManager.archiveTasksByType(emptyTaskList, TaskType.TODO),
+                "Should throw IllegalStateException when no tasks of specified type exist");
 
         assertEquals("No todo tasks to archive", exception.getMessage());
     }
 
     @Test
     void testListArchiveFiles_doesNotThrow() {
-        // This should not throw exceptions even if no archive files exist
+        // Should not throw even if no archive files exist
         assertDoesNotThrow(() -> archiveManager.listArchiveFiles());
     }
 

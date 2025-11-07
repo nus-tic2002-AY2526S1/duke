@@ -198,13 +198,13 @@ public class InputSanitizer {
 
         try {
             int taskNumber = Integer.parseInt(input.trim());
-            boolean result = taskNumber > 0 && taskNumber <= maxTasks;
+            boolean isValidTask = taskNumber > 0 && taskNumber <= maxTasks;
 
             // Assert method contract
-            assert !result || taskNumber >= 1 : "Valid task number should be at least 1";
-            assert !result || taskNumber <= maxTasks : "Valid task number should not exceed maxTasks";
+            assert !isValidTask || taskNumber >= 1 : "Valid task number should be at least 1";
+            assert !isValidTask || taskNumber <= maxTasks : "Valid task number should not exceed maxTasks";
 
-            return result;
+            return isValidTask;
         } catch (NumberFormatException e) {
             return false;
         }
@@ -286,13 +286,13 @@ public class InputSanitizer {
 
         try {
             LocalDateTime inputDateTime = parseDateTime(dateTimeStr);
-            boolean result = inputDateTime.isAfter(LocalDateTime.now());
+            boolean isValidTask = inputDateTime.isAfter(LocalDateTime.now());
 
             // Assert method contract
-            assert !result || inputDateTime.isAfter(LocalDateTime.now()) :
+            assert !isValidTask || inputDateTime.isAfter(LocalDateTime.now()) :
                     "Future date should be after current time";
 
-            return result;
+            return isValidTask;
         } catch (Exception e) {
             return false;
         }

@@ -4,9 +4,13 @@ import whisperwind.model.*;
 
 /**
  * Represents all available commands in the application.
- * Each command has a text command, emoji, and description.
+ * Each command has a textual representation, an emoji, and a description.
+ * <p>
+ * This enum provides utility methods to convert strings to commands and validate inputs.
+ * </p>
  */
 public enum CommandType {
+
     /** View all tasks in the list */
     LIST("list", "🗒️", "View all tasks"),
 
@@ -40,15 +44,21 @@ public enum CommandType {
     /** Unknown or invalid command */
     UNKNOWN("unknown", "❓", "Unknown command");
 
+    /** The textual command */
     private final String command;
+
+    /** The emoji associated with the command */
     private final String emoji;
+
+    /** The description explaining what the command does */
     private final String description;
 
     /**
-     * Creates a command type with its properties.
-     * @param command the text command
-     * @param emoji the emoji representation
-     * @param description what the command does
+     * Constructs a CommandType with its properties.
+     *
+     * @param command     the textual command
+     * @param emoji       the emoji representing the command
+     * @param description a brief description of the command's function
      */
     CommandType(String command, String emoji, String description) {
         this.command = command;
@@ -57,27 +67,43 @@ public enum CommandType {
     }
 
     /**
-     * @return the text command
+     * Returns the textual command.
+     *
+     * @return the command string
      */
-    public String getCommand() { return command; }
+    public String getCommand() {
+        return command;
+    }
 
     /**
-     * @return the emoji for this command
+     * Returns the emoji associated with this command.
+     *
+     * @return the emoji string
      */
-    public String getEmoji() { return emoji; }
+    public String getEmoji() {
+        return emoji;
+    }
 
     /**
-     * @return the description of what this command does
+     * Returns the description of what this command does.
+     *
+     * @return the command description
      */
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
     /**
-     * Converts a string input to a CommandType.
+     * Converts a string input to a corresponding {@link CommandType}.
+     * <p>
+     * The input is normalized (trimmed and lowercased) before matching.
+     * Special handling is included for "view instruction".
+     * </p>
+     *
      * @param input the command string to convert
-     * @return the matching CommandType, or UNKNOWN if no match
+     * @return the matching {@link CommandType}, or {@link #UNKNOWN} if no match
      */
     public static CommandType fromString(String input) {
-        // Assert input assumptions
         assert input != null : "Input should not be null in fromString";
 
         if (input == null || input.trim().isEmpty()) {
@@ -88,36 +114,39 @@ public enum CommandType {
         for (CommandType cmd : values()) {
             if (cmd.command.equals(normalized) ||
                     (cmd == VIEW_INSTRUCTION && normalized.equals("view instruction"))) {
-                // Assert valid result
                 assert cmd != UNKNOWN : "Should not return UNKNOWN for valid command";
                 return cmd;
             }
         }
-        // This should only happen for truly unknown commands
+
         assert !normalized.isEmpty() : "Normalized input should not be empty";
         return UNKNOWN;
     }
 
     /**
-     * Checks if a string is a valid command.
-     * @param input the command string to check
-     * @return true if the command is valid, false otherwise
+     * Checks whether a string represents a valid command.
+     *
+     * @param input the string to check
+     * @return true if the string corresponds to a known command, false otherwise
      */
     public static boolean isValidCommand(String input) {
-        // Assert input assumptions
         assert input != null : "Input should not be null in isValidCommand";
 
         CommandType result = fromString(input);
 
-        // Assert method contract
         assert (result == UNKNOWN) == !isValidCommandInternal(input) :
                 "isValidCommand should match fromString result";
 
         return result != UNKNOWN;
     }
 
+    /**
+     * Internal helper method for validating commands.
+     *
+     * @param input the string to validate
+     * @return true if the input corresponds to a known command, false otherwise
+     */
     private static boolean isValidCommandInternal(String input) {
-        // Internal implementation assertions
         assert input != null : "Input should not be null";
         return fromString(input) != UNKNOWN;
     }

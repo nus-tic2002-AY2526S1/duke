@@ -23,19 +23,16 @@ class ScheduleManagerTest {
 
     @Test
     void testShowScheduleForDate() {
-        // Tests requirement: Find tasks on specific date
         assertDoesNotThrow(() -> scheduleManager.showScheduleForDate("2025-12-25"));
     }
 
     @Test
     void testShowScheduleForToday() {
-        // Tests requirement: Schedule views (today)
         assertDoesNotThrow(() -> scheduleManager.showScheduleForToday());
     }
 
     @Test
     void testShowUpcomingSchedule() {
-        // Tests requirement: Schedule views (upcoming)
         assertDoesNotThrow(() -> scheduleManager.showUpcomingSchedule());
     }
 }

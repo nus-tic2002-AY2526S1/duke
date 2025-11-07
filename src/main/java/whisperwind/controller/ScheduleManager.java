@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * The {@code ScheduleManager} class handles viewing tasks in schedule format
- * for specific dates, including daily schedules and date range views.
+ * for specific dates, including daily schedules, today/tomorrow views, and date ranges.
  */
 public class ScheduleManager {
     private TaskList taskList;
@@ -21,13 +21,12 @@ public class ScheduleManager {
     /**
      * Constructs a ScheduleManager instance.
      *
-     * @param taskList The list of tasks to manage schedules for
+     * @param taskList The list of tasks to manage schedules for.
      */
     public ScheduleManager(TaskList taskList) {
         assert taskList != null : "TaskList should not be null";
         this.taskList = taskList;
 
-        // Verify formatters are properly initialized
         assert DATE_FORMATTER != null : "Date formatter should be initialized";
         assert DISPLAY_FORMATTER != null : "Display formatter should be initialized";
     }
@@ -35,7 +34,7 @@ public class ScheduleManager {
     /**
      * Shows the schedule for a specific date.
      *
-     * @param dateString The date in YYYY-MM-DD format
+     * @param dateString The date in YYYY-MM-DD format.
      */
     public void showScheduleForDate(String dateString) {
         try {
@@ -52,8 +51,8 @@ public class ScheduleManager {
     /**
      * Shows schedule for a date range.
      *
-     * @param startDateString Start date in YYYY-MM-DD format
-     * @param endDateString End date in YYYY-MM-DD format
+     * @param startDateString Start date in YYYY-MM-DD format.
+     * @param endDateString   End date in YYYY-MM-DD format.
      */
     public void showScheduleForDateRange(String startDateString, String endDateString) {
         try {
@@ -95,7 +94,7 @@ public class ScheduleManager {
     }
 
     /**
-     * Shows upcoming deadlines and events (next 7 days).
+     * Shows upcoming deadlines and events for the next 7 days.
      */
     public void showUpcomingSchedule() {
         LocalDate today = LocalDate.now();
@@ -106,7 +105,6 @@ public class ScheduleManager {
 
         displayDateRangeSchedule(today, nextWeek);
     }
-
     /**
      * Gets all tasks occurring on a specific date.
      */

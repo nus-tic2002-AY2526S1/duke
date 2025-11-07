@@ -2,745 +2,237 @@ package whisperwind.controller;
 
 import whisperwind.model.*;
 import whisperwind.util.*;
-import whisperwind.exceptions.TaskException;
-import whisperwind.exceptions.CommandException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import whisperwind.exceptions.*;
 
 /**
- * The {@code TaskList} class manages a collection of tasks and provides operations
- * for adding, deleting, marking, and listing tasks.
- * <p>
- * This class maintains task integrity, validates operations, and provides statistics
- * about the task collection.
- * </p>
+ * Represents a list of tasks and provides operations for adding, deleting,
+ * marking, unmarking, searching, and listing tasks.
  */
 public class TaskList {
-    private ArrayList<Task> tasks;
-    private static final int MAX_TASKS = 1000;
-    private static final int WARNING_THRESHOLD = 500;
+    private final TaskStorageHandler storageHandler;
+    private final TaskOperationHandler operationHandler;
+    private final TaskSearchHandler searchHandler;
 
     /**
-     * Constructs an empty TaskList.
+     * Constructs an empty TaskList with underlying handlers for storage,
+     * operations, and search.
      */
     public TaskList() {
-        this.tasks = new ArrayList<>();
-        assert isEmpty() : "New task list should be empty";
+        this.storageHandler = new TaskStorageHandler();
+        this.operationHandler = new TaskOperationHandler(storageHandler);
+        this.searchHandler = new TaskSearchHandler(storageHandler);
     }
 
+    // === Add operations ===
+
     /**
-     * Adds a new todo task to the list.
+     * Adds a new Todo task with the given description.
      *
-     * @param description The description of the todo task
-     * @throws TaskException If the task cannot be created
-     * @throws CommandException If task limit is reached
+     * @param desc Description of the todo task.
+     * @throws TaskException    If the task is invalid.
+     * @throws CommandException If the command input is invalid.
      */
-    public void addTodo(String description) throws TaskException, CommandException {
-        // Assert class state is valid
-        assert tasks != null : "Task list should be initialized";
-        assert description != null : "Description should be validated before this point";
-
-        if (tasks.size() >= MAX_TASKS) {
-            throw new CommandException("Task limit reached (" + MAX_TASKS + ")! Complete or delete some tasks first.");
-        }
-
-        String sanitizedDesc = InputSanitizer.sanitizeDescription(description);
-        assert sanitizedDesc != null : "Sanitized description should not be null";
-        if (sanitizedDesc.isEmpty()) {
-            throw new CommandException("Wait, what's the todo? Give me the details!");
-        }
-
-        try {
-            Todo newTask = new Todo(sanitizedDesc);
-            tasks.add(newTask);
-            System.out.println("🎉 Got it. I've added this task:");
-            System.out.println("  " + newTask.toString());
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } catch (TaskException e) {
-            throw new TaskException("Couldn't add the todo: " + e.getMessage(), e);
-        }
+    public void addTodo(String desc) throws TaskException, CommandException {
+        operationHandler.addTodo(desc);
     }
 
     /**
-     * Adds a new deadline task to the list.
+     * Adds a new Deadline task from input string.
      *
-     * @param input The input string containing description and deadline time
-     * @throws TaskException If the task cannot be created
-     * @throws CommandException If task limit is reached or input is invalid
+     * @param input Input string specifying description and deadline.
+     * @throws TaskException    If the task is invalid.
+     * @throws CommandException If the command input is invalid.
      */
     public void addDeadline(String input) throws TaskException, CommandException {
-        if (tasks.size() >= MAX_TASKS) {
-            throw new CommandException("Task limit reached (" + MAX_TASKS + ")! Complete or delete some tasks first.");
-        }
-
-        String sanitizedInput = InputSanitizer.sanitizeInput(input);
-        if (sanitizedInput.isEmpty()) {
-            throw new CommandException("Wait, what's the deadline? Give me the details!");
-        }
-
-        String[] deadlineParts = sanitizedInput.split(" /by ", 2);
-        if (deadlineParts.length < 2) {
-            throw new CommandException("Deadline format should be: deadline DESCRIPTION /by TIME");
-        }
-
-        String description = InputSanitizer.sanitizeDescription(deadlineParts[0]);
-        String by = InputSanitizer.sanitizeTime(deadlineParts[1]);
-
-        if (description.isEmpty()) {
-            throw new CommandException("Wait, what's the deadline description? Give me the details!");
-        }
-        if (by.isEmpty()) {
-            throw new CommandException("When is this deadline due? Add the time after /by!");
-        }
-
-        try {
-            Deadline newTask = new Deadline(description, by);
-            tasks.add(newTask);
-            System.out.println("🎉 Got it. I've added this task:");
-            System.out.println("  " + newTask.toString());
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } catch (TaskException e) {
-            // Provide more user-friendly error messages
-            if (e.getMessage().contains("cannot be in the past")) {
-                throw new TaskException("❌ " + e.getMessage() + "\n💡 " + InputSanitizer.getFutureDateTimeFormatExamples());
-            } else {
-                throw new TaskException("Couldn't add the deadline: " + e.getMessage(), e);
-            }
-        }
+        operationHandler.addDeadline(input);
     }
 
     /**
-     * Adds a new event task to the list.
+     * Adds a new Event task from input string.
      *
-     * @param input The input string containing description and event times
-     * @throws TaskException If the task cannot be created
-     * @throws CommandException If task limit is reached or input is invalid
+     * @param input Input string specifying description, start, and end times.
+     * @throws TaskException    If the task is invalid.
+     * @throws CommandException If the command input is invalid.
      */
     public void addEvent(String input) throws TaskException, CommandException {
-        if (tasks.size() >= MAX_TASKS) {
-            throw new CommandException("Task limit reached (" + MAX_TASKS + ")! Complete or delete some tasks first.");
-        }
-
-        String sanitizedInput = InputSanitizer.sanitizeInput(input);
-        if (sanitizedInput.isEmpty()) {
-            throw new CommandException("Wait, what's the event? Give me the details!");
-        }
-
-        String[] eventParts = sanitizedInput.split(" /from ", 2);
-        if (eventParts.length < 2) {
-            throw new CommandException("Event format should be: event DESCRIPTION /from START_TIME /to END_TIME");
-        }
-
-        String[] timeParts = eventParts[1].split(" /to ", 2);
-        if (timeParts.length < 2) {
-            throw new CommandException("Event format should be: event DESCRIPTION /from START_TIME /to END_TIME");
-        }
-
-        String description = InputSanitizer.sanitizeDescription(eventParts[0]);
-        String from = InputSanitizer.sanitizeTime(timeParts[0]);
-        String to = InputSanitizer.sanitizeTime(timeParts[1]);
-
-        if (description.isEmpty()) {
-            throw new CommandException("Wait, what's the event description? Give me the details!");
-        }
-        if (from.isEmpty()) {
-            throw new CommandException("When does this event start? Add the start time after /from!");
-        }
-        if (to.isEmpty()) {
-            throw new CommandException("When does this event end? Add the end time after /to!");
-        }
-
-        try {
-            Event newTask = new Event(description, from, to);
-            tasks.add(newTask);
-            System.out.println("🎉 Got it. I've added this task:");
-            System.out.println("  " + newTask.toString());
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } catch (TaskException e) {
-            // Provide more user-friendly error messages
-            if (e.getMessage().contains("cannot be in the past")) {
-                throw new TaskException("❌ " + e.getMessage() + "\n💡 " + InputSanitizer.getFutureDateTimeFormatExamples());
-            } else {
-                throw new TaskException("Couldn't add the event: " + e.getMessage(), e);
-            }
-        }
+        operationHandler.addEvent(input);
     }
 
     /**
-     * Deletes a single task by its number.
+     * Adds a task directly to the list without parsing.
      *
-     * @param taskNumber The number of the task to delete (1-based index)
-     * @throws CommandException If task number is invalid
+     * @param task Task object to add.
+     * @throws CommandException If the task cannot be added.
+     */
+    public void addTaskDirectly(Task task) throws CommandException {
+        if (task != null) {
+            storageHandler.addTask(task);
+        } else {
+            System.out.println("⚠️ Cannot add a null task.");
+        }
+    }
+
+    // === Delete operations ===
+
+    /**
+     * Deletes the task at the given position.
+     *
+     * @param taskNumber Task number to delete.
+     * @throws CommandException If deletion fails.
      */
     public void deleteTask(int taskNumber) throws CommandException {
-        assert taskNumber > 0 : "Task numbers start from 1";
-        assert tasks != null : "Task list should be initialized";
-
-        int index = taskNumber - 1;
-        if (index >= 0 && index < tasks.size()) {
-            Task taskToDelete = tasks.get(index);
-            assert taskToDelete != null : "Task should not be null";
-            assert taskToDelete.isValid() : "Task should be valid";
-        } else {
-            throw new CommandException("That task number doesn't exist.");
-        }
+        operationHandler.deleteTask(taskNumber);
     }
 
     /**
-     * Deletes multiple tasks specified by their numbers.
+     * Deletes tasks that match a given pattern.
      *
-     * @param taskNumbers Array of task numbers to delete
-     * @throws CommandException If no valid tasks to delete
+     * @param pattern Pattern to match task descriptions.
+     * @throws CommandException If deletion fails.
+     */
+    public void deleteTasksByPattern(String pattern) throws CommandException {
+        operationHandler.deleteTasksByPattern(pattern);
+    }
+
+    /**
+     * Deletes multiple tasks by their numbers.
+     *
+     * @param taskNumbers Array of task numbers to delete.
+     * @throws CommandException If deletion fails.
      */
     public void deleteMultipleTasks(int[] taskNumbers) throws CommandException {
-        if (taskNumbers == null || taskNumbers.length == 0) {
-            throw new CommandException("No task numbers provided for deletion.");
-        }
+        operationHandler.deleteMultipleTasks(taskNumbers);
+    }
 
-        if (tasks.isEmpty()) {
-            throw new CommandException("Your task list is already empty!");
-        }
+    /**
+     * Deletes tasks containing a keyword.
+     *
+     * @param keyword Keyword to search in task descriptions.
+     * @throws CommandException If deletion fails.
+     */
+    public void deleteTasksContaining(String keyword) throws CommandException {
+        searchHandler.deleteTasksContaining(keyword);
+    }
 
-        Arrays.sort(taskNumbers);
-        int[] uniqueNumbers = Arrays.stream(taskNumbers).distinct().toArray();
+    // === Mark/unmark ===
 
-        ArrayList<Task> tasksToDelete = new ArrayList<>();
-        ArrayList<Integer> validIndexes = new ArrayList<>();
+    /**
+     * Marks the task as completed.
+     *
+     * @param taskNumber Task number to mark.
+     * @throws TaskException    If task cannot be marked.
+     * @throws CommandException If marking fails.
+     */
+    public void markTask(int taskNumber) throws TaskException, CommandException {
+        operationHandler.markTask(taskNumber);
+    }
 
-        for (int i = uniqueNumbers.length - 1; i >= 0; i--) {
-            int taskNumber = uniqueNumbers[i];
-            if (taskNumber > 0 && taskNumber <= tasks.size()) {
-                tasksToDelete.add(tasks.get(taskNumber - 1));
-                validIndexes.add(taskNumber - 1);
-            } else {
-                System.out.println("⚠️  Skipping invalid task number: " + taskNumber);
-            }
-        }
-
-        if (tasksToDelete.isEmpty()) {
-            throw new CommandException("No valid task numbers to delete.");
-        }
-
-        System.out.println("🔍 The following tasks will be deleted:");
-        for (int i = 0; i < tasksToDelete.size(); i++) {
-            System.out.println("  " + (i + 1) + ". " + tasksToDelete.get(i).toString());
-        }
-
-        System.out.print("🗑️  Delete these " + tasksToDelete.size() + " tasks? (yes/no): ");
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        String confirmation = scanner.nextLine().trim().toLowerCase();
-
-        if (confirmation.equals("yes") || confirmation.equals("y")) {
-            for (int index : validIndexes) {
-                tasks.remove(index);
-            }
-            System.out.println("✅ Successfully removed " + tasksToDelete.size() + " tasks.");
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } else {
-            System.out.println("😅 Bulk deletion cancelled.");
-        }
+    /**
+     * Unmarks the task as not completed.
+     *
+     * @param taskNumber Task number to unmark.
+     * @throws TaskException    If task cannot be unmarked.
+     * @throws CommandException If unmarking fails.
+     */
+    public void unmarkTask(int taskNumber) throws TaskException, CommandException {
+        operationHandler.unmarkTask(taskNumber);
     }
 
     /**
      * Deletes all completed tasks from the list.
-     * @throws CommandException If no completed tasks found
      */
-    public void deleteCompletedTasks() throws CommandException {
-        ArrayList<Task> completedTasks = new ArrayList<>();
-        ArrayList<Integer> completedIndexes = new ArrayList<>();
-
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task != null && task.isDone()) {
-                completedTasks.add(task);
-                completedIndexes.add(i);
-            }
-        }
-
-        if (completedTasks.isEmpty()) {
-            throw new CommandException("No completed tasks found to delete!");
-        }
-
-        System.out.println("🔍 Found " + completedTasks.size() + " completed tasks:");
-        for (int i = 0; i < completedTasks.size(); i++) {
-            System.out.println("  " + (i + 1) + ". " + completedTasks.get(i).toString());
-        }
-
-        System.out.print("🗑️  Delete all completed tasks? (yes/no): ");
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        String confirmation = scanner.nextLine().trim().toLowerCase();
-
-        if (confirmation.equals("yes") || confirmation.equals("y")) {
-            for (int i = completedIndexes.size() - 1; i >= 0; i--) {
-                tasks.remove(completedIndexes.get(i).intValue());
-            }
-            System.out.println("✅ Removed " + completedTasks.size() + " completed tasks.");
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-
-            if (tasks.isEmpty()) {
-                System.out.println("🎉 All done! Your task list is completely empty! Time to celebrate! 🥳");
-            }
-        } else {
-            System.out.println("😅 Completed tasks deletion cancelled.");
-        }
+    public void deleteCompletedTasks() {
+        operationHandler.deleteCompletedTasks();
     }
 
     /**
      * Deletes all tasks of a specific type.
-     * @param taskType The type of tasks to delete
-     * @throws CommandException If invalid task type or no tasks of that type found
-     */
-    public void deleteTasksByType(TaskType taskType) throws CommandException {
-        if (taskType == TaskType.UNKNOWN) {
-            throw new CommandException("Invalid task type specified.");
-        }
-
-        int deletedCount = 0;
-        for (int i = tasks.size() - 1; i >= 0; i--) {
-            Task task = tasks.get(i);
-            TaskType currentType = TaskType.fromClass(task.getClass());
-
-            if (currentType == taskType) {
-                tasks.remove(i);
-                deletedCount++;
-            }
-        }
-
-        if (deletedCount > 0) {
-            System.out.printf("✅ Removed %d %s tasks.%n", deletedCount, taskType.getDisplayName().toLowerCase());
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } else {
-            throw new CommandException("No " + taskType.getDisplayName().toLowerCase() + " tasks found to delete.");
-        }
-    }
-
-    /**
-     * Clears all tasks from the list and provides a fresh start.
-     * <p>
-     * This method removes all tasks from the current task list, effectively resetting
-     * the application to an empty state. It is particularly useful after archiving
-     * tasks or when the user wants to start over with a clean slate.
-     * </p>
      *
-     * @throws CommandException if the task list is already empty when attempting to clear
+     * @param taskType Type of tasks to delete.
      */
-    public void clearAllTasks() throws CommandException {
-        if (tasks.isEmpty()) {
-            throw new CommandException("Task list is already empty! Nothing to clear.");
-        }
-
-        int count = tasks.size();
-        tasks.clear();
-        System.out.println("🗑️  Cleared all " + count + " tasks.");
-        System.out.println("✨ Your task list is now fresh and empty!");
-
-        // Show encouragement message based on task count
-        if (count > 10) {
-            System.out.println("🎉 Wow! You cleared " + count + " tasks! That's amazing!");
-        } else if (count > 5) {
-            System.out.println("🌟 Great job clearing " + count + " tasks!");
-        } else {
-            System.out.println("💫 Ready for new adventures!");
-        }
+    public void deleteTasksByType(TaskType taskType) {
+        operationHandler.deleteTasksByType(taskType);
     }
 
-    /**
-     * Marks a task as completed.
-     *
-     * @param taskNumber The number of the task to mark (1-based index)
-     * @throws CommandException If task number is invalid
-     * @throws TaskException If task cannot be marked
-     */
-    public void markTask(int taskNumber) throws CommandException, TaskException {
-        // Use assertions for programmer errors (should never happen in correct code)
-        assert tasks != null : "Task list should be initialized";
-        assert taskNumber > 0 : "Task number should be positive before validation";
-
-        // Use exceptions for expected error conditions
-        if (taskNumber <= 0) {
-            throw new CommandException("Task numbers start from 1.");
-        }
-
-        int index = taskNumber - 1;
-        if (index >= 0 && index < tasks.size()) {
-            Task task = tasks.get(index);
-            assert task != null : "Retrieved task should not be null";
-            try {
-                if (task.isDone()) {
-                    throw new TaskException("This task is already marked as done!");
-                } else {
-                    task.markAsDone();
-                    System.out.println("✅ Slay, you completed the task. Let's go!");
-                    System.out.println("  " + task.toString());
-                }
-            } catch (TaskException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new TaskException("Something went wrong marking the task: " + e.getMessage());
-            }
-        } else {
-            throw new CommandException("That task number doesn't exist.");
-        }
-    }
+    // === Listing and searching ===
 
     /**
-     * Marks a task as not completed.
-     *
-     * @param taskNumber The number of the task to unmark (1-based index)
-     * @throws CommandException If task number is invalid
-     * @throws TaskException If task cannot be unmarked
-     */
-    public void unmarkTask(int taskNumber) throws CommandException, TaskException {
-        if (taskNumber <= 0) {
-            throw new CommandException("Task numbers start from 1.");
-        }
-
-        int index = taskNumber - 1;
-        if (index >= 0 && index < tasks.size()) {
-            try {
-                Task task = tasks.get(index);
-                if (!task.isDone()) {
-                    throw new TaskException("This task is already marked as not done!");
-                } else {
-                    task.markAsUndone();
-                    System.out.println("🔄 No cap, this one's un-marked. Back to the grind.");
-                    System.out.println("  " + task.toString());
-                }
-            } catch (TaskException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new TaskException("Something went wrong unmarking the task: " + e.getMessage());
-            }
-        } else {
-            throw new CommandException("That task number doesn't exist.");
-        }
-    }
-
-    /**
-     * Lists all tasks in the task list with statistics and delete help.
+     * Lists all tasks in the task list.
      */
     public void listTasks() {
-        if (tasks.isEmpty()) {
-            System.out.println("📭 Your task list is empty! Time to add some tasks?");
-            System.out.println("💡 Try 'todo', 'deadline', or 'event' to get started!");
-            return;
-        }
-
-        validateTaskIntegrity();
-
-        System.out.println("📋 Here are the tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            TaskType type = TaskType.fromClass(task.getClass());
-            System.out.printf("%d.%s %s%n", (i + 1), type.getPrefix(), task.toString().substring(3));
-        }
-
-        showTaskStatistics();
-        showDeleteHelp();
+        storageHandler.listTasks();
     }
 
     /**
-     * Displays statistics about the tasks in the list.
-     */
-    private void showTaskStatistics() {
-        int todoCount = 0, deadlineCount = 0, eventCount = 0, completedCount = 0;
-
-        for (Task task : tasks) {
-            TaskType type = TaskType.fromClass(task.getClass());
-            switch (type) {
-                case TODO: todoCount++; break;
-                case DEADLINE: deadlineCount++; break;
-                case EVENT: eventCount++; break;
-            }
-            if (task.isDone()) completedCount++;
-        }
-
-        System.out.printf("📊 Statistics: %d todos, %d deadlines, %d events, %d completed%n",
-                todoCount, deadlineCount, eventCount, completedCount);
-    }
-
-    /**
-     * Displays help information for delete commands.
-     */
-    private void showDeleteHelp() {
-        System.out.println("💡 Extended delete commands:");
-        for (DeleteOperation op : DeleteOperation.values()) {
-            if (op != DeleteOperation.UNKNOWN) {
-                System.out.printf("   %s delete %-12s - %s%n",
-                        op.getEmoji(), op.getOperation(), op.getDescription());
-            }
-        }
-    }
-
-    /**
-     * Finds tasks that contain the given search term in their description.
+     * Displays tasks that match a search term.
      *
-     * @param searchTerm The term to search for
-     * @return List of matching tasks
-     */
-    public ArrayList<Task> findTasks(String searchTerm) {
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return matchingTasks;
-        }
-
-        String lowerSearchTerm = searchTerm.trim().toLowerCase();
-
-        for (Task task : tasks) {
-            if (task != null && task.isValid() &&
-                    task.getDescription().toLowerCase().contains(lowerSearchTerm)) {
-                matchingTasks.add(task);
-            }
-        }
-        return matchingTasks;
-    }
-
-    /**
-     * Displays tasks that match the search term in a formatted way.
-     *
-     * @param searchTerm The term to search for in task descriptions
+     * @param searchTerm Term to search for in tasks.
      */
     public void displayMatchingTasks(String searchTerm) {
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            System.out.println("❌ Please provide a search term. Usage: find KEYWORD");
-            return;
-        }
-
-        ArrayList<Task> matchingTasks = findTasks(searchTerm);
-
-        if (matchingTasks.isEmpty()) {
-            System.out.println("🔍 No tasks found containing: '" + searchTerm + "'");
-            System.out.println("💡 Try searching with different keywords or check your spelling.");
-            return;
-        }
-
-        System.out.println("____________________________________________________________");
-        System.out.println(" Here are the matching tasks in your list:");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            Task task = matchingTasks.get(i);
-            TaskType type = TaskType.fromClass(task.getClass());
-            System.out.printf(" %d.%s %s%n", (i + 1), type.getPrefix(), task.toString().substring(3));
-        }
-        System.out.println("____________________________________________________________");
-
-        // Show search statistics
-        showFindStatistics(matchingTasks, searchTerm);
+        searchHandler.displayMatchingTasks(searchTerm);
     }
 
-    /**
-     * Shows statistics for the search results.
-     *
-     * @param matchingTasks The list of matching tasks
-     * @param searchTerm The search term used
-     */
-    private void showFindStatistics(ArrayList<Task> matchingTasks, String searchTerm) {
-        int todoCount = 0, deadlineCount = 0, eventCount = 0, completedCount = 0;
-
-        for (Task task : matchingTasks) {
-            TaskType type = TaskType.fromClass(task.getClass());
-            switch (type) {
-                case TODO: todoCount++; break;
-                case DEADLINE: deadlineCount++; break;
-                case EVENT: eventCount++; break;
-            }
-            if (task.isDone()) completedCount++;
-        }
-
-        System.out.printf("📊 Found %d tasks containing '%s': %d todos, %d deadlines, %d events, %d completed%n",
-                matchingTasks.size(), searchTerm, todoCount, deadlineCount, eventCount, completedCount);
-    }
-
-    /**
-     * Validates the integrity of all tasks in the list.
-     *
-     * @return true if all tasks are valid, false if any corrupted tasks were found and removed
-     */
-    public boolean validateTaskIntegrity() {
-        boolean integrityOk = true;
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task == null || !task.isValid()) {
-                System.out.println("⚠️  Found corrupted task at position " + (i+1) + ", removing...");
-                tasks.remove(i);
-                i--;
-                integrityOk = false;
-            }
-        }
-        return integrityOk;
-    }
-
-    /**
-     * Checks performance metrics and provides warnings if needed.
-     */
-    public void checkPerformance() {
-        if (tasks.size() > WARNING_THRESHOLD) {
-            System.out.println("🐢 You have " + tasks.size() + " tasks. Consider deleting or archiving old ones.");
-        }
-
-        int todoCount = (int) tasks.stream()
-                .filter(task -> TaskType.fromClass(task.getClass()) == TaskType.TODO)
-                .count();
-
-        if (todoCount > tasks.size() * 0.7) {
-            System.out.println("💡 Consider using deadlines or events for time-sensitive tasks.");
-        }
-
-        Runtime runtime = Runtime.getRuntime();
-        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
-        long maxMemory = runtime.maxMemory();
-
-        if (usedMemory > maxMemory * 0.7) {
-            System.out.println("⚠️  Memory usage is high! Consider deleting some tasks.");
-        }
-    }
-
-    /**
-     * Adds a task directly to the list without validation (for internal use).
-     *
-     * @param task The task to add
-     * @throws CommandException If task limit is reached
-     */
-    public void addTaskDirectly(Task task) throws CommandException {
-        if (task != null && task.isValid() && tasks.size() < MAX_TASKS) {
-            tasks.add(task);
-        } else if (tasks.size() >= MAX_TASKS) {
-            throw new CommandException("Task limit reached while loading from storage");
-        }
-    }
+    // === Getters ===
 
     /**
      * Returns the number of tasks in the list.
      *
-     * @return The number of tasks
+     * @return Task count.
      */
     public int getTaskCount() {
-        return tasks.size();
+        return storageHandler.getTaskCount();
     }
 
     /**
-     * Checks if the task list is empty.
+     * Checks whether the task list is empty.
      *
-     * @return true if the list is empty, false otherwise
+     * @return True if empty, false otherwise.
      */
     public boolean isEmpty() {
-        return tasks.isEmpty();
+        return storageHandler.isEmpty();
     }
 
     /**
      * Gets a task by its number.
      *
-     * @param taskNumber The task number (1-based index)
-     * @return The task at the specified position, or null if not found
+     * @param num Task number to retrieve.
+     * @return Task object.
      */
-    public Task getTask(int taskNumber) {
-        if (taskNumber <= 0 || taskNumber > tasks.size()) {
-            return null;
-        }
-        return tasks.get(taskNumber - 1);
+    public Task getTask(int num) {
+        return storageHandler.getTask(num);
     }
 
     /**
-     * Gets all tasks as an array.
+     * Returns all tasks in the list.
      *
-     * @return Array of all tasks
+     * @return Array of all tasks.
      */
     public Task[] getAllTasks() {
-        return tasks.toArray(new Task[0]);
+        return storageHandler.getAllTasks();
+    }
+
+    // === Utility ===
+
+    /**
+     * Clears all tasks from the list.
+     */
+    public void clearAllTasks() {
+        storageHandler.clearAllTasks();
     }
 
     /**
-     * Deletes tasks that match a specified pattern in their description.
-     * <p>
-     * This method allows users to delete tasks using pattern matching with wildcards:
-     * - "book*" matches tasks starting with "book"
-     * - "*meeting" matches tasks ending with "meeting"
-     * - "*urgent*" matches tasks containing "urgent"
-     * - "report" matches tasks exactly matching "report"
-     * </p>
-     *
-     * @param pattern The pattern to match against task descriptions
-     * @throws CommandException If pattern is invalid or no matches found
+     * Checks performance of task operations (internal diagnostics).
      */
-    public void deleteTasksByPattern(String pattern) throws CommandException {
-        if (pattern == null || pattern.trim().isEmpty()) {
-            throw new CommandException("Please provide a search pattern (e.g., 'book*', '*meeting', '*urgent*')");
-        }
-
-        String searchPattern = pattern.trim().toLowerCase();
-        ArrayList<Task> matchingTasks = new ArrayList<>();
-        ArrayList<Integer> matchingIndexes = new ArrayList<>();
-
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task != null && task.isValid() && matchesPattern(task, searchPattern)) {
-                matchingTasks.add(task);
-                matchingIndexes.add(i);
-            }
-        }
-
-        if (matchingTasks.isEmpty()) {
-            throw new CommandException("No tasks found matching pattern: " + pattern);
-        }
-
-        System.out.println("🔍 Found " + matchingTasks.size() + " tasks matching '" + pattern + "':");
-        for (int i = 0; i < matchingTasks.size(); i++) {
-            System.out.println("  " + (i + 1) + ". " + matchingTasks.get(i).toString());
-        }
-
-        System.out.print("🗑️  Delete these " + matchingTasks.size() + " tasks? (yes/no): ");
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        String confirmation = scanner.nextLine().trim().toLowerCase();
-
-        if (confirmation.equals("yes") || confirmation.equals("y")) {
-            for (int i = matchingIndexes.size() - 1; i >= 0; i--) {
-                tasks.remove(matchingIndexes.get(i).intValue());
-            }
-            System.out.println("✅ Removed " + matchingTasks.size() + " tasks matching pattern: " + pattern);
-            System.out.println("📊 Now you have " + tasks.size() + " tasks in the list.");
-        } else {
-            System.out.println("😅 Deletion cancelled.");
-        }
+    public void checkPerformance() {
+        operationHandler.checkPerformance();
     }
 
     /**
-     * Checks if a task's description matches the given pattern.
-     * <p>
-     * Supports the following pattern types:
-     * - "book*" - tasks starting with "book"
-     * - "*meeting" - tasks ending with "meeting"
-     * - "*urgent*" - tasks containing "urgent"
-     * - "report" - tasks exactly matching "report"
-     * </p>
+     * Validates integrity of tasks in storage.
      *
-     * @param task The task to check
-     * @param pattern The pattern to match against
-     * @return true if the task matches the pattern, false otherwise
+     * @return True if all tasks are valid, false otherwise.
      */
-    private boolean matchesPattern(Task task, String pattern) {
-        String description = task.getDescription().toLowerCase();
-
-        if (pattern.equals(description)) {
-            return true;
-        }
-
-        if (!pattern.startsWith("*") && pattern.endsWith("*")) {
-            String prefix = pattern.substring(0, pattern.length() - 1);
-            return description.startsWith(prefix);
-        }
-
-        if (pattern.startsWith("*") && !pattern.endsWith("*")) {
-            String suffix = pattern.substring(1);
-            return description.endsWith(suffix);
-        }
-
-        if (pattern.startsWith("*") && pattern.endsWith("*")) {
-            String contains = pattern.substring(1, pattern.length() - 1);
-            return description.contains(contains);
-        }
-
-        return description.contains(pattern);
+    public boolean validateTaskIntegrity() {
+        return storageHandler.validateIntegrity();
     }
-
-
 }

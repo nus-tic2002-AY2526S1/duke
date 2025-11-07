@@ -27,15 +27,14 @@ public class Deadline extends Task {
     public Deadline(String description, String by) throws TaskException {
         super(description);
 
-        // Assertions for parameter validation
-        assert by != null : "Deadline time should not be null";
-        assert !by.trim().isEmpty() : "Deadline time should not be empty";
+        if (by == null || by.trim().isEmpty()) {
+            throw new TaskException("Deadline time cannot be empty!");
+        }
 
         this.by = parseDateTime(InputSanitizer.sanitizeTime(by));
 
-        // Post-constructor state assertion
-        assert this.by != null : "Deadline time should be initialized";
-        assert this.by.isAfter(LocalDateTime.now()) : "Deadline should be in the future";
+        // Validate that deadline is not in the past
+        validateFutureDate(this.by, "Deadline");
     }
 
     /**
@@ -87,14 +86,14 @@ public class Deadline extends Task {
      * @throws TaskException If the date is in the past
      */
     private void validateFutureDate(LocalDateTime dateTime, String fieldName) throws TaskException {
-        assert dateTime != null : "DateTime to validate should not be null";
-        assert fieldName != null && !fieldName.isEmpty() : "Field name should be provided";
+        if (dateTime == null) {
+            throw new TaskException(fieldName + " cannot be null!");
+        }
 
         if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new TaskException(fieldName + " cannot be in the past! Please choose a future date and time.");
+            throw new TaskException("❌ " + fieldName + " cannot be in the past! Please choose a future date and time.\n" +
+                    "💡 Try dates after: " + LocalDateTime.now().format(OUTPUT_FORMATTER));
         }
-        // Post-condition assertion
-        assert !dateTime.isBefore(LocalDateTime.now()) : "Validated date should not be in the past";
     }
 
     /**

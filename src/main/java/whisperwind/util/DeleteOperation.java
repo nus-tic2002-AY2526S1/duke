@@ -2,34 +2,99 @@ package whisperwind.util;
 
 import whisperwind.model.TaskType;
 
+/**
+ * Represents different types of delete operations that can be performed on tasks.
+ * <p>
+ * Each operation has a textual name, description, emoji representation, and a flag
+ * indicating whether confirmation is required before performing the action.
+ * </p>
+ */
 public enum DeleteOperation {
+
+    /** Delete a single task (no confirmation required) */
     SINGLE("single", "Delete single task", "🗑️", false),
+
+    /** Delete multiple tasks in bulk (no destructive confirmation) */
     BULK("bulk", "Delete multiple tasks", "🗑️🗑️", false),
+
+    /** Delete all completed tasks (requires confirmation) */
     COMPLETED("completed", "Delete completed tasks", "✅🗑️", true),
+
+    /** Delete all tasks (destructive, requires confirmation) */
     ALL("all", "Delete all tasks", "🧹", true),
+
+    /** Delete tasks matching a specific pattern (no confirmation required) */
     PATTERN("pattern", "Delete by pattern", "🔍🗑️", false),
+
+    /** Delete tasks by their type (no confirmation required) */
     BY_TYPE("type", "Delete by task type", "📁🗑️", false),
+
+    /** Unknown or invalid delete operation */
     UNKNOWN("unknown", "Unknown operation", "❓", false);
 
+    /** Textual representation of the delete operation */
     private final String operation;
-    private final String description;
-    private final String emoji;
-    private final boolean requiresConfirmation;
 
-    DeleteOperation(String operation, String description, String emoji, boolean requiresConfirmation) {
+    /** Description of what the operation does */
+    private final String description;
+
+    /** Emoji representing the operation */
+    private final String emoji;
+
+    /** Whether the operation requires confirmation */
+    private final boolean isConfirmationRequired;
+
+    /**
+     * Constructs a delete operation with properties.
+     *
+     * @param operation            textual operation name
+     * @param description          description of the operation
+     * @param emoji                emoji representing the operation
+     * @param isConfirmationRequired whether confirmation is required
+     */
+    DeleteOperation(String operation, String description, String emoji, boolean isConfirmationRequired) {
         this.operation = operation;
         this.description = description;
         this.emoji = emoji;
-        this.requiresConfirmation = requiresConfirmation;
+        this.isConfirmationRequired = isConfirmationRequired;
     }
 
-    public String getOperation() { return operation; }
-    public String getDescription() { return description; }
-    public String getEmoji() { return emoji; }
-    public boolean requiresConfirmation() { return requiresConfirmation; }
+    /**
+     * @return the textual name of the delete operation
+     */
+    public String getOperation() {
+        return operation;
+    }
 
+    /**
+     * @return description of the delete operation
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @return emoji representing the delete operation
+     */
+    public String getEmoji() {
+        return emoji;
+    }
+
+    /**
+     * @return true if the operation requires confirmation, false otherwise
+     */
+    public boolean isConfirmationRequired() {
+        return isConfirmationRequired;
+    }
+
+    /**
+     * Converts a string input to a corresponding {@link DeleteOperation}.
+     * Handles both exact matches and pattern-based detection.
+     *
+     * @param input the input string representing the delete operation
+     * @return the corresponding DeleteOperation, or {@link #UNKNOWN} if no match
+     */
     public static DeleteOperation fromString(String input) {
-        // Assert input assumptions
         assert input != null : "Input should not be null in fromString";
         if (input == null || input.trim().isEmpty()) return UNKNOWN;
 
@@ -38,15 +103,14 @@ public enum DeleteOperation {
 
         for (DeleteOperation op : values()) {
             if (op.operation.equals(normalized)) {
-                // Assert valid operation found
                 assert op != UNKNOWN : "Should not return UNKNOWN for exact match";
                 return op;
             }
         }
 
-        // Pattern-based detection assertions
+        // Pattern-based detection
         if (normalized.equals("done") || normalized.equals("finished")) {
-            assert COMPLETED.requiresConfirmation : "COMPLETED should require confirmation";
+            assert COMPLETED.isConfirmationRequired : "COMPLETED should require confirmation";
             return COMPLETED;
         }
         if (normalized.endsWith("*")) {
@@ -57,30 +121,33 @@ public enum DeleteOperation {
             assert normalized.split(",").length >= 2 : "Bulk delete should have multiple numbers";
             return BULK;
         }
-
         if (TaskType.fromString(normalized) != TaskType.UNKNOWN) {
             assert BY_TYPE != UNKNOWN : "BY_TYPE should be valid for known task types";
             return BY_TYPE;
         }
-
         if (InputSanitizer.isValidTaskNumber(normalized, Integer.MAX_VALUE)) {
-            assert !SINGLE.requiresConfirmation : "SINGLE should not require confirmation";
+            assert !SINGLE.isConfirmationRequired : "SINGLE should not require confirmation";
             return SINGLE;
         }
 
-        // Final fallback - this should only happen for truly unknown inputs
+        // Fallback
         assert true : "No matching operation found for: " + normalized;
         return UNKNOWN;
     }
 
+    /**
+     * Determines if a given delete operation is considered destructive
+     * and requires confirmation.
+     *
+     * @param input the input string representing the delete operation
+     * @return true if the operation is destructive, false otherwise
+     */
     public static boolean isDestructiveOperation(String input) {
-        // Assert input assumptions
         assert input != null : "Input should not be null";
 
         DeleteOperation operation = fromString(input);
-        boolean result = operation.requiresConfirmation;
+        boolean result = operation.isConfirmationRequired;
 
-        // Assert consistency with operation properties
         assert (operation == ALL || operation == COMPLETED) == result :
                 "Destructive flag should match operation type";
 

@@ -70,7 +70,6 @@ public class Event extends Task {
 
         // Post-constructor state assertions
         assert hasLogicalTimeOrder() : "Event should have logical time order after construction";
-
     }
 
     /**
@@ -98,8 +97,13 @@ public class Event extends Task {
      * @throws TaskException If the date is in the past
      */
     private void validateFutureDate(LocalDateTime dateTime, String fieldName) throws TaskException {
+        if (dateTime == null) {
+            throw new TaskException(fieldName + " cannot be null!");
+        }
+
         if (dateTime.isBefore(LocalDateTime.now())) {
-            throw new TaskException(fieldName + " cannot be in the past! Please choose a future date and time.");
+            throw new TaskException("❌ " + fieldName + " cannot be in the past! Please choose a future date and time.\n" +
+                    "💡 Try dates after: " + LocalDateTime.now().format(OUTPUT_FORMATTER));
         }
     }
 
