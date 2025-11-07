@@ -2,7 +2,9 @@ package task;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import task.Recurrence.RecurrenceType;
+
+import model.task.Recurrence;
+import model.task.Recurrence.RecurrenceType;
 
 import java.time.LocalDate;
 

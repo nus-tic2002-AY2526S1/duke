@@ -3,7 +3,7 @@ package ui.cli;
 import java.util.ArrayList;
 import java.util.List;
 
-import message.Message;
+import common.message.Message;
 
 /**
  * Handles console output formatting for MeeBot responses with right-aligned layout

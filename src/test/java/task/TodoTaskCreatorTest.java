@@ -1,11 +1,13 @@
 package task;
 
-import exception.FileContentException;
-import exception.InvalidTaskFormatException;
-import exception.MeeBotException;
+import common.exception.FileContentException;
+import common.exception.InvalidTaskFormatException;
+import common.exception.MeeBotException;
 import org.junit.jupiter.api.Test;
-import parser.json.SimpleJsonObject;
-import task.factory.TodoCreator;
+import logic.parser.json.SimpleJsonObject;
+import model.task.Task;
+import model.task.TodoTask;
+import model.task.factory.TodoCreator;
 
 import static org.junit.jupiter.api.Assertions.*;
 

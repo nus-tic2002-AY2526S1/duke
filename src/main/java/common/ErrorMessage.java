@@ -1,6 +1,6 @@
 package common;
 
-import message.Message;
+import common.message.Message;
 
 /**
  * Immutable message record containing error information for display to users.

@@ -1,6 +1,6 @@
 package common;
 
-import command.CommandType;
+import logic.command.CommandType;
 
 /**
  * Immutable record providing centralized command documentation and help text.

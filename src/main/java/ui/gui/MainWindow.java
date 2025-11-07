@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import command.CommandType;
+import logic.command.CommandType;
 import common.CommandDocs;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -18,7 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import meebot.MeeBot;
-import message.WelcomeMessage;
+import common.message.WelcomeMessage;
 
 /**
  * Controller for the main GUI window of the MeeBot application.

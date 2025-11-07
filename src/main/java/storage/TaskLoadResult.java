@@ -2,7 +2,7 @@ package storage;
 
 import java.util.List;
 
-import task.Task;
+import model.task.Task;
 
 /**
  * Result of a task loading operation from storage.

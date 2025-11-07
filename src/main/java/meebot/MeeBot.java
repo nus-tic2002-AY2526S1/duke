@@ -1,11 +1,11 @@
 package meebot;
 
-import command.Command;
+import logic.command.Command;
 import common.ErrorMessage;
-import manager.TaskManager;
-import message.Message;
-import manager.CommandProcessor;
-import manager.StorageManager;
+import model.TaskManager;
+import common.message.Message;
+import model.CommandProcessor;
+import model.StorageManager;
 
 /**
  * Provide a unified backend API for both CLI and GUI.

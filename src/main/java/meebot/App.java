@@ -4,8 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.application.Application;
-import manager.TaskManager;
-import manager.StorageManager;
+import model.TaskManager;
+import model.StorageManager;
 import ui.cli.CliRunner;
 import ui.cli.UserInterface;
 import ui.gui.Main;

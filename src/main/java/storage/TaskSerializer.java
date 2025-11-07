@@ -2,9 +2,9 @@ package storage;
 
 import java.util.List;
 
-import manager.StorageManager;
-import task.ReadOnlyTask;
-import task.Recurrence;
+import model.StorageManager;
+import model.task.ReadOnlyTask;
+import model.task.Recurrence;
 
 public class TaskSerializer {
 

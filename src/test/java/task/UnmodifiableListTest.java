@@ -8,6 +8,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import model.task.Recurrence;
+import model.task.Task;
+import model.task.TodoTask;
+
 class UnmodifiableListTest {
 
     @Test

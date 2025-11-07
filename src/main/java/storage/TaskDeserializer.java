@@ -8,17 +8,17 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
-import exception.FileContentException;
-import exception.FileContentException.ErrorType;
-import exception.MeeBotException;
-import parser.json.JsonTokenizer;
-import parser.json.SimpleJsonObject;
-import parser.json.SimpleJsonParser;
-import task.Task;
-import task.factory.DeadlineCreator;
-import task.factory.EventCreator;
-import task.factory.TaskCreator;
-import task.factory.TodoCreator;
+import common.exception.FileContentException;
+import common.exception.FileContentException.ErrorType;
+import common.exception.MeeBotException;
+import logic.parser.json.JsonTokenizer;
+import logic.parser.json.SimpleJsonObject;
+import logic.parser.json.SimpleJsonParser;
+import model.task.Task;
+import model.task.factory.DeadlineCreator;
+import model.task.factory.EventCreator;
+import model.task.factory.TaskCreator;
+import model.task.factory.TodoCreator;
 
 /**
  * Utility class to deserialize JSON-like task objects into Task instances.
