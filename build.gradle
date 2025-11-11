@@ -44,11 +44,11 @@ test {
 }
 
 application {
-    mainClass.set("ui.Launcher")
+    mainClass.set("meebot.App")
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "JiaHuan"
     archiveClassifier = null
 }
 
