@@ -1,0 +1,34 @@
+Basic Task Operations
+1. Add todo with valid description
+2. Add todo with empty description (should fail)
+3. Add deadline with future date
+4. Add deadline with past date (should fail)
+5. Add event with valid time range
+6. Add event with invalid time range (end before start)
+
+Delete Operations
+1. Delete single task
+2. Delete multiple tasks (bulk)
+3. Delete completed tasks
+4. Delete all tasks (with confirmation)
+5. Delete by pattern (book*, *meeting)
+6. Delete by task type (todo, deadline, event)
+
+Mark/Unmark Operations
+1. Mark task as done
+2. Mark already done task (should fail)
+3. Unmark task
+4. Unmark not-done task (should fail)
+5. Bulk mark/unmark operations
+
+Search and Find
+1. Find tasks by keyword
+2. Find tasks on specific date
+3. Schedule views (today, tomorrow, upcoming)
+4. Pattern matching in searches
+
+File Operations
+1. Save tasks to file
+2. Load tasks from file
+3. Handle corrupted file data
+4. Backup and restore functionality
