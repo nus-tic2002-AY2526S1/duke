@@ -10,12 +10,12 @@ import model.task.Task;
 public class TaskAddedMessage implements Message {
     private final Task task;
     private final int taskCount;
-    private final boolean showSortWarning;
+    private final boolean isSorted;
 
-    public TaskAddedMessage(Task task, TaskManager tm, boolean showSortWarning) {
+    public TaskAddedMessage(Task task, TaskManager tm, boolean isSorted) {
         this.task = task;
         this.taskCount = tm.getTotalTasks();
-        this.showSortWarning = showSortWarning;
+        this.isSorted = isSorted;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class TaskAddedMessage implements Message {
                         '%s' is now one of the %d tasks simmering.%s
                         """,
                 task.toString(), taskCount,
-                showSortWarning
+                isSorted
                         ? warning
                         : ""
         );

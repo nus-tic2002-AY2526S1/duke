@@ -7,11 +7,11 @@ import model.task.ReadOnlyTask;
  */
 public class TaskUnmarkedMessage implements Message {
     private final ReadOnlyTask task;
-    private final boolean showSortWarning;
+    private final boolean isSorted;
 
-    public TaskUnmarkedMessage(ReadOnlyTask task, boolean showSortWarning) {
+    public TaskUnmarkedMessage(ReadOnlyTask task, boolean isSorted) {
         this.task = task;
-        this.showSortWarning = showSortWarning;
+        this.isSorted = isSorted;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class TaskUnmarkedMessage implements Message {
                         '%s' is back to pending - just like when hawker uncle changes his mind about closing time.%s
                         """,
                 task.toString(),
-                showSortWarning
+                isSorted
                         ? warning
                         : ""
         );

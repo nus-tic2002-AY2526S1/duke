@@ -35,7 +35,8 @@ public record TaskLoadResult(List<Task> tasks, int failedTaskCount, String error
         return current == null ? empty() : current;
     }
 
-    // --- Convenience methods ---
+
+    /* === Convenience methods === */
     /**
      * Convenience method to return an empty load result with no tasks and no failures.
      */

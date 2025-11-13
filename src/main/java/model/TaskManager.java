@@ -78,7 +78,6 @@ public class TaskManager {
      * @see #validateTaskState(int, boolean)
      */
     public void unmarkTask(int userIndex) throws InvalidTaskOperationException {
-
         int actualIndex = toActualIndex(userIndex);
         validateTaskState(actualIndex, false);
         Task task = tasks.get(actualIndex);

@@ -7,11 +7,11 @@ import model.task.ReadOnlyTask;
  */
 public class TaskMarkedMessage implements Message {
     private final ReadOnlyTask task;
-    private final boolean showSortWarning;
+    private final boolean isSorted;
 
-    public TaskMarkedMessage(ReadOnlyTask task, boolean showSortWarning) {
+    public TaskMarkedMessage(ReadOnlyTask task, boolean isSorted) {
         this.task = task;
-        this.showSortWarning = showSortWarning;
+        this.isSorted = isSorted;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class TaskMarkedMessage implements Message {
                         That's one less thing to mee-ddle with!%s
                         """,
                 task.toString(),
-                showSortWarning
+                isSorted
                         ? warning
                         : ""
         );

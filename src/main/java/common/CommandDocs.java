@@ -106,12 +106,12 @@ public record CommandDocs() {
                     """;
             case FILTER -> """
                     🔎 To filter tasks — pick 1 to 3 conditions.
-                    Format: filter task:<type> & done:<t|f> & date:<DD/MM/YYYY>
-                    
                     Supported filters:
                     • task: todo|deadline|event
                     • done: true|false
                     • date: DD/MM/YYYY
+                    
+                    Format: filter task:<type> & done:<true|false> & date:<DD/MM/YYYY>
                     Try: filter task:deadline
                     Or : filter task:deadline & done:false
                     Or : filter task:deadline & done:false & date:1/11/2025

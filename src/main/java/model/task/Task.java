@@ -68,13 +68,17 @@ public abstract class Task implements ReadOnlyTask {
     public Optional<ReadOnlyTask> createInstance(LocalDate filterDate)
             throws InvalidDateTimeException {
 
-        if (!occursOn(filterDate)) return Optional.empty();
+        if (!occursOn(filterDate)) {
+            return Optional.empty();
+        }
 
         List<LocalDateTime> dates = getDates();
         LocalDateTime originalStart = dates.get(0);
         LocalDateTime originalEnd = (dates.size() > 1) ? dates.get(1) : originalStart;
 
-        if (recurrence.isNone()) return Optional.of(copy(originalStart, originalEnd));
+        if (recurrence.isNone()) {
+            return Optional.of(copy(originalStart, originalEnd));
+        }
 
         ChronoUnit unit = recurrence.type().getChronoUnit();
         long timeUnitDiff = unit.between(dates.get(0).toLocalDate(), filterDate);
@@ -139,6 +143,15 @@ public abstract class Task implements ReadOnlyTask {
                 description);
     }
 
+    /**
+     * Checks if this task is equal to another object based on task properties.
+     * Two tasks are considered equal if they have the same description, task type,
+     * dates, and recurrence pattern.
+     *
+     * @param obj the object to compare with this task
+     * @return {@code true} if the object is a task with identical description, type,
+     *         dates, and recurrence; {@code false} otherwise
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -150,6 +163,13 @@ public abstract class Task implements ReadOnlyTask {
                 && Objects.equals(recurrence, other.recurrence);
     }
 
+    /**
+     * Generates a hash code for this task based on its description, type, dates,
+     * and recurrence pattern. This ensures that equal tasks produce the same hash code,
+     * maintaining the contract between {@code equals()} and {@code hashCode()}.
+     *
+     * @return a hash code value for this task
+     */
     @Override
     public int hashCode() {
         return Objects.hash(description, getTaskType(), getDates(), recurrence);

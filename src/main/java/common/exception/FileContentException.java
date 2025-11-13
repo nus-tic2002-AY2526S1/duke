@@ -26,6 +26,9 @@ public class FileContentException extends MeeBotException {
         return new ErrorMessage(ErrorMessage.INVALID_JSON_FORMAT);
     }
 
+    /**
+     * Enumeration of specific file content error types.
+     */
     public enum ErrorType {
         INVALID_JSON_FORMAT("File structure is invalid, loading failed."),
         INVALID_INPUT("Unknown task type or invalid content.");

@@ -110,7 +110,7 @@ public final class TaskFilterParser {
         assert value != null && !value.isEmpty() : "Task filter value must not be null/empty";
 
         switch (key) {
-        case "model/task":
+        case "task":
             return task -> task.getTaskType().getKeyword().equalsIgnoreCase(value);
         case "done":
             if (value.equalsIgnoreCase("true")) return ReadOnlyTask::isDone;
@@ -136,7 +136,9 @@ public final class TaskFilterParser {
      */
     public static Optional<LocalDate> extractFilterDate(String args)
             throws InvalidDateTimeException {
-        String[] tokens = args.trim().split("\\s*&\\s*");
+
+        String AMP_DELIMITER = "\\s*&\\s*";
+        String[] tokens = args.trim().split(AMP_DELIMITER);
 
         for (String token : tokens) {
             String[] parts = token.split(":");

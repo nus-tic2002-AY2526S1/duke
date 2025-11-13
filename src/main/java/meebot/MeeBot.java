@@ -4,7 +4,7 @@ import logic.command.Command;
 import common.ErrorMessage;
 import model.TaskManager;
 import common.message.Message;
-import model.CommandProcessor;
+import logic.CommandProcessor;
 import model.StorageManager;
 
 /**

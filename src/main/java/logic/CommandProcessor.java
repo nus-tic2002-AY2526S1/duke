@@ -1,10 +1,11 @@
-package model;
+package logic;
 
 import java.util.Objects;
 
 import logic.command.Command;
 import logic.command.CommandType;
 import common.ErrorMessage;
+import model.TaskManager;
 
 /**
  * Central processor for parsing and routing user commands into executable {@link Command} objects.

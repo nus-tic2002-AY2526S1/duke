@@ -1,9 +1,0 @@
-=== TASK LOADING ERRORS ===
-Task failed
-Reason: Unknown task type or invalid content.
-Raw JSON: {description=return call, type=deadline, deadline=2025-09-29T15:00, done=false}
-
-Task failed
-Reason: Unknown task type or invalid content.
-Raw JSON: {recurrence={recurrenceEnd=2025-12-28, count=12, anchorDate=2025-10-12, type=WEEKLY}, description=weekly summary, type=deadline, deadline=2025-10-12T12:00}
-

@@ -70,7 +70,8 @@ public record ErrorMessage(String message) implements Message {
             • Optionally add time in 24-hour format: 0000-2359
             """;
     public static final String END_BEFORE_START = """
-            End time cannot be earlier than start time. That's like eating dessert before the main course lah!
+            End time cannot be earlier than start time. 
+            That's like eating dessert before the main course lah!
             Make sure both dates have proper timing, or end time is after start time!
             """;
 

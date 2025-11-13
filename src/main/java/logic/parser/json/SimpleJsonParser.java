@@ -15,6 +15,10 @@ import common.exception.FileContentException.ErrorType;
  * The parser uses a tokenizer-based approach with recursive descent parsing
  * to handle JSON structures. It throws {@link FileContentException} for invalid
  * JSON format or unexpected tokens.
+ * <p>
+ * <em>Solution adapted from:
+ * <a href="https://www.sunshine2k.de/articles/coding/jsonparser/simplejsonparser.html">
+ * Simple JSON Parser Tutorial</a></em>
  *
  * @see JsonTokenizer
  * @see SimpleJsonObject
