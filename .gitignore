@@ -1,3 +1,6 @@
+# Init Data files
+/src/main/data
+
 # IDEA files
 /.idea/
 /out/
