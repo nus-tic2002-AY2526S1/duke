@@ -11,6 +11,8 @@ import command.MarkCommand;
 import command.UnmarkCommand;
 import command.FindCommand;
 import util.DukeException;
+import util.DateTime;
+
 
 public class Parser {
     public static Command parse(String input) throws DukeException {
@@ -18,7 +20,6 @@ public class Parser {
             throw new DukeException("Empty command.");
         }
         String s = input.trim();
-        // assert given that if statement already covers
         assert s != null : "Trimmed input should not be null";
         assert !s.isEmpty() : "Trimmed input should not be empty";
         s = s.toLowerCase();
@@ -36,29 +37,55 @@ public class Parser {
             return new AddTodoCommand(desc);
         }
 
-        if (s.startsWith("deadline ")) {
-            String body = s.substring(9);
-            String[] parts = body.split("/by", 2);
-            assert parts != null && parts.length > 0 : "Splitting deadline must produce parts";
-            if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
-                throw new DukeException("deadline by? Usage: deadline <description> /by <date>");
-            }
-            return new AddDeadlineCommand(parts[0].trim(), parts[1].trim());
+    if (s.startsWith("deadline ")) {
+        String body = s.substring(9);
+        String[] parts = body.split("/by", 2);
+
+        if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+        throw new DukeException("deadline by? Usage: deadline <description> /by <yyyy-MM-dd HHmm>");
         }
 
-        if (s.startsWith("event ")) {
-            String body = s.substring(6);
-            String[] p1 = body.split("/from", 2);
-            assert p1 != null && p1.length > 0 : "Event split by /from should produce parts";
-            if (p1.length < 2 || p1[0].trim().isEmpty())
-                throw new DukeException("what event?");
-            String desc = p1[0].trim();
-            String[] p2 = p1[1].split("/to", 2);
-            if (p2.length < 2 || p2[0].trim().isEmpty() || p2[1].trim().isEmpty()) {
-                throw new DukeException("Usage: event <description> /from <start> /to <end>");
-            }
-            return new AddEventCommand(desc, p2[0].trim(), p2[1].trim());
+        String desc = parts[0].trim();
+        String byStr = parts[1].trim();
+
+        try {
+            DateTime.parseDateTime(byStr);
+        } catch (IllegalArgumentException e) {
+            throw new DukeException(e.getMessage());
         }
+
+        return new AddDeadlineCommand(desc, byStr);
+    }
+
+
+  if (s.startsWith("event ")) {
+    String body = s.substring(6);
+    String[] p1 = body.split("/from", 2);
+
+    if (p1.length < 2 || p1[0].trim().isEmpty()) {
+        throw new DukeException("what event?");
+    }
+
+    String desc = p1[0].trim();
+    String[] p2 = p1[1].split("/to", 2);
+
+    if (p2.length < 2 || p2[0].trim().isEmpty() || p2[1].trim().isEmpty()) {
+        throw new DukeException("Usage: event <description> /from <yyyy-MM-dd HHmm> /to <yyyy-MM-dd HHmm>");
+    }
+
+    String fromStr = p2[0].trim();
+    String toStr = p2[1].trim();
+
+    try {
+        DateTime.parseDateTime(fromStr);
+        DateTime.parseDateTime(toStr);
+    } catch (IllegalArgumentException e) {
+        throw new DukeException(e.getMessage());
+    }
+
+    return new AddEventCommand(desc, fromStr, toStr);
+}
+
 
         if (s.startsWith("mark ")) {
             String idxs = s.substring(5).trim();

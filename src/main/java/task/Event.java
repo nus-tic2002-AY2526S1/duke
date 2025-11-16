@@ -5,9 +5,7 @@ import java.time.format.DateTimeFormatter;
 import util.DateTime;
 
 public class Event extends Task {
-    private static final DateTimeFormatter RAW_SLASH_DT = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-
-    private final String fromRaw; // store what user typed
+    private final String fromRaw;
     private final String toRaw;
 
     public Event(String description, String from, String to) {
@@ -18,11 +16,10 @@ public class Event extends Task {
 
     public Event(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
-        this.fromRaw = from.format(RAW_SLASH_DT);
-        this.toRaw = to.format(RAW_SLASH_DT);
+        this.fromRaw = from.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+        this.toRaw = to.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
     }
 
-    // Lazy parse on access
     public LocalDateTime getFromDateTime() {
         return DateTime.parseDateTime(fromRaw);
     }

@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import util.DateTime;
 
 public class Deadline extends Task {
-    private final String byRaw; // store original user input string
+    private final String byRaw;
 
     public String getByRaw() {
         return byRaw;
@@ -14,22 +14,21 @@ public class Deadline extends Task {
 
     public Deadline(String description, String byStr) {
         super(description);
-        this.byRaw = byStr.trim(); // store raw without parsing
+        this.byRaw = byStr.trim();
     }
 
     public Deadline(String description, LocalDateTime by) {
         super(description);
-        this.byRaw = by.format(DateTimeFormatter.ofPattern("d/M/yyyy HHmm"));
+        this.byRaw = by.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
     }
 
     public LocalDateTime getParsedBy() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HHmm");
-        return LocalDateTime.parse(byRaw, formatter);
+        return DateTime.parseDateTime(byRaw);
     }
 
     @Override
     public String toString() {
-        DateTimeFormatter displayFmt = DateTimeFormatter.ofPattern("MMM dd yyyy, HH:mm");
-        return "[D]" + super.toString() + " (by: " + DateTime.formatRawDateTimeSafe(byRaw) + ")";
+        return "[D]" + super.toString()
+                + " (by: " + DateTime.formatRawDateTimeSafe(byRaw) + ")";
     }
 }
