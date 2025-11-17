@@ -1,0 +1,14 @@
+T | 0 | buy groceries
+T | 0 | buy groceries
+T | 0 | read new book
+D | 0 | submit assignment | Nov 07 2025 2359
+D | 0 | pay electricity bill | Dec 18 2025 1800
+D | 0 | task for tomorrow | Nov 07 2025 0000
+D | 0 | task for next week | Nov 13 2025 0000
+D | 0 | task for next month | Dec 06 2025 0000
+D | 1 | overdue task | Aug 03 2025 0000
+D | 1 | overdue task 2 | Jul 02 2025 0000
+E | 0 | team meeting | Dec 18 2025 1400 | Dec 18 2025 1600
+E | 1 | project meeting | Nov 06 2025 1900 | Nov 06 2025 2300
+T | 0 | read new book
+D | 0 | return finished reading book | Nov 13 2025 0000

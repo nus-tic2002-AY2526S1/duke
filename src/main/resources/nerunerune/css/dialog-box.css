@@ -1,0 +1,45 @@
+/* user message bubble */
+.label {
+    -fx-background-color: #a2d2ff;
+    -fx-text-fill: #023e8a;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-padding: 12px 16px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 18px 18px 4px 18px;
+    -fx-effect: dropshadow(gaussian, rgba(162, 210, 255, 0.4), 8, 0, 0, 2);
+}
+
+/* bot response bubble */
+.reply-label {
+    -fx-background-color: #fff3b0;
+    -fx-text-fill: #936c00;
+    -fx-background-radius: 18px 18px 18px 4px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 230, 109, 0.4), 8, 0, 0, 2);
+}
+
+/* timestamp styling */
+.timestamp-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #94a3b8;
+    -fx-padding: 0px;
+    -fx-background-color: transparent;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
+}
+
+#displayPicture {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 12, 0.4, 0, 3);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-rotate: 0;
+}
+
+/* dialog box max width */
+.root {
+    -fx-max-width: 750.0;
+}
+
+#dialog {
+    -fx-max-width: 650.0;
+}

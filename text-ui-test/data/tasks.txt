@@ -1,0 +1,4 @@
+T | 0 | borrow book
+T | 0 | buy food
+D | 0 | return book | Feb 01 2025 1900
+E | 0 | project meeting | Feb 02 2025 1600 | Feb 02 2025 1745

@@ -1,0 +1,28 @@
+list
+todo borrow book
+todo buy food
+todo run
+list
+delete run
+list
+todo run
+delete 3
+list
+mark borrow bok
+unmark borrow bok
+mark borrow book
+unmark borrow book
+mark nonexistent task
+deadline return book /by 01-02-2025 1900
+event project meeting /from 02-02-2025 1600 /to 02-02-2025 1745
+list
+todo
+deadline finish report 1
+deadline finish report 2 02-07-2025
+deadline finish report 3 03-08-25 1600
+event trip 1 /from 02-07-2025 1600 to 02-07-2025 1600
+event trip 2 /from 02-08-2025 to 02-08-2025
+event trip 3 /from 02-07-25 1600 to 02-07-25 1600
+unknowncommand
+
+bye
