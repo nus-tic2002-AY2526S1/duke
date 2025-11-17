@@ -1,3 +1,13 @@
+## Week 11 Consultation
+### File directory issue
+Program can find the file if main java file is executed directly, but cannot detect if executed via debugger
+- Did not check if the folder exists, so the debugger will assume that it exists and tries to access it, causing the error since it is accessing something that does not exist
+### Solution
+- Check if the folder exists first, create if it doesn't
+
+
+---
+
 # Duke project template
 
 This is a project template for a greenfield Java project. It's named after the Java mascot _Duke_. Given below are instructions on how to use it.

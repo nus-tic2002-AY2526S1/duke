@@ -1,0 +1,15 @@
+T | 1 | read book
+D | 0 | return book | 06/06/2025 2000
+T | 1 | badminton
+D | 1 | badminton | 06/06/2025 2000
+E | 1 | badminton | 06/06/2025 2000 | 06/06/2025 2015
+E | 0 | football | 06/06/2025 1900 | 06/06/2025 1915
+E | 0 | badminton | 09/09/2025 1600 | 09/09/2025 1700
+E | 1 | table tennis | 09/09/2025 1900 | 09/09/2025 2000
+T | 0 | test
+T | 0 | work
+D | 0 | return book | 10/11/2025 1000
+E | 0 | play badminton | 11/11/2025 1000 | 11/11/2025 1200
+D | 0 | restring racket | 11/11/2025 0000
+E | 0 | work trip | 11/11/2025 0000 | 14/11/2025 0000
+T | 0 | tango

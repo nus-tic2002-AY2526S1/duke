@@ -8,6 +8,8 @@
 /build/
 src/main/resources/docs/
 
+/.vscode/
+
 # MacOS custom attributes files created by Finder
 .DS_Store
 *.iml
@@ -15,3 +17,8 @@ bin/
 
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
+src/main/java/*.class
+src/main/java/moonchester_data/*.class
+src/main/java/moonchester_utils/*.class
+src/main/java/moonchester_data/Task_List.txt
+src/main/java/tempCodeRunnerFile.java
