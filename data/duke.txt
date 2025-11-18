@@ -1,0 +1,4 @@
+T | 0 | read book | 2
+D | 0 | submit project report | 2025-11-16T23:59 | 3
+E | 0 | attend birthday party | 2025-11-17T19:00 | 2025-11-17T23:00 | 3
+T | 1 | buy birthday gist (book) | 1
