@@ -1,0 +1,24 @@
+.label {
+    -fx-padding: 10 14;
+    -fx-background-radius: 16;
+    -fx-font-family: "Roboto";
+    -fx-font-size: 16px;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 2;
+}
+
+.user-bubble {
+    -fx-background-color: #45c468;
+    -fx-text-fill: white;
+}
+
+.bot-bubble {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+}
+
+.timestamp-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #888888;
+    -fx-padding: 2 0 0 5;
+}

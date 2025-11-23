@@ -1,0 +1,81 @@
+help
+list
+delete
+mark
+unmark
+todo
+deadline
+event
+todo water plants
+deadline sign-up hackathon /by 9 Sep 2025 1800
+deadline submit work report/by 11-9-2025
+deadline pay bills /by15/10/2025
+deadline finish task/by2025-09-19 2210
+deadline          report         /by               2025-10-15
+deadline NewTask /BY 2025-10-15
+deadline task
+deadline /by 2019-10-15
+deadline task /by
+deadline task /by 2019-10-15 /by 1500
+deadline task /by 1/15/2025 2359
+deadline task /by 99 Jan 2025 2359
+deadline task /by 1-11-2011 2660
+deadline task /by Oct 15 2019 2359
+deadline task /by 2359
+deadline task /by !@# 2019-10-15 2359
+deadline task /byebye 2019-10-15
+event project meeting /from 2/12/2025 1800 /to 2 Dec 2025 2000
+event company retreat/from 2025-12-02 /to6/12/2025
+event leadership workshop/from9 Sep 2025/to10 Sep 2025 1200
+event only description no datetime
+event /from 2025-09-19 0900 /to 2025-09-19 1200
+event party /from 2025-09-19 0900
+event party /to 19/9/2025 1200
+event party /from /to 2025-09-19 0900
+event party /from 2025-09-19 0900 /to
+event meeting /from 2025-13-01 0900 /to 1/13/2025 1000
+event concert /from 13 Jan 2025 2560 /to 13 Jan 2025 2780
+event meeting /from Oct 15 2019 /to 16 Oct 19
+event meeting /from 0000 /to 2359
+event meeting /from 2019-10-15 !@# 0900 /to 15/10/2019 1800 !@#
+event meeting /from 13 Jan 2025 /to 13/1/2020
+event meeting /from 13 Jan 2025 0900 /to 13/1/2025
+list
+mark 1
+mark 3
+mark 5
+mark 7
+mark 9
+list
+unmark 3
+unmark 1
+list
+mark
+unmark
+mark 9
+unmark 1
+mark one
+mark 100
+unmark 1001
+list
+filter task:event
+filter done:true
+filter date:9 Sep 2025
+filter task:event&date:10/9/2025
+filter task:deadline&done:false
+filter task:deadline&date:2025-10-15&done:true
+filter task:todo&date:2/12/2025
+filter task:event&date:2025-09-10&done:true
+filter task:todo & task:deadline
+filter date:9 Sep 2025 & date:2025-10-15
+filter task:apple&done:banana&date:15-10-2025
+filter task:&date:&done: & done:
+filter task:deadline&date:2025-10-15&done:true & done:
+filter task:event and date:10/9/2025
+filter task:event&done=true
+filter apple:event & banana:true & cherry:15-10-2025
+delete 10
+list
+delete
+delete three
+delete 10

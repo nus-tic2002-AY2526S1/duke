@@ -1,7 +1,545 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
+                    ___  ___ _____  _____ ______  _____  _____ 
+                    |  \/  ||  ___||  ___|| ___ \|  _  ||_   _|
+                    | .  . || |__  | |__  | |_/ /| | | |  | |  
+                    | |\/| ||  __| |  __| | ___ \| | | |  | |  
+                    | |  | || |___ | |___ | |_/ /\ \_/ /  | |  
+                    \_|  |_/\____/ \____/ \____/  \___/   \_/  
 
+                                                  MeeBot:
+                                                  Hello, I'm MeeBot.
+                                                  Ready to mee-t your needs today!
+                                                  Type 'help' to find out what can mee stir up for you today.
+You: 
+                                                  MeeBot:
+                                                  Here's what mee can do for you:
+                                                  • list     : Display all tasks
+                                                  • todo     : Add todo. Format: todo <description>
+                                                  • deadline : Add deadline.
+                                                  Format: deadline <description> /by <date>
+                                                  • event    : Add event.
+                                                  Format: event <description> /from <date>
+                                                  • delete   : Delete a task by number. Format: delete <index>
+                                                  • filter   : Filter tasks by one or more criteria.
+                                                  Format: filter <task:todo/deadline/event> <done:true/false>
+                                                  <date:YYYY-MM-DD>
+                                                  • mark     : Mark a task as done. Format: mark <index>
+                                                  • unmark   : Mark a task as pending. Format: unmark <index>
+                                                  • bye      : Exits the chatbot
+You: 
+                                                  MeeBot:
+                                                  Your task list is emptier than kopitiam during circuit
+                                                  breaker. Add a task before using this command!
+You: 
+                                                  MeeBot:
+                                                  Your task list is emptier than kopitiam during circuit
+                                                  breaker. Add a task before using this command!
+You: 
+                                                  MeeBot:
+                                                  Your task list is emptier than kopitiam during circuit
+                                                  breaker. Add a task before using this command!
+You: 
+                                                  MeeBot:
+                                                  Your task list is emptier than kopitiam during circuit
+                                                  breaker. Add a task before using this command!
+You: 
+                                                  MeeBot:
+                                                  Your description is emptier than a hawker stall at 3am leh!
+                                                  Give mee something to work with after the command.
+You: 
+                                                  MeeBot:
+                                                  Your description is emptier than a hawker stall at 3am leh!
+                                                  Give mee something to work with after the command.
+You: 
+                                                  MeeBot:
+                                                  Your description is emptier than a hawker stall at 3am leh!
+                                                  Give mee something to work with after the command.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[T][ ] water plants' is now one of the 1 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)' is now
+                                                  one of the 2 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[D][ ] submit work report (by: 11 Sep 2025)' is now one of
+                                                  the 3 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[D][ ] pay bills (by: 15 Oct 2025)' is now one of the 4
+                                                  tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[D][ ] finish task (by: 19 Sep 2025, 10:10 pm)' is now one
+                                                  of the 5 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[D][ ] report (by: 15 Oct 2025)' is now one of the 6 tasks
+                                                  simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[D][ ] NewTask (by: 15 Oct 2025)' is now one of the 7 tasks
+                                                  simmering.
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Deadline needs a description and '/by' date.
+                                                  Try: deadline submit report /by 1/11/2025
+                                                  Or : deadline submit report /by 1/11/2025 2359
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Deadline needs a description and '/by' date.
+                                                  Try: deadline submit report /by 1/11/2025
+                                                  Or : deadline submit report /by 1/11/2025 2359
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Deadline needs a description and '/by' date.
+                                                  Try: deadline submit report /by 1/11/2025
+                                                  Or : deadline submit report /by 1/11/2025 2359
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Deadline needs a description and '/by' date.
+                                                  Try: deadline submit report /by 1/11/2025
+                                                  Or : deadline submit report /by 1/11/2025 2359
+You: 
+                                                  MeeBot:
+                                                  '1/15/2025 2359' doesn't exist.
+                                                  Your date/time more fictional than Korean drama plot!
+                                                  Double check:
+                                                  • Dates : 1-31 for day, 1-12 for month
+                                                  • Time  : 0000-2359 (Use 24-hour format)
+                                                  • Format: day/month/year (not American style!)
+You: 
+                                                  MeeBot:
+                                                  '99 Jan 2025 2359' doesn't exist.
+                                                  Your date/time more fictional than Korean drama plot!
+                                                  Double check:
+                                                  • Dates : 1-31 for day, 1-12 for month
+                                                  • Time  : 0000-2359 (Use 24-hour format)
+                                                  • Format: day/month/year (not American style!)
+You: 
+                                                  MeeBot:
+                                                  '1-11-2011 2660' doesn't exist.
+                                                  Your date/time more fictional than Korean drama plot!
+                                                  Double check:
+                                                  • Dates : 1-31 for day, 1-12 for month
+                                                  • Time  : 0000-2359 (Use 24-hour format)
+                                                  • Format: day/month/year (not American style!)
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)' is now one of the 8 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[E][ ] company retreat (from: 02 Dec 2025 to: 06 Dec 2025)'
+                                                  is now one of the 9 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Mee-rvelous! I've added that to your bowl... I mean, list!
+                                                  '[E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)' is now one of the 10 tasks simmering.
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Event needs a description, '/from' start and '/to' end.
+                                                  Try: event meeting /from 1/11/2025 /to 1/11/2025
+                                                  Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Event needs a description, '/from' start and '/to' end.
+                                                  Try: event meeting /from 1/11/2025 /to 1/11/2025
+                                                  Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Event needs a description, '/from' start and '/to' end.
+                                                  Try: event meeting /from 1/11/2025 /to 1/11/2025
+                                                  Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Event needs a description, '/from' start and '/to' end.
+                                                  Try: event meeting /from 1/11/2025 /to 1/11/2025
+                                                  Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Event needs a description, '/from' start and '/to' end.
+                                                  Try: event meeting /from 1/11/2025 /to 1/11/2025
+                                                  Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+You: 
+                                                  MeeBot:
+                                                  Your command is messier than mee goreng!
+                                                  Event needs a description, '/from' start and '/to' end.
+                                                  Try: event meeting /from 1/11/2025 /to 1/11/2025
+                                                  Or : event meeting /from 1/11/2025 1400 /to 1/11/2025 1500
+You: 
+                                                  MeeBot:
+                                                  '2025-13-01 0900 and/or 1/13/2025 1000' doesn't exist.
+                                                  Your date/time more fictional than Korean drama plot!
+                                                  Double check:
+                                                  • Dates : 1-31 for day, 1-12 for month
+                                                  • Time  : 0000-2359 (Use 24-hour format)
+                                                  • Format: day/month/year (not American style!)
+You: 
+                                                  MeeBot:
+                                                  '13 Jan 2025 2560 and/or 13 Jan 2025 2780' doesn't exist.
+                                                  Your date/time more fictional than Korean drama plot!
+                                                  Double check:
+                                                  • Dates : 1-31 for day, 1-12 for month
+                                                  • Time  : 0000-2359 (Use 24-hour format)
+                                                  • Format: day/month/year (not American style!)
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  Incorrect date/time format, please use one of these:
+                                                  • Day/Month/Year: 1/1/2025 or 1-1-2025
+                                                  • Long format: 1 Jan 2025
+                                                  • ISO format: 2025-01-01
+                                                  • Optionally add time in 24-hour format: 0000-2359
+You: 
+                                                  MeeBot:
+                                                  End time cannot be earlier than start time. That's like
+                                                  eating dessert before the main course lah!
+                                                  Common fix: If you didn't specify time, it becomes 00:00.
+                                                  Make sure both dates have proper timing, or end time is
+                                                  after start time!
+You: 
+                                                  MeeBot:
+                                                  End time cannot be earlier than start time. That's like
+                                                  eating dessert before the main course lah!
+                                                  Common fix: If you didn't specify time, it becomes 00:00.
+                                                  Make sure both dates have proper timing, or end time is
+                                                  after start time!
+You: 
+                                                  MeeBot:
+                                                  Here's your current mee-x of responsibilities:
+                                                  1. [T][ ] water plants
+                                                  2. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  3. [D][ ] submit work report (by: 11 Sep 2025)
+                                                  4. [D][ ] pay bills (by: 15 Oct 2025)
+                                                  5. [D][ ] finish task (by: 19 Sep 2025, 10:10 pm)
+                                                  6. [D][ ] report (by: 15 Oct 2025)
+                                                  7. [D][ ] NewTask (by: 15 Oct 2025)
+                                                  8. [E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)
+                                                  9. [E][ ] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+                                                  10. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  '[T][X] water plants' accomplished like a true blue
+                                                  Singaporean - efficient and effective!
+                                                  That's one less thing to mee-ddle with!
+You: 
+                                                  MeeBot:
+                                                  '[D][X] submit work report (by: 11 Sep 2025)' accomplished
+                                                  like a true blue Singaporean - efficient and effective!
+                                                  That's one less thing to mee-ddle with!
+You: 
+                                                  MeeBot:
+                                                  '[D][X] finish task (by: 19 Sep 2025, 10:10 pm)'
+                                                  accomplished like a true blue Singaporean - efficient and
+                                                  effective!
+                                                  That's one less thing to mee-ddle with!
+You: 
+                                                  MeeBot:
+                                                  '[D][X] NewTask (by: 15 Oct 2025)' accomplished like a true
+                                                  blue Singaporean - efficient and effective!
+                                                  That's one less thing to mee-ddle with!
+You: 
+                                                  MeeBot:
+                                                  '[E][X] company retreat (from: 02 Dec 2025 to: 06 Dec 2025)'
+                                                  accomplished like a true blue Singaporean - efficient and
+                                                  effective!
+                                                  That's one less thing to mee-ddle with!
+You: 
+                                                  MeeBot:
+                                                  Here's your current mee-x of responsibilities:
+                                                  1. [T][X] water plants
+                                                  2. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  3. [D][X] submit work report (by: 11 Sep 2025)
+                                                  4. [D][ ] pay bills (by: 15 Oct 2025)
+                                                  5. [D][X] finish task (by: 19 Sep 2025, 10:10 pm)
+                                                  6. [D][ ] report (by: 15 Oct 2025)
+                                                  7. [D][X] NewTask (by: 15 Oct 2025)
+                                                  8. [E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)
+                                                  9. [E][X] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+                                                  10. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  '[D][ ] submit work report (by: 11 Sep 2025)' is back to
+                                                  pending - just like when hawker uncle changes his mind about
+                                                  closing time
+You: 
+                                                  MeeBot:
+                                                  '[T][ ] water plants' is back to pending - just like when
+                                                  hawker uncle changes his mind about closing time
+You: 
+                                                  MeeBot:
+                                                  Here's your current mee-x of responsibilities:
+                                                  1. [T][ ] water plants
+                                                  2. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  3. [D][ ] submit work report (by: 11 Sep 2025)
+                                                  4. [D][ ] pay bills (by: 15 Oct 2025)
+                                                  5. [D][X] finish task (by: 19 Sep 2025, 10:10 pm)
+                                                  6. [D][ ] report (by: 15 Oct 2025)
+                                                  7. [D][X] NewTask (by: 15 Oct 2025)
+                                                  8. [E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)
+                                                  9. [E][X] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+                                                  10. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  You need to tell me the task number, don't make mee guess
+                                                  the number like buying 4D!
+                                                  Type 'list' to see your tasks, then use the number.
+You: 
+                                                  MeeBot:
+                                                  You need to tell me the task number, don't make mee guess
+                                                  the number like buying 4D!
+                                                  Type 'list' to see your tasks, then use the number.
+You: 
+                                                  MeeBot:
+                                                  Task is already done, no point doing it again what!
+                                                  Try 'unmark 9' instead.
+You: 
+                                                  MeeBot:
+                                                  Task is already unmarked, no point doing it again what!
+                                                  Try 'mark 1' instead.
+You: 
+                                                  MeeBot:
+                                                  Eh friend, 'one' is not a number lah. Task numbers are whole
+                                                  numbers like 1, 2, 3.
+You: 
+                                                  MeeBot:
+                                                  Task 100 doesn't exist.
+                                                  Type 'list' to see what's actually in your task list lah!
+You: 
+                                                  MeeBot:
+                                                  Task 1001 doesn't exist.
+                                                  Type 'list' to see what's actually in your task list lah!
+You: 
+                                                  MeeBot:
+                                                  Here's your current mee-x of responsibilities:
+                                                  1. [T][ ] water plants
+                                                  2. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  3. [D][ ] submit work report (by: 11 Sep 2025)
+                                                  4. [D][ ] pay bills (by: 15 Oct 2025)
+                                                  5. [D][X] finish task (by: 19 Sep 2025, 10:10 pm)
+                                                  6. [D][ ] report (by: 15 Oct 2025)
+                                                  7. [D][X] NewTask (by: 15 Oct 2025)
+                                                  8. [E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)
+                                                  9. [E][X] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+                                                  10. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  Filtered by: task:event
+                                                  1. [E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)
+                                                  2. [E][X] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+                                                  3. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  Filtered by: done:true
+                                                  1. [D][X] finish task (by: 19 Sep 2025, 10:10 pm)
+                                                  2. [D][X] NewTask (by: 15 Oct 2025)
+                                                  3. [E][X] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  Filtered by: date:9 Sep 2025
+                                                  1. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  2. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  Filtered by: task:event&date:10/9/2025
+                                                  1. [E][ ] leadership workshop (from: 09 Sep 2025 to: 10 Sep
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  Filtered by: task:deadline&done:false
+                                                  1. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  2. [D][ ] submit work report (by: 11 Sep 2025)
+                                                  3. [D][ ] pay bills (by: 15 Oct 2025)
+                                                  4. [D][ ] report (by: 15 Oct 2025)
+You: 
+                                                  MeeBot:
+                                                  Filtered by: task:deadline&date:2025-10-15&done:true
+                                                  1. [D][X] NewTask (by: 15 Oct 2025)
+You: 
+                                                  MeeBot:
+                                                  'task:todo&date:2/12/2025' came back empty-handed.
+                                                  This could mean: (1) no matching tasks, or (2) your filter
+                                                  values are incorrect.
+You: 
+                                                  MeeBot:
+                                                  'task:event&date:2025-09-10&done:true' came back
+                                                  empty-handed.
+                                                  This could mean: (1) no matching tasks, or (2) your filter
+                                                  values are incorrect.
+You: 
+                                                  MeeBot:
+                                                  'task:todo & task:deadline' came back empty-handed.
+                                                  This could mean: (1) no matching tasks, or (2) your filter
+                                                  values are incorrect.
+You: 
+                                                  MeeBot:
+                                                  'date:9 Sep 2025 & date:2025-10-15' came back empty-handed.
+                                                  This could mean: (1) no matching tasks, or (2) your filter
+                                                  values are incorrect.
+You: 
+                                                  MeeBot:
+                                                  'task:apple&done:banana&date:15-10-2025' came back
+                                                  empty-handed.
+                                                  This could mean: (1) no matching tasks, or (2) your filter
+                                                  values are incorrect.
+You: 
+                                                  MeeBot:
+                                                  Too many criteria; maximum allowed is 3. Pick at least 1
+                                                  from these 3 criteria:
+                                                  • task:todo | deadline | event
+                                                  • done:true | false
+                                                  • date:YYYY-MM-DD
+                                                  Try: filter task:deadline
+                                                  Or : filter task:deadline & done:false
+                                                  Or : filter task:deadline & done:false & date:2024-01-15
+You: 
+                                                  MeeBot:
+                                                  Too many criteria; maximum allowed is 3. Pick at least 1
+                                                  from these 3 criteria:
+                                                  • task:todo | deadline | event
+                                                  • done:true | false
+                                                  • date:YYYY-MM-DD
+                                                  Try: filter task:deadline
+                                                  Or : filter task:deadline & done:false
+                                                  Or : filter task:deadline & done:false & date:2024-01-15
+You: 
+                                                  MeeBot:
+                                                  Invalid filter format. Pick at least 1 from these 3
+                                                  criteria:
+                                                  • task:todo | deadline | event
+                                                  • done:true | false
+                                                  • date:YYYY-MM-DD
+                                                  Try: filter task:deadline
+                                                  Or : filter task:deadline & done:false
+                                                  Or : filter task:deadline & done:false & date:2024-01-15
+You: 
+                                                  MeeBot:
+                                                  Invalid filter format. Pick at least 1 from these 3
+                                                  criteria:
+                                                  • task:todo | deadline | event
+                                                  • done:true | false
+                                                  • date:YYYY-MM-DD
+                                                  Try: filter task:deadline
+                                                  Or : filter task:deadline & done:false
+                                                  Or : filter task:deadline & done:false & date:2024-01-15
+You: 
+                                                  MeeBot:
+                                                  Unknown filter key. Pick at least 1 from these 3 criteria:
+                                                  • task:todo | deadline | event
+                                                  • done:true | false
+                                                  • date:YYYY-MM-DD
+                                                  Try: filter task:deadline
+                                                  Or : filter task:deadline & done:false
+                                                  Or : filter task:deadline & done:false & date:2024-01-15
+You: 
+                                                  MeeBot:
+                                                  Bye bye '[E][ ] leadership workshop (from: 09 Sep 2025 to:
+                                                  10 Sep 2025)'!
+                                                  Removed like unwanted beansprouts from your laksa.
+                                                  Now you have 9 tasks in the list.
+You: 
+                                                  MeeBot:
+                                                  Here's your current mee-x of responsibilities:
+                                                  1. [T][ ] water plants
+                                                  2. [D][ ] sign-up hackathon (by: 09 Sep 2025, 6:00 pm)
+                                                  3. [D][ ] submit work report (by: 11 Sep 2025)
+                                                  4. [D][ ] pay bills (by: 15 Oct 2025)
+                                                  5. [D][X] finish task (by: 19 Sep 2025, 10:10 pm)
+                                                  6. [D][ ] report (by: 15 Oct 2025)
+                                                  7. [D][X] NewTask (by: 15 Oct 2025)
+                                                  8. [E][ ] project meeting (from: 02 Dec 2025, 6:00 pm to: 02
+                                                  Dec 2025, 8:00 pm)
+                                                  9. [E][X] company retreat (from: 02 Dec 2025 to: 06 Dec
+                                                  2025)
+You: 
+                                                  MeeBot:
+                                                  You need to tell me the task number, don't make mee guess
+                                                  the number like buying 4D!
+                                                  Type 'list' to see your tasks, then use the number.
+You: 
+                                                  MeeBot:
+                                                  Eh friend, 'three' is not a number lah. Task numbers are
+                                                  whole numbers like 1, 2, 3.
+You: 
+                                                  MeeBot:
+                                                  Task 10 doesn't exist.
+                                                  Type 'list' to see what's actually in your task list lah!
+You: 

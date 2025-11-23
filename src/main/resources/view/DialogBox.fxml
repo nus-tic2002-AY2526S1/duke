@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1"
+         alignment="TOP_RIGHT"
+         spacing="15"
+         maxHeight="1.7976931348623157E308"
+         maxWidth="1.7976931348623157E308" prefWidth="400.0"
+         stylesheets="@../css/dialog-box.css"
+         type="javafx.scene.layout.HBox"
+         xmlns="http://javafx.com/javafx/25">
+    <children>
+        <VBox alignment="TOP_RIGHT" spacing="3">
+            <children>
+                <Label fx:id="dialog"
+                       wrapText="true"
+                       minHeight="-Infinity"
+                       text="Label"/>
+                <Label fx:id="timestamp"
+                       text="12:00 PM"
+                       styleClass="timestamp-label"/>
+            </children>
+        </VBox>
+
+        <ImageView fx:id="displayPicture"
+                   fitHeight="40.0"
+                   fitWidth="40.0"
+                   pickOnBounds="true"
+                   preserveRatio="true"/>
+    </children>
+
+    <padding>
+        <Insets top="15.0" right="5.0" bottom="15.0" left="5.0"/>
+    </padding>
+</fx:root>
