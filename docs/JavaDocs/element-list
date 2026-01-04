@@ -1,0 +1,6 @@
+bongocat
+bongocat.commands
+bongocat.parser
+bongocat.storage
+bongocat.tasks
+bongocat.ui

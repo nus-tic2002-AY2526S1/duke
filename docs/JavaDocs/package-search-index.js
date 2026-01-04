@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"bongocat"},{"l":"bongocat.commands"},{"l":"bongocat.parser"},{"l":"bongocat.storage"},{"l":"bongocat.tasks"},{"l":"bongocat.ui"}];updateSearchResults();

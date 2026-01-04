@@ -1,0 +1,3 @@
+T | [X] | read book
+E | [ ] | Met Gala | 2pm | 4pm
+D | [ ] | Homework | 2025-11-16
