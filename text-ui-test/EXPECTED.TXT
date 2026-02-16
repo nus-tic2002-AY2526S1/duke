@@ -1,7 +1,27 @@
-Hello from
- ____        _        
-|  _ \ _   _| | _____ 
-| | | | | | | |/ / _ \
-| |_| | |_| |   <  __/
-|____/ \__,_|_|\_\___|
-
+I am Groot. (Hello. What can I do for you?)
+I am Groot. (Task added: [T][ ] read book)
+I am Groot. (Now you have 1 tasks in the list.)
+I am Groot. (1: [T][ ] read book)
+I am Groot. (Task added: [D][ ] return book | by: 22 Oct 2022 1000)
+I am Groot. (Now you have 2 tasks in the list.)
+I am Groot. (1: [T][ ] read book)
+I am Groot. (2: [D][ ] return book | by: 22 Oct 2022 1000)
+I am Groot. (Task added: [E][ ] work | from: 21 Oct 2022 1000, to: 22 Oct 2022 1000)
+I am Groot. (Now you have 3 tasks in the list.)
+I am Groot. (1: [T][ ] read book)
+I am Groot. (2: [D][ ] return book | by: 22 Oct 2022 1000)
+I am Groot. (3: [E][ ] work | from: 21 Oct 2022 1000, to: 22 Oct 2022 1000)
+I am Groot. (Task marked as done: [T][X] read book)
+I am Groot. (1: [T][X] read book)
+I am Groot. (2: [D][ ] return book | by: 22 Oct 2022 1000)
+I am Groot. (3: [E][ ] work | from: 21 Oct 2022 1000, to: 22 Oct 2022 1000)
+I am Groot. (Task marked as not done yet: [T][ ] read book)
+I am Groot. (1: [T][ ] read book)
+I am Groot. (2: [D][ ] return book | by: 22 Oct 2022 1000)
+I am Groot. (3: [E][ ] work | from: 21 Oct 2022 1000, to: 22 Oct 2022 1000)
+I am Groot. (Task deleted: [D][ ] return book | by: 22 Oct 2022 1000)
+I am Groot. (Now you have 2 tasks in the list.)
+I am Groot. (1: [T][ ] read book)
+I am Groot. (2: [E][ ] work | from: 21 Oct 2022 1000, to: 22 Oct 2022 1000)
+I am Groot. ([E][ ] work | from: 21 Oct 2022 1000, to: 22 Oct 2022 1000)
+We are Groot. (Goodbye.)

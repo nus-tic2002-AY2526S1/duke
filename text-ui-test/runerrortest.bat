@@ -4,7 +4,7 @@ REM create bin directory if it doesn't exist
 if not exist ..\bin mkdir ..\bin
 
 REM delete output from previous run
-if exist ACTUAL.TXT del ACTUAL.TXT
+if exist ERRORACTUAL.TXT del ERRORACTUAL.TXT
 
 REM compile the code into the bin folder
 javac  -cp ..\src\main\java -Xlint:none -d ..\bin ..\src\main\java\*.java
@@ -18,7 +18,7 @@ REM reset tasklist.txt so tests always start with empty file
 type nul > data\tasklist.txt
 
 REM run the program, feed commands from input.txt file and redirect the output to the ACTUAL.TXT
-java -classpath ..\bin Groot < input.txt > ACTUAL.TXT
+java -classpath ..\bin Groot < errorInput.txt > ERRORACTUAL.TXT
 
 REM compare the output to the expected output
-FC ACTUAL.TXT EXPECTED.TXT
+FC ERRORACTUAL.TXT ERROREXPECTED.TXT
