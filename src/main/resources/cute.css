@@ -1,0 +1,61 @@
+/* Root container background */
+.root-container {
+    -fx-background-color: #f0f4f8;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px; /* smaller font */
+}
+
+/* ScrollPane styles */
+.scroll-pane {
+    -fx-background: transparent;
+}
+
+/* Dialog container spacing */
+.dialog-container {
+    -fx-padding: 10;
+}
+
+/* User message bubble */
+.user-bubble {
+    -fx-background-color: #cce5ff;
+    -fx-text-fill: #000000;
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 15px;
+    -fx-wrap-text: true;
+    -fx-alignment: center-right;
+    -fx-max-width: 250px;
+    -fx-font-size: 12px;
+}
+
+/* Bot message bubble */
+.bot-bubble {
+    -fx-background-color: #e2f0d9;
+    -fx-text-fill: #000000;
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 15px;
+    -fx-wrap-text: true;
+    -fx-alignment: center-left;
+    -fx-max-width: 250px;
+    -fx-font-size: 12px;
+}
+
+/* Input field styling */
+.input-field {
+    -fx-font-size: 13px;
+    -fx-background-radius: 10px;
+    -fx-padding: 5 10 5 10;
+}
+
+/* Send button styling */
+.send-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 10px;
+    -fx-font-size: 12px;
+}
+
+/* Input container */
+.input-container {
+    -fx-spacing: 5;
+}
+
